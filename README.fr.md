@@ -91,7 +91,7 @@ git clone <repo>
 cd comptoir-des-harnais
 cp .env.example .env
 npm install
-npm run dev      # ouvre l'application sur http://localhost:3000
+npm run dev      # ouvre l'application sur http://localhost:3010
 npm test         # exécute les tests de garde-fous et de structure
 ```
 

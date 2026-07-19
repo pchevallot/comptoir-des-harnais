@@ -250,7 +250,7 @@ npm test                  # 36/36  (3 fichiers : configuration-ia 18, structure 
 npm run build             # OK — 20 routes
 npm run validate-harness  # OK — 6 sources, 6 fiches, cohérent
 npm run generate-demo     # OK (régénère le contenu de démo)
-npm run dev               # http://localhost:3000
+npm run dev               # http://localhost:3010
 ```
 
 **Vérification manuelle de la FAQ** (déjà réalisée, résultats connus) :

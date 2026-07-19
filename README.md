@@ -81,7 +81,7 @@ npm run dev
 Puis ouvrir :
 
 ```text
-http://localhost:3000
+http://localhost:3010
 ```
 
 ### Vérifier l’installation

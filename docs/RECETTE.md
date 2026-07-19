@@ -180,3 +180,47 @@ Session lancée avec Opus 4.8 (`claude-opus-4-8`). Elle a atteint la limite de t
 
 - Claude Code n'a pas commité automatiquement la session n°2 car il a atteint `max turns`. Commit réalisé ensuite après vérification.
 - Vérification visuelle navigateur encore à faire dans un environnement disposant de Chrome/Playwright ou navigateur agent.
+
+---
+
+# Recette de la refonte fabrique (V1.5 / V2)
+
+Journal de la refonte spécifiée dans `specs/` (PRD v0.3, architecture, backlog).
+Une section par lot : date, commandes, résultats, écarts. Modèle
+d'implémentation : Opus 4.8 (`claude-opus-4-8`), sans substitution. Travaux sur
+la branche `refonte-fabrique`. Session S1 = Lot 0 + Lot 1.
+
+## Lot 0 — Sauvegarde, branche, état de référence
+
+- **Date** : 2026-07-19.
+- **SHA de départ (`main`)** : `85e5ffa` (`docs: make harness factory web-guided`).
+  `main` alignée avec `origin/main` (0 en avance, 0 en retard) avant branche.
+- **Fichiers non suivis** : les artefacts `claude-code-runs/*` sont **laissés
+  non suivis** (défaut du backlog, arbitrage Pascal n°2). Les `specs/` étaient
+  déjà suivies sur `main` (aucune action requise).
+- **Tag posé** : `avant-refonte-fabrique` sur `85e5ffa`.
+- **Branche créée** : `refonte-fabrique` (via `git switch -c`).
+
+### Environnement de référence
+
+| Outil | Version |
+|---|---|
+| Node | v22.22.3 |
+| npm | 10.9.8 |
+| Next | ^15.5.0 (15.5.20 installé) |
+
+### Commandes de référence (état de départ, avant toute modification)
+
+| Commande | Résultat constaté | Attendu (backlog) | Écart |
+|---|---|---|---|
+| `npm test` | **36/36** (configuration-ia 18, structure 7, guardrails 11) | 36/36 | aucun |
+| `npm run build` | **OK — 20 routes** | 20 routes | aucun |
+| `npm run validate-harness` | **OK** — 6 sources, 6 fiches, statut prototype, 0 erreur | OK, 6 sources, 6 fiches | aucun |
+
+Aucun écart avec l'état attendu (HANDOFF §8). État de départ conforme,
+migration engageable.
+
+- **CHANGELOG.md** créé : annonce du renommage
+  `demo-onboarding-rh` → `onboarding-agents` (migration en une fois, sans
+  couche de compatibilité) et périmètre de la refonte.
+

@@ -1,0 +1,41 @@
+# Parcours d'accueil du nouvel arrivant (contenu fictif de démonstration).
+# Chaque étape renvoie vers une fiche pratique sourcée. Aucun ordre imposé,
+# aucune progression enregistrée.
+modules:
+  - id: "premiers-jours"
+    titre: "Vos premiers jours"
+    objectif: "Savoir qui vous accueille, obtenir vos accès et vos repères pratiques."
+    etapes:
+      - titre: "L'accueil dans votre service"
+        description: "Accès informatiques, badge, informations pratiques."
+        fiche: "premiers-jours"
+      - titre: "Les contacts utiles"
+        description: "Identifier le bon service selon votre question."
+        fiche: "contacts"
+
+  - id: "temps-de-travail"
+    titre: "Votre temps de travail"
+    objectif: "Comprendre la durée annuelle, les cycles et les congés."
+    etapes:
+      - titre: "Les repères du temps de travail"
+        description: "1 607 heures, cycles de service, congés."
+        fiche: "temps-de-travail"
+
+  - id: "protection-sociale"
+    titre: "Votre protection sociale"
+    objectif: "Connaître le dispositif des mutuelles labellisées."
+    etapes:
+      - titre: "Les mutuelles labellisées"
+        description: "Complémentaire santé et prévoyance, participation employeur."
+        fiche: "mutuelles"
+
+  - id: "environnement-professionnel"
+    titre: "Votre environnement professionnel"
+    objectif: "Repérer le télétravail et les réflexes achat."
+    etapes:
+      - titre: "Le télétravail"
+        description: "Jours possibles, conditions, accord du responsable."
+        fiche: "teletravail"
+      - titre: "Les marchés publics"
+        description: "Les bons réflexes avant d'acheter."
+        fiche: "marches-publics"

@@ -1,0 +1,28 @@
+# ===========================================================================
+# MODÈLE DE PARCOURS (vide)
+# Le parcours organise les fiches en modules et étapes. Il n'impose aucun
+# ordre et n'enregistre aucune progression : c'est un simple sommaire guidé.
+# Remplacez les valeurs entre chevrons <…>. Dupliquez les blocs au besoin.
+# Chaque "fiche:" doit correspondre au "slug:" d'une fiche du dossier fiches/.
+# ===========================================================================
+modules:
+  # ----- Un module d'exemple (à dupliquer/renommer) -----
+  - id: "<id-du-module>"              # identifiant court, ex. "premiers-jours"
+    titre: "<Titre du module>"       # ex. "Vos premiers jours"
+    objectif: "<Ce que le lecteur saura à la fin du module.>"
+    etapes:
+      - titre: "<Titre de l'étape>"
+        description: "<Une phrase décrivant l'étape.>"
+        fiche: "<slug-de-la-fiche>"  # doit exister dans fiches/
+      # - titre: "<Deuxième étape éventuelle>"
+      #   description: "<…>"
+      #   fiche: "<autre-slug>"
+
+  # ----- Dupliquez ce bloc pour ajouter d'autres modules -----
+  # - id: "<autre-module>"
+  #   titre: "<…>"
+  #   objectif: "<…>"
+  #   etapes:
+  #     - titre: "<…>"
+  #       description: "<…>"
+  #       fiche: "<…>"

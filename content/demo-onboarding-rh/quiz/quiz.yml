@@ -1,0 +1,46 @@
+# Quiz du nouvel arrivant (contenu fictif). Valide une lecture, jamais une
+# personne. Aucun score n'est conservé ni transmis.
+questions:
+  - id: "q-teletravail-jours"
+    question: "Combien de jours de télétravail par semaine sont possibles au maximum ?"
+    options:
+      - "Un jour"
+      - "Deux jours"
+      - "Cinq jours"
+    bonne_reponse: 1
+    explication: "Le télétravail est plafonné à deux jours par semaine, avec au moins trois jours de présence sur site."
+    renvoi_fiche: "teletravail"
+    renvoi_source: "SRC-003"
+
+  - id: "q-temps-annuel"
+    question: "Quelle est la durée annuelle de travail de référence ?"
+    options:
+      - "1 400 heures"
+      - "1 607 heures"
+      - "1 800 heures"
+    bonne_reponse: 1
+    explication: "La durée annuelle de référence est de 1 607 heures."
+    renvoi_fiche: "temps-de-travail"
+    renvoi_source: "SRC-001"
+
+  - id: "q-mutuelle-label"
+    question: "Pour bénéficier de la participation santé, le contrat doit être…"
+    options:
+      - "N'importe quel contrat"
+      - "Un contrat labellisé"
+      - "Un contrat choisi par l'employeur"
+    bonne_reponse: 1
+    explication: "La participation santé s'applique aux contrats labellisés figurant sur la liste officielle."
+    renvoi_fiche: "mutuelles"
+    renvoi_source: "SRC-002"
+
+  - id: "q-achat-reflexe"
+    question: "Avant d'acheter, quel est le bon réflexe ?"
+    options:
+      - "Choisir tout de suite un fournisseur"
+      - "Vérifier s'il existe déjà un marché couvrant le besoin"
+      - "Attendre la fin de l'année"
+    bonne_reponse: 1
+    explication: "On vérifie d'abord s'il existe un marché, et on définit le besoin avant de consulter des entreprises."
+    renvoi_fiche: "marches-publics"
+    renvoi_source: "SRC-004"

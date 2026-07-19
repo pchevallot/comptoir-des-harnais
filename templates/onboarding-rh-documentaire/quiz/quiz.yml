@@ -1,0 +1,29 @@
+# ===========================================================================
+# MODÈLE DE QUIZ (vide)
+# Le quiz valide une LECTURE, jamais une personne. Aucun score n'est conservé
+# ni transmis. Chaque question renvoie vers une fiche et une source.
+# Remplacez les valeurs entre chevrons <…>. Dupliquez le bloc par question.
+# ===========================================================================
+questions:
+  # ----- Une question d'exemple (à dupliquer/renommer) -----
+  - id: "<q-identifiant>"                 # ex. "q-conges-nombre"
+    question: "<Formulez ici la question.>"
+    options:
+      - "<Proposition 1>"
+      - "<Proposition 2 (la bonne dans cet exemple)>"
+      - "<Proposition 3>"
+    bonne_reponse: 1                       # index de la bonne option (0 = la 1re)
+    explication: "<Expliquez la bonne réponse en une phrase sourcée.>"
+    renvoi_fiche: "<slug-de-la-fiche>"     # doit exister dans fiches/
+    renvoi_source: "<SRC-000>"             # identifiant d'une source du registre
+
+  # ----- Dupliquez ce bloc pour ajouter d'autres questions -----
+  # - id: "<q-autre>"
+  #   question: "<…>"
+  #   options:
+  #     - "<…>"
+  #     - "<…>"
+  #   bonne_reponse: 0
+  #   explication: "<…>"
+  #   renvoi_fiche: "<…>"
+  #   renvoi_source: "<…>"

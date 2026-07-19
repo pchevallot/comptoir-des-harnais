@@ -1,0 +1,43 @@
+# =============================================================================
+# MODÈLE de configuration pour VOTRE organisation
+# -----------------------------------------------------------------------------
+# Pour adapter le portail à votre collectivité, SANS toucher au code :
+#   1. cp configs/organisation.example.yml configs/organisation.yml
+#   2. renseignez les valeurs ci-dessous
+#   3. dans .env : CDH_CONFIG=organisation.yml
+#   4. remplacez les contenus de content/demo-onboarding-rh/ par les vôtres
+#   5. relancez : npm run dev
+#
+# Rappels de cadre :
+#   - n'indiquez que des FONCTIONS (jamais le nom d'une personne) ;
+#   - un harnais du cadre ne traite que des données « publique » et « interne » ;
+#   - la présence de données personnelles ou sensibles rend le cas inéligible
+#     en l'état et impose un renvoi vers le DPO.
+# =============================================================================
+
+organisation:
+  nom: "Nom de votre collectivité"
+  type: "Type (commune, EPCI, syndicat mixte, centre de gestion…)"
+  # Passez à false uniquement lorsque vous utilisez de vraies sources validées.
+  fictive: true
+
+harnais:
+  nom: "Portail d'accueil des nouveaux arrivants"
+  # prototype tant que la fiche de validation n'est pas signée (cf. cycle de vie).
+  statut: "prototype"
+  besoin: >-
+    Décrivez en une phrase, en langage métier, le besoin auquel ce portail
+    répond, sans mentionner de situation individuelle.
+
+gouvernance:
+  responsable_metier: "Fonction responsable côté métier (ex. Direction RH)"
+  dpo: "Fonction DPO (interne ou mutualisé)"
+  dsi_rssi: "Fonction DSI / RSSI (interne ou mutualisée)"
+  classification_donnees:
+    - "publique"
+    - "interne"
+
+modele:
+  nom_affiche: "recherche documentaire locale"
+
+seuil_anciennete_mois: 24

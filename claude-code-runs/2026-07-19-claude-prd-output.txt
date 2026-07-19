@@ -1,0 +1,13 @@
+Le PRD est rédigé et enregistré dans `prd/PRD.md`. C'est le seul fichier créé, conformément au brief — aucun développement, aucun dépôt distant, aucun autre livrable.
+
+**Contenu du document (~15 pages) :**
+
+- **Résumé exécutif** avec l'évaluation du nom : « Comptoir des Harnais » est retenu (métaphore lisible, continuité éditoriale sobre), avec trois variantes de secours (Harnais Territorial, Atelier des Harnais, Cadre Harnais) et l'écartement explicite de « Harnais Public IA » comme nom propre.
+- **Les 12 sections demandées** : objectifs mesurables (O1–O7) et non-objectifs contractuels, six personas nommés (DRH, DGS, DSI-RSSI, DPO, cadre aménagement, développeur OPSN), le parcours pédagogique en 10 étapes avec les questions guidées posées à chaque étape, l'arborescence complète du dépôt, le MVP centré sur l'onboarding RH avec collectivité fictive, 17 exigences RGPD/AI Act/cybersécurité numérotées, un format de tests YAML illustré (dont le test de refus d'un cas individuel nominatif), la roadmap V0→V4, et le plan vidéo en 8 séquences minutées dont la séquence pivot est la démonstration d'un garde-fou en direct.
+- **Le plan de développement pour Opus 4.8** : 22 tâches en 6 lots (socle éditorial → templates → conformité → exemple RH → outillage → bouclage), chacune référencée aux sections du PRD, avec definition of done et l'interdiction reconduite de commencer par une app web.
+- **La séparation des phases est explicite** : Fable 5 pour ce PRD (confirmé — c'est bien le modèle qui a produit ce document), Opus 4.8 pour l'implémentation, avec validation humaine écrite obligatoire entre les deux et consigne de ne jamais substituer un modèle silencieusement.
+- **Une section « Points à confirmer »** : disponibilité du nom, licence (CC BY-SA pour la doc, MIT ou EUPL pour le code), fournisseur de modèle pour la démo vidéo, mention d'auteur, organisation GitHub d'accueil, et vérification que la collectivité fictive proposée n'existe pas réellement.
+
+Une remarque en passant : le répertoire local s'appelle `harnais-public-ia`, ce qui est précisément l'expression à éviter comme nom public. Sans conséquence tant que rien n'est publié, mais il faudra renommer le dépôt (`comptoir-des-harnais`) avant toute création du dépôt GitHub distant — c'est prévu dans le PRD au jalon de publication.
+
+Prochaine étape : votre relecture et validation du PRD, puis les arbitrages de la section « Points à confirmer » (au minimum nom et licence) avant de lancer la phase d'implémentation avec Opus 4.8.

@@ -1,0 +1,37 @@
+# =============================================================================
+# Configuration du MODE DÉMO — collectivité 100 % FICTIVE
+# -----------------------------------------------------------------------------
+# Ce fichier pilote l'identité et la gouvernance affichées par le portail.
+# Il est lisible et éditable sans compétence de développement.
+# AUCUNE donnée personnelle réelle : la collectivité et ses fonctions sont
+# fictives et servent uniquement à la démonstration.
+# =============================================================================
+
+organisation:
+  nom: "Communauté de communes de Roche-Vallonne"
+  type: "Communauté de communes (fictive)"
+  fictive: true
+
+harnais:
+  nom: "Portail d'accueil des nouveaux arrivants"
+  statut: "prototype" # prototype | interne | production
+  besoin: >-
+    Offrir aux nouveaux agents un point d'entrée documentaire clair, sourcé et
+    à jour, pour éviter de répéter les mêmes explications à chaque arrivée, sans
+    traiter aucune situation individuelle.
+
+gouvernance:
+  responsable_metier: "Direction des ressources humaines"
+  dpo: "Délégué à la protection des données (mutualisé)"
+  dsi_rssi: "Direction des systèmes d'information et sécurité (mutualisée)"
+  # Règle V1 : un harnais du cadre ne traite que les niveaux publique et interne.
+  classification_donnees:
+    - "publique"
+    - "interne"
+
+modele:
+  nom_affiche: "recherche documentaire locale"
+
+# Seuil au-delà duquel une source active est signalée comme potentiellement
+# obsolète par les tests et le script validate-harness (en mois).
+seuil_anciennete_mois: 24

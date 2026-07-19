@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Comptoir des Harnais — feuille de style globale
+   Design sobre et institutionnel. Tokens de charte CdS (PRD §7.3).
+   Priorités : lisibilité (y compris en capture vidéo 1080p), contraste,
+   focus visible, responsive. Aucune fantaisie visuelle.
+   ========================================================================== */
+
+:root {
+  /* Couleurs de charte CdS */
+  --cds-bleu: #1f519b;
+  --cds-or: #fdc948;
+  --cds-bleu-nuit: #112d4a;
+  --cds-blanc: #ffffff;
+  --cds-gris-clair: #f5f5f5;
+  --cds-texte: #333333;
+
+  /* Dérivés utilitaires */
+  --cds-bleu-clair: #e8eef7;
+  --cds-bordure: #d7dde6;
+  --cds-succes: #1c6b4a;
+  --cds-alerte: #8a2b12;
+
+  --radius: 8px;
+  --largeur-max: 1080px;
+  --ombre: 0 1px 3px rgba(17, 45, 74, 0.12);
+
+  --police: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--police);
+  color: var(--cds-texte);
+  background: var(--cds-blanc);
+  line-height: 1.6;
+  font-size: 1.0625rem;
+}
+
+/* --- Accessibilité : focus visible et lien d'évitement ------------------- */
+:focus-visible {
+  outline: 3px solid var(--cds-bleu);
+  outline-offset: 2px;
+}
+
+.lien-evitement {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--cds-bleu-nuit);
+  color: var(--cds-blanc);
+  padding: 0.75rem 1rem;
+  z-index: 100;
+}
+.lien-evitement:focus {
+  left: 0;
+}
+
+/* --- Titres --------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  color: var(--cds-bleu-nuit);
+  line-height: 1.25;
+  margin: 1.5rem 0 0.75rem;
+}
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.2rem; }
+
+a {
+  color: var(--cds-bleu);
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* --- Mise en page --------------------------------------------------------- */
+.contenu {
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* --- En-tête -------------------------------------------------------------- */
+.entete {
+  background: var(--cds-bleu-nuit);
+  color: var(--cds-blanc);
+}
+.entete-interne {
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.logo-emplacement {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  color: var(--cds-blanc);
+  text-decoration: none;
+}
+.logo-carre {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: var(--cds-bleu);
+  border: 2px solid var(--cds-or);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: var(--cds-or);
+}
+.logo-texte small {
+  display: block;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #bcd0ea;
+}
+
+/* --- Navigation ----------------------------------------------------------- */
+.nav {
+  background: var(--cds-bleu);
+}
+.nav-interne {
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+.nav a {
+  color: var(--cds-blanc);
+  text-decoration: none;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.95rem;
+  border-bottom: 3px solid transparent;
+}
+.nav a:hover,
+.nav a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.12);
+  border-bottom-color: var(--cds-or);
+  text-decoration: none;
+}
+
+/* --- Bandeau « données fictives » ---------------------------------------- */
+.bandeau-demo {
+  background: var(--cds-or);
+  color: var(--cds-bleu-nuit);
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+}
+
+/* --- Cartes et panneaux --------------------------------------------------- */
+.grille {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+.carte {
+  background: var(--cds-blanc);
+  border: 1px solid var(--cds-bordure);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--ombre);
+}
+.carte h3 { margin-top: 0; }
+
+.panneau {
+  background: var(--cds-gris-clair);
+  border: 1px solid var(--cds-bordure);
+  border-left: 4px solid var(--cds-bleu);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.panneau-alerte {
+  border-left-color: var(--cds-alerte);
+  background: #fbeeea;
+}
+.panneau-info {
+  border-left-color: var(--cds-bleu);
+}
+
+/* --- Badges (statut, sources, classification) ---------------------------- */
+.badges { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--cds-bordure);
+  background: var(--cds-blanc);
+}
+.badge-statut-prototype { background: #fff4d6; border-color: var(--cds-or); color: #6b4e00; }
+.badge-statut-interne { background: var(--cds-bleu-clair); border-color: var(--cds-bleu); color: var(--cds-bleu-nuit); }
+.badge-statut-production { background: #e2f2ea; border-color: var(--cds-succes); color: var(--cds-succes); }
+.badge-source { background: var(--cds-bleu-clair); border-color: var(--cds-bleu); color: var(--cds-bleu-nuit); }
+
+/* --- Boutons -------------------------------------------------------------- */
+.bouton {
+  display: inline-block;
+  background: var(--cds-bleu);
+  color: var(--cds-blanc);
+  border: 2px solid var(--cds-bleu);
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.bouton:hover { background: var(--cds-bleu-nuit); border-color: var(--cds-bleu-nuit); text-decoration: none; }
+.bouton-secondaire {
+  background: var(--cds-blanc);
+  color: var(--cds-bleu);
+}
+.bouton-secondaire:hover { background: var(--cds-bleu-clair); color: var(--cds-bleu-nuit); }
+
+/* --- Formulaires ---------------------------------------------------------- */
+label { font-weight: 600; display: block; margin-bottom: 0.4rem; }
+input[type="text"], textarea, select {
+  width: 100%;
+  padding: 0.7rem;
+  font: inherit;
+  border: 1px solid var(--cds-bordure);
+  border-radius: var(--radius);
+}
+
+/* --- Listes de définition / registres ------------------------------------ */
+.registre { display: grid; gap: 1rem; }
+.registre .carte dt { font-weight: 700; color: var(--cds-bleu-nuit); }
+.registre .carte dd { margin: 0 0 0.5rem; }
+
+.hero {
+  background: linear-gradient(135deg, var(--cds-bleu-nuit), var(--cds-bleu));
+  color: var(--cds-blanc);
+  border-radius: var(--radius);
+  padding: 2rem;
+}
+.hero h1 { color: var(--cds-blanc); margin-top: 0; }
+.hero p { font-size: 1.15rem; }
+
+/* --- Pied de page --------------------------------------------------------- */
+.pied {
+  background: var(--cds-gris-clair);
+  border-top: 3px solid var(--cds-or);
+  color: var(--cds-texte);
+  font-size: 0.9rem;
+}
+.pied-interne {
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+}
+
+/* --- Utilitaires ---------------------------------------------------------- */
+.muet { color: #5a6472; }
+.petit { font-size: 0.85rem; }
+ul.propre { list-style: none; padding: 0; }
+.mentions {
+  border-top: 1px dashed var(--cds-bordure);
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #5a6472;
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 1.6rem; }
+  .hero { padding: 1.5rem; }
+}

@@ -7,6 +7,28 @@ opérationnelle. Rédigé le **2026-07-19**.
 **Ordre de lecture recommandé :** `prd/PRD.md` (autorité fonctionnelle) → ce
 fichier → `docs/RECETTE.md` (journal de recette) → le code.
 
+> **Refonte « harnais-fabrique » en cours (branche `refonte-fabrique`).** Les
+> spécifications font autorité sur le positionnement et l'arborescence :
+> `specs/README.md` → PRD v0.3 → architecture → `specs/backlog-implementation.md`.
+> **État au 2026-07-19 (session S1) :** Lots 0 et 1 terminés, vérifiés, verts
+> (voir `docs/RECETTE.md` § « Recette de la refonte fabrique »). Tag de retour
+> arrière : `avant-refonte-fabrique`. `main` reste l'état publié.
+>
+> - Commits S1 : `dde31a4` (Lot 0), `e2fec7c` (git mv), `109abed` (Lot 1).
+> - Nouvelle arborescence : `content/cases/onboarding-agents/` (corpus),
+>   `cases/onboarding-agents/` (manifeste `harnais.yaml`, `gouvernance/`,
+>   `tests/comportement.yaml`), `templates/cases/documentaire/`.
+> - Vérifs S1 : `npm test` 36/36, `npm run build` OK (`/fabrique` dynamique,
+>   21ᵉ route), `npm run validate-harness` OK, `/fabrique` HTTP 200 lisant le
+>   manifeste.
+> - **Prochaine session : Lot 2** (8 skills `skills/<nom>/SKILL.md`, extraites
+>   des guides existants — voir `specs/spec-skills.md` et le backlog). Ne pas
+>   commencer le Lot 4 (corpus dense) avant les Lots 2 et 3.
+> - Rappel : aucun push, aucun merge dans `main` sans décision de Pascal ; les
+>   artefacts `claude-code-runs/*` restent non suivis. Ce HANDOFF sera
+>   entièrement refondu au Lot 8 ; les §ci-dessous décrivent encore l'état
+>   pré-refonte (chemins historiques).
+
 > **Modèle exigé : `claude-opus-4-8` (Opus 4.8). Ne pas substituer.** Il était
 > disponible au moment des sessions précédentes. Si une future session ne le
 > trouve pas : s'arrêter et le signaler (PRD §12.1), ne jamais substituer

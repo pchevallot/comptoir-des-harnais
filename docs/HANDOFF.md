@@ -38,10 +38,10 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >
 > - **Branche courante :** `refonte-fabrique` (jamais `main`).
 > - **HEAD à relever en début de session :** exécuter `git log --oneline -1`. Le
->   dernier commit attendu est le commit de handoff `docs: préparer le handoff de
->   reprise du Lot 3` ; ne pas dépendre d'un SHA recopié ici si ce fichier a été
->   amendé.
+>   dernier commit attendu est le commit du **Lot 3** ou un commit de handoff/recette
+>   postérieur ; ne pas dépendre d'un SHA recopié ici si ce fichier a été amendé.
 > - **Historique de la refonte (du plus récent au plus ancien, hors éventuel amend du présent handoff) :**
+>   - `8fa623d` — **Lot 3** : couche déterministe de la fabrique ;
 >   - `427b9ce` — **Lot 2** : 8 skills locales + 2 renvois de docs ;
 >   - `da4df9b` — note de reprise refonte dans le HANDOFF (fin S1) ;
 >   - `109abed` — **Lot 1** : socle fabrique (manifeste, résolution par cas, `/fabrique`) ;

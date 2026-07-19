@@ -7,34 +7,300 @@ opérationnelle. Rédigé le **2026-07-19**.
 **Ordre de lecture recommandé :** `prd/PRD.md` (autorité fonctionnelle) → ce
 fichier → `docs/RECETTE.md` (journal de recette) → le code.
 
-> **Refonte « harnais-fabrique » en cours (branche `refonte-fabrique`).** Les
-> spécifications font autorité sur le positionnement et l'arborescence :
-> `specs/README.md` → PRD v0.3 → architecture → `specs/backlog-implementation.md`.
-> **État au 2026-07-19 (session S2) :** Lots 0, 1 et **2** terminés, vérifiés,
-> verts (voir `docs/RECETTE.md` § « Recette de la refonte fabrique »). Tag de
-> retour arrière : `avant-refonte-fabrique`. `main` reste l'état publié.
+<!-- ================================================================= -->
+<!-- BLOC DE REPRISE — REFONTE FABRIQUE — LIRE EN PREMIER (Lot 3)      -->
+<!-- Les §1 à §12 sous ce bloc décrivent l'état PRÉ-REFONTE (V1) et    -->
+<!-- serviront de référence ; ils seront refondus au Lot 8. En cas de  -->
+<!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
+<!-- ================================================================= -->
+
+> # 🏭 Reprise de la refonte « harnais-fabrique » — au seuil du **Lot 3**
 >
-> - Commits S1 : `dde31a4` (Lot 0), `e2fec7c` (git mv), `109abed` (Lot 1).
-> - Commit S2 : Lot 2 — 8 skills locales + 2 renvois de docs (voir `git log`).
-> - Nouvelle arborescence : `content/cases/onboarding-agents/` (corpus),
->   `cases/onboarding-agents/` (manifeste `harnais.yaml`, `gouvernance/`,
->   `tests/comportement.yaml`), `templates/cases/documentaire/`,
->   **`skills/<nom>/SKILL.md`** (8 skills, frontmatter valide, 5 sections).
-> - Vérifs S2 : `ls skills/*/SKILL.md | wc -l` = 8, `gray-matter` 8/8 OK,
->   union `etapes_parcours` = étapes PRD v0.3 §4 (aucune orpheline),
->   `npm test` 36/36, `npm run build` OK, `npm run validate-harness` OK, aucun
->   secret ni donnée personnelle dans `skills/`.
-> - **Prochaine session : Lot 3** (couche déterministe `scripts/lib/`, dont
->   `scripts/lib/atelier/`, + les 8 scripts de
->   `specs/spec-scripts-deterministes.md` : interview CLI, scaffold, 3
->   validateurs, rapport, régénération démo, orchestrateur). Les
->   `scripts_associes` des skills sont la liste de contrôle skills ↔ scripts à
->   vérifier dans les deux sens en fin de Lot 3. Ne pas commencer le Lot 4
->   (corpus dense) avant le Lot 3.
-> - Rappel : aucun push, aucun merge dans `main` sans décision de Pascal ; les
->   artefacts `claude-code-runs/*` restent non suivis. Ce HANDOFF sera
->   entièrement refondu au Lot 8 ; les §ci-dessous décrivent encore l'état
->   pré-refonte (chemins historiques).
+> **Branche de travail : `refonte-fabrique` (et elle seule).** Ne jamais
+> revenir sur `main` : `main` est l'état V1 publié, figé au tag
+> `avant-refonte-fabrique`. Toute la refonte vit sur `refonte-fabrique`.
+> Autorité fonctionnelle : `specs/README.md` → `specs/PRD-v0.3-harnais-fabrique.md`
+> → architecture → `specs/backlog-implementation.md`. Pour le Lot 3, la spec de
+> détail qui **prime** est `specs/spec-scripts-deterministes.md`.
+>
+> ## A. État Git exact (relevé le 2026-07-19)
+>
+> - **Branche courante :** `refonte-fabrique` (jamais `main`).
+> - **HEAD à relever en début de session :** exécuter `git log --oneline -1`. Le
+>   dernier commit attendu est le commit de handoff `docs: préparer le handoff de
+>   reprise du Lot 3` ; ne pas dépendre d'un SHA recopié ici si ce fichier a été
+>   amendé.
+> - **Historique de la refonte (du plus récent au plus ancien, hors éventuel amend du présent handoff) :**
+>   - `427b9ce` — **Lot 2** : 8 skills locales + 2 renvois de docs ;
+>   - `da4df9b` — note de reprise refonte dans le HANDOFF (fin S1) ;
+>   - `109abed` — **Lot 1** : socle fabrique (manifeste, résolution par cas, `/fabrique`) ;
+>   - `e2fec7c` — **Lot 1** : `git mv` du cas vers `cases/` et `content/cases/` ;
+>   - `dde31a4` — **Lot 0** : gel de l'état de référence, ouverture de la refonte ;
+>   - `85e5ffa` — dernier commit de `main` (**base du tag** `avant-refonte-fabrique`).
+> - **Tag de retour arrière :** `avant-refonte-fabrique` sur `85e5ffa`. `git tag`
+>   ne doit lister que celui-ci.
+> - **Pas de push, pas de merge :** la branche n'a **jamais** été poussée ni
+>   fusionnée dans `main`. Le merge/push sont hors backlog (décision de Pascal,
+>   après Lot 8).
+> - **Working tree :** propre côté code. Seuls des `claude-code-runs/*` (logs de
+>   session) sont non suivis / modifiés — artefacts, **laissés non suivis**
+>   (arbitrage Pascal). Ne pas les commiter, ne pas les supprimer.
+>
+> ## B. Lots terminés (0, 1, 2) — vérifiés verts
+>
+> - **Lot 0** — baseline : tag `avant-refonte-fabrique`, branche créée, état de
+>   référence consigné (`docs/RECETTE.md` § « Lot 0 »), `CHANGELOG.md` annonçant
+>   le renommage `demo-onboarding-rh` → `onboarding-agents`.
+> - **Lot 1** — arborescence fabrique : `content/cases/onboarding-agents/`
+>   (corpus), `cases/onboarding-agents/` (`harnais.yaml`, `gouvernance/`,
+>   `tests/comportement.yaml`), `templates/cases/documentaire/` (gabarits
+>   généralisés `{{...}}`), `src/lib/manifest.ts` (zod strict), route
+>   `/fabrique` (dynamique, 15 étapes lues au manifeste), points de couplage
+>   migrés (`paths.ts`, `config.ts`, `content.ts`, configs, scripts, tests, Nav).
+> - **Lot 2** — 8 skills `skills/<nom>/SKILL.md` (frontmatter 5 clés, 5 sections),
+>   + 2 renvois dans `docs/cycle-de-vie.fr.md` et `docs/adapter-ses-sources.fr.md`.
+>
+> Détail lot par lot : `docs/RECETTE.md` § « Recette de la refonte fabrique ».
+>
+> ## C. Vérifications connues vertes (relancées le 2026-07-19, à ré-exécuter au démarrage)
+>
+> | Contrôle | Commande | Résultat attendu (constaté) |
+> |---|---|---|
+> | Skills présentes | `find skills -maxdepth 2 -name SKILL.md \| wc -l` | **8** |
+> | Frontmatter skills | script `gray-matter` ci-dessous | **8/8 OK** (5 clés chacun) |
+> | Tests | `npm test` | **36/36** (configuration-ia 18, structure 7, guardrails 11) |
+> | Build | `npm run build` | **OK** — 20 pages statiques + `/fabrique` dynamique (`ƒ`) = 21 routes |
+> | Harnais | `npm run validate-harness` | **OK** — cas `onboarding-agents`, 6 sources, 6 fiches, prototype |
+> | Secrets | grep `sk-…`/`AKIA…`/`PRIVATE KEY` sur `skills content cases configs scripts src` | **0** |
+> | Concurrent / ancien nom | grep interdits sur `docs specs skills` | **0** |
+>
+> Contrôle frontmatter (copiable) :
+> ```bash
+> node --input-type=module - <<'NODE'
+> import fs from 'node:fs'; import matter from 'gray-matter';
+> const required=['name','description','etapes_parcours','scripts_associes','fichiers_produits'];
+> for (const d of fs.readdirSync('skills')) { const f=`skills/${d}/SKILL.md`;
+>   const p=matter(fs.readFileSync(f,'utf8'));
+>   for (const k of required) if (!(k in p.data)) throw new Error(`${f}: manque ${k}`);
+>   console.log(d,'OK'); }
+> NODE
+> ```
+>
+> > ⚠️ Ne pas supposer qu'une session interrompue au *max turns* a fini son lot :
+> > **rejouer d'abord `npm test` + `npm run build` + `npm run validate-harness`**
+> > avant toute modification. Si un écart apparaît, le documenter dans
+> > `docs/RECETTE.md` et s'arrêter pour signalement, ne pas « réparer » à l'aveugle.
+>
+> ## D. Contraintes non négociables (rappel condensé — détail §11)
+>
+> Pas de push, pas de merge dans `main`, pas de tag public sans décision de
+> Pascal · aucune donnée personnelle réelle · aucun secret ni motif de clé
+> (`[REDACTED]` dans les exemples) · aucune saisie de clé côté navigateur ·
+> aucune mention de projet concurrent ni de l'ancien nom écarté · positionnement
+> **onboarding documentaire, pas SIRH, pas quasi-SIRH** (inchangé) · **port 3010**
+> · `CDH_CONFIG`, 7 modes IA, sémantique `MODEL_PROVIDER` inchangés · regex de
+> `src/lib/guardrails.ts` et mentions obligatoires **intouchées** · `git mv` pour
+> tout déplacement · YAML par `js-yaml.dump`, frontmatter par `gray-matter` ·
+> **modèle `claude-opus-4-8` obligatoire**, aucune substitution silencieuse.
+>
+> ## E. Reprise Lot 3 — « Couche déterministe réutilisable et scripts »
+>
+> **Spec d'autorité : `specs/spec-scripts-deterministes.md` (§0 à §8).**
+> Backlog : `specs/backlog-implementation.md` § Lot 3. Tout est reproductible
+> (même entrée → même sortie), en français, **sans réseau, sans secret, sans
+> appel au modèle** (frontière stricte : rien de ce qu'un script garantit n'est
+> délégué à l'IA).
+>
+> ### E.1 Objectif
+>
+> Produire `scripts/lib/` (dont `scripts/lib/atelier/` = logique des 15 étapes
+> consommée plus tard par l'API du Lot 5a, le CLI et les tests) **et** implémenter
+> les 8 scripts : interview CLI, scaffold, 3 validateurs (corpus, guardrails,
+> provider), rapport de gouvernance, régénération démo (squelette), + refonte de
+> l'orchestrateur `validate-harness`.
+>
+> ### E.2 Fichiers à créer
+>
+> - `scripts/lib/motifs-interdits.mjs` — regex interdites (courriel plausible hors
+>   `exemple.fr`, téléphone, NIR, IBAN, motif de clé), **extraites de
+>   `tests/structure/structure.test.ts`** (source unique ; adapter le test pour
+>   les importer — zéro divergence) ;
+> - `scripts/lib/manifeste.mjs` — lecture/écriture du manifeste (js-yaml), **seul
+>   point d'écriture** du `harnais.yaml` ; mêmes règles que `src/lib/manifest.ts`
+>   (si le partage du schéma zod TS est impraticable en `.mjs`, dupliquer + prévoir
+>   un test de non-divergence au Lot 7) ;
+> - `scripts/lib/diagnostic-env.mjs` — **seulement si** l'import de
+>   `src/lib/model/diagnostic.ts` depuis un `.mjs` pose problème : y extraire la
+>   logique, importée des deux côtés (repli déjà arbitré par la spec §5) ;
+> - `scripts/lib/atelier/etapes.mjs` — définition déclarative des 15 étapes (id,
+>   libellé **verbatim PRD v0.3 §4**, skill associée, questions, validations de
+>   forme, fichiers produits) ;
+> - `scripts/lib/atelier/reponses.mjs` — validation d'une réponse (dates
+>   `AAAA-MM-JJ`, heuristique anti-« Prénom Nom », slug `[a-z0-9-]+`, minimums
+>   comme les 3 refus de l'étape 8) + application au manifeste/fichiers ;
+> - `scripts/lib/atelier/actions.mjs` — exécution des actions déterministes d'une
+>   étape → `{ ok, erreurs, avertissements, fichiers }` ;
+> - `scripts/interview-harness.mjs` (spec §1) ;
+> - `scripts/scaffold-harness.mjs` (spec §2) ;
+> - `scripts/validate-corpus.mjs` (spec §3) ;
+> - `scripts/validate-guardrails.mjs` (spec §4) ;
+> - `scripts/validate-provider-config.mjs` (spec §5) ;
+> - `scripts/build-harness-report.mjs` (spec §6) ;
+> - `scripts/generate-onboarding-demo.mjs` (spec §7 — **squelette** modes
+>   vérification/écriture ; son contenu de référence `scripts/demo/` arrive au
+>   Lot 4) ;
+> - `templates/cases/documentaire/reponses-demo.yaml` — réponses du mode `--demo`
+>   de l'interview (ce qui rend l'interview testable en CI, sans TTY).
+>
+> ### E.3 Fichiers à modifier
+>
+> - `scripts/validate-harness.mjs` → **orchestrateur** (spec §8) : manifeste →
+>   `validate-corpus` → `validate-guardrails` → `validate-provider-config` (non
+>   bloquant) → contrôles config/manifeste. **Signature CLI actuelle conservée.**
+>   Les contrôles corpus actuels migrent dans `validate-corpus` — **dresser la
+>   liste avant/après dans `docs/RECETTE.md` pour prouver qu'aucun contrôle n'est
+>   perdu.**
+> - `package.json` → ajouter exactement ces 7 scripts npm (§en-tête de la spec) :
+>   ```json
+>   "interview": "node scripts/interview-harness.mjs",
+>   "scaffold": "node scripts/scaffold-harness.mjs",
+>   "validate-corpus": "node scripts/validate-corpus.mjs",
+>   "validate-guardrails": "node scripts/validate-guardrails.mjs",
+>   "validate-provider": "node scripts/validate-provider-config.mjs",
+>   "rapport": "node scripts/build-harness-report.mjs",
+>   "generate-demo": "node scripts/generate-onboarding-demo.mjs"
+>   ```
+>   ⚠️ `generate-demo` **change de cible** (pointe désormais vers
+>   `generate-onboarding-demo.mjs`). **Ne pas** supprimer `scripts/generate-demo.mjs`
+>   au Lot 3 : les deux coexistent jusqu'au Lot 4. Bien vérifier que la clé npm
+>   `generate-demo` reste unique dans `package.json` (remplacement, pas doublon).
+> - `tests/structure/structure.test.ts` → importer `motifs-interdits.mjs` au lieu
+>   de redéfinir les regex localement.
+>
+> ### E.4 Ordre de réalisation recommandé
+>
+> 1. **`scripts/lib/` d'abord** (motifs → manifeste → diagnostic si besoin →
+>    `atelier/`) : tout le reste s'appuie dessus. Adapter `tests/structure/`.
+> 2. **Validateurs** (`validate-corpus`, `validate-guardrails`,
+>    `validate-provider-config`) : implémenter **tous** les contrôles listés
+>    (spec §3, §4, §5), codes de sortie 0/1/2, `--json`, messages FR préfixés du
+>    fichier fautif.
+> 3. **Orchestrateur** `validate-harness.mjs` (spec §8) + liste avant/après des
+>    contrôles migrés dans la RECETTE.
+> 4. **`scaffold-harness.mjs`** : substitution `{{...}}`, idempotence, `--dry-run`,
+>    `--force` avec `.avant-force.bak`, refus d'écraser `onboarding-agents` sans
+>    `--force`.
+> 5. **`interview-harness.mjs`** (le plus gros morceau — le découper par étape) :
+>    enveloppe **mince** autour de `scripts/lib/atelier/`, aucune logique dupliquée ;
+>    15 étapes, valeurs par défaut `[…]`, récap `o/N`, reprise via `etat.etape`,
+>    refus d'éligibilité (étape 1) **en code 0**, heuristique anti-« Prénom Nom »,
+>    étapes 10/13/14/15 **affichent** la commande sans l'exécuter, mode `--demo`
+>    lisant `reponses-demo.yaml`.
+> 6. **`build-harness-report.mjs`** : agrège les `--json` des 3 validateurs, date
+>    d'horloge **confinée à l'en-tête** (seule non-reproductibilité admise),
+>    mention « ne vaut pas validation juridique ».
+> 7. **`generate-onboarding-demo.mjs`** en squelette (modes vérif/écriture, pas de
+>    contenu dense).
+> 8. Vérif finale : `--help` sur chaque script, aucun réseau, aucun secret lu, code
+>    2 sur invocation invalide. **Cohérence skills ↔ scripts dans les deux sens**
+>    (chaque `scripts_associes` des 8 skills existe désormais ; chaque script est
+>    référencé par au moins une skill) — c'est une exigence de fin de Lot 3.
+>
+> ### E.5 Contrôles d'acceptation (backlog Lot 3)
+>
+> - [ ] les 7 scripts npm répondent à `--help` ;
+> - [ ] les fonctions de `scripts/lib/atelier/` sont importables **sans TTY**
+>       (test d'import direct) — condition du Lot 5a ;
+> - [ ] `npm run interview -- --demo` déroule les 15 étapes, sort en **0**, produit
+>       des fichiers dans un cas jetable ;
+> - [ ] `npm run scaffold -- --cas essai --dry-run` liste sans créer ; `… --cas
+>       essai` crée ; relancé → « conservé » (rien détruit) ; `--force` →
+>       `.avant-force.bak` ;
+> - [ ] `npm run validate-corpus -- --cas onboarding-agents` vert (avertissements
+>       « source maigre » **admis** jusqu'au Lot 4, corpus à 6 sources) ;
+> - [ ] `npm run validate-guardrails -- --cas onboarding-agents` exécute ses 6
+>       contrôles (écarts **admis** jusqu'au Lot 7, mais **nommés** correctement) ;
+> - [ ] `MODEL_API_KEY=fausse-valeur-test npm run validate-provider` : la chaîne
+>       n'apparaît **pas** dans la sortie (grep → 0) ;
+> - [ ] `npm run rapport -- --cas onboarding-agents` produit
+>       `cases/onboarding-agents/rapport-gouvernance.md` avec la mention juridique ;
+> - [ ] `npm run validate-harness` garde sa sémantique et agrège les
+>       sous-validateurs ; code 1 si erreur bloquante ;
+> - [ ] deux exécutions successives de chaque validateur → même sortie (hors date
+>       d'en-tête) ;
+> - [ ] `npm test` **36/36** et `npm run build` (21 routes) restent verts.
+>
+> ### E.6 Commandes de test (copiables)
+>
+> ```bash
+> for s in interview scaffold validate-corpus validate-guardrails validate-provider rapport generate-demo; do
+>   npm run $s -- --help >/dev/null && echo "$s: --help OK"; done
+> npm run interview -- --demo
+> npm run scaffold -- --cas essai --dry-run && npm run scaffold -- --cas essai
+> npm run validate-corpus -- --cas onboarding-agents
+> npm run validate-guardrails -- --cas onboarding-agents
+> MODEL_API_KEY=fausse-valeur-test npm run validate-provider | grep -c "fausse-valeur-test"  # attendu : 0
+> npm run rapport -- --cas onboarding-agents
+> npm run validate-harness && npm test && npm run build
+> git clean -n   # relever le cas jetable "essai" AVANT commit, puis le supprimer
+> ```
+>
+> ### E.7 Pièges connus
+>
+> - **Interop TS/ESM** (`diagnostic.ts` importé depuis un `.mjs`) : repli déjà
+>   arbitré → extraire dans `scripts/lib/diagnostic-env.mjs`. L'appliquer sans
+>   hésiter, ne pas s'acharner sur l'import direct.
+> - **Divergence regex scripts/tests** : passer par `scripts/lib/motifs-interdits.mjs`,
+>   ne jamais copier-coller les regex.
+> - **Écriture concurrente du manifeste** (interview vs scaffold) : un seul point
+>   d'écriture, `scripts/lib/manifeste.mjs`.
+> - **Interview volumineuse** : la découper en modules par étape, sinon illisible.
+> - **`generate-demo` dans `package.json`** : cible remplacée mais **`generate-demo.mjs`
+>   pas supprimé** avant le Lot 4 ; vérifier l'unicité de la clé npm.
+> - **Cas jetable `essai`** : le nettoyer (`git clean`) avant le commit du lot ; ne
+>   pas polluer le dépôt.
+> - **Refus d'éligibilité (étape 1)** : c'est un **succès** du cadre → code 0, pas
+>   une exception ni une erreur.
+>
+> ### E.8 Non-objectifs du Lot 3
+>
+> - Aucun appel au modèle nulle part (frontière stricte) ;
+> - pas de contenu de démo dense (Lot 4) ; pas d'OCR ni de conversion PDF ;
+> - **ne pas** supprimer `scripts/generate-demo.mjs` (attend le Lot 4) ;
+> - pas d'API `/api/fabrique/*` ni de sous-routes d'atelier (Lot 5a) ;
+> - pas de nouvelles sources, pas de bascule d'organisation (Lot 4).
+>
+> ### E.9 Découpage si le contexte approche 50 %
+>
+> Le backlog scinde déjà le Lot 3 en deux sessions : **S3 = tout sauf l'interview**
+> (libs partagées + 3 validateurs + scaffold + rapport + orchestrateur + squelette
+> demo), **S4 = l'interview** (le script le plus long, avec `--demo` testable). Si
+> `/context` approche 50 % : finir proprement l'unité en cours, laisser
+> l'application **verte** (les scripts non finis n'empêchent pas `npm test`/`build`),
+> **écrire un handoff de mi-lot dans `docs/RECETTE.md`** (tâches faites / restantes,
+> fichiers créés, prochain script à écrire), commiter en l'état sur la branche, et
+> s'arrêter. La reprise est conçue pour être possible à tout point inter-script.
+>
+> ## F. Instruction pour la prochaine session (après `/clear`)
+>
+> 1. Lire `specs/README.md`, `specs/spec-scripts-deterministes.md`, la section
+>    Lot 3 du backlog, puis ce bloc.
+> 2. Confirmer l'état : `git status --short --branch` (attendu : `refonte-fabrique`,
+>    working tree propre hors `claude-code-runs/`), `git log --oneline -6`.
+> 3. Rejouer les vérifications §C **avant** toute modification.
+> 4. Piloter avec **`/goal`** (objectif du lot) et **`/loop`** (unités d'œuvre :
+>    après chaque script → conformité spec, anti-SIRH, absence de secret/PII,
+>    tests/build).
+> 5. Surveiller **`/context`** ; écrire un handoff de mi-lot dans `docs/RECETTE.md`
+>    dès **50 %**.
+> 6. **Vérifier réellement** chaque affirmation (exécuter les commandes, ne pas
+>    recopier des chiffres « attendus »).
+> 7. Consigner le Lot 3 dans `docs/RECETTE.md` (date, commandes, résultats, écarts,
+>    liste avant/après des contrôles migrés dans l'orchestrateur).
+> 8. **Commit local** par lot/demi-lot, message français conventionnel. **Aucun
+>    push, aucun merge.**
+>
+> **Ne pas commencer le Lot 4 (corpus dense) avant que le Lot 3 soit vert.**
 
 > **Modèle exigé : `claude-opus-4-8` (Opus 4.8). Ne pas substituer.** Il était
 > disponible au moment des sessions précédentes. Si une future session ne le
@@ -74,9 +340,14 @@ pas SIRH, pas quasi-SIRH.
 
 ---
 
-## 2. État Git local (vérifié)
+## 2. État Git local (vérifié) — HISTORIQUE V1
 
-- **Branche courante :** `main`.
+> ⚠️ **Section historique (pré-refonte).** Elle décrit l'état de `main` au moment
+> de la publication V1. **Pour la refonte en cours, c'est le bloc de reprise en
+> tête de fichier (§A) qui fait foi : la branche de travail est `refonte-fabrique`,
+> pas `main`.** Ne pas revenir sur `main` en croyant ce paragraphe d'actualité.
+
+- **Branche courante (au moment de la V1) :** `main`.
 - **HEAD attendu après la publication initiale :** dernier commit de documentation
   *« docs: publish pedagogical README and detailed handoff »*. Relancer
   `git log --oneline -5` pour obtenir le SHA exact du contexte courant.

@@ -14,8 +14,36 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 <!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
 <!-- ================================================================= -->
 
-> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 5 terminé**, au seuil du **Lot 6**
+> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 6 terminé**, au seuil du **Lot 7**
 >
+> > **Mise à jour 2026-07-19 (fin S6) : le Lot 6 est complet et vert.** Preuve
+> > d'adaptation par configuration livrée : un cas jetable **`essai`** a été
+> > produit par le **circuit officiel** de la fabrique (interview `--demo` slug
+> > patché puis restauré → scaffold → import-source d'1 source fictive ≈ 450 mots
+> > → validate-corpus **OK 0 erreur**), servi par la **même** application via
+> > `CDH_CONFIG=essai.yml` (`/` affiche « Communauté de communes de Roche-Vallonne »,
+> > `/sources` = SRC-001), puis la bascule inverse vérifiée (sans variable →
+> > « Syndicat mixte du Val de Brenne », SRC-001…016). **Aucune** modification de
+> > `src/` sauf `src/app/sources/adapter/page.tsx` (aligné sur le circuit) :
+> > `git diff --stat -- src/` ne liste que ce fichier. **Aucun couplage résiduel
+> > `src/` ↔ cas** découvert (le lot cherchait précisément à le révéler).
+> > Artefacts `essai` **supprimés** (`cases/essai`, `content/cases/essai`,
+> > `configs/essai.yml`) : dépôt propre, la preuve durable est `docs/RECETTE.md`
+> > § « Lot 6 ». Docs alignées : `docs/adapter-ses-sources.fr.md` (nouveau §0
+> > circuit fabrique), `configs/organisation.example.yml` (champ `cas` + circuit
+> > complet). Vérifs finales sur le cas par défaut : `npm test` **36/36**,
+> > `npm run build` **OK**, `validate-corpus onboarding-agents` **16 sources 0/0**,
+> > `validate-harness` **OK**, `generate-demo` **aucun écart**. ⚠️ **Piège
+> > découvert** : le port **3010 est squatté par un serveur `next dev` orphelin
+> > d'une session antérieure** (pré-Lot 4, sert encore l'ancien « Roche-Vallonne »
+> > à 6 sources) → une 1ʳᵉ lecture `curl` a été trompée ; refaire toute vérif HTTP
+> > sur un **port libre dédié** (3021 utilisé), et **vérifier le log `✓ Ready`**
+> > avant de croire un `curl` 200. L'orphelin d'une autre session n'a pas été tué
+> > (arbitrage). La prochaine session attaque le **Lot 7** (tests/sécurité/RGPD/
+> > absence de secrets) — relire `specs/backlog-implementation.md` § Lot 7 avant
+> > de démarrer. **Relever le HEAD réel par `git log --oneline -1`** (le commit du
+> > Lot 6 est `docs: prouver l'adaptation par configuration (Lot 6)`).
+> >
 > > **Mise à jour 2026-07-19 (fin S5) : le Lot 5 est complet et vert.**
 > > `/fabrique` montre désormais l'**état réel du manifeste** (slug, type,
 > > statut, étape, date, organisation, mode IA, 16 sources, 10 fiches, modules
@@ -81,7 +109,7 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   session) sont non suivis / modifiés — artefacts, **laissés non suivis**
 >   (arbitrage Pascal). Ne pas les commiter, ne pas les supprimer.
 >
-> ## B. Lots terminés (0 à 5) — vérifiés verts
+> ## B. Lots terminés (0 à 6) — vérifiés verts
 >
 > - **Lot 0** — baseline : tag `avant-refonte-fabrique`, branche créée, état de
 >   référence consigné (`docs/RECETTE.md` § « Lot 0 »), `CHANGELOG.md` annonçant
@@ -112,6 +140,14 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   référence le rapport ; interview CLI finition UX seule. **Vert** (36/36,
 >   build OK, `interview --demo` code 0). Aucune API d'écriture, aucune
 >   dépendance front. Détail : `docs/RECETTE.md` § « Lot 5 ».
+> - **Lot 6** — preuve d'adaptation par configuration : cas jetable `essai`
+>   produit par le circuit officiel (interview → scaffold → import-source →
+>   validate-corpus), servi via `CDH_CONFIG=essai.yml` (Roche-Vallonne, SRC-001)
+>   puis bascule inverse au défaut (Val de Brenne, 16 sources) — **sans toucher
+>   `src/`** (seul `src/app/sources/adapter/page.tsx` aligné). Artefacts `essai`
+>   supprimés ; preuve durable dans la recette. Guides + `organisation.example.yml`
+>   alignés sur le circuit. **Vert** (36/36, build OK, corpus défaut 0/0,
+>   `generate-demo` sans écart). Détail : `docs/RECETTE.md` § « Lot 6 ».
 >
 > Détail lot par lot : `docs/RECETTE.md` § « Recette de la refonte fabrique ».
 >
@@ -353,10 +389,11 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 > 8. **Commit local** par lot/demi-lot, message français conventionnel. **Aucun
 >    push, aucun merge.**
 >
-> **Lots 3, 4 et 5 sont verts.** Prochaine étape : **Lot 6** (relire
-> `specs/backlog-implementation.md` § Lot 6 avant de démarrer). Ne pas modifier
-> le corpus ni l'organisation démo sans passer par la référence
-> `scripts/demo/onboarding-agents/` puis `npm run generate-demo -- --ecrire`.
+> **Lots 3, 4, 5 et 6 sont verts.** Prochaine étape : **Lot 7** (tests,
+> sécurité, RGPD, absence de secrets — relire `specs/backlog-implementation.md`
+> § Lot 7 avant de démarrer). Ne pas modifier le corpus ni l'organisation démo
+> sans passer par la référence `scripts/demo/onboarding-agents/` puis
+> `npm run generate-demo -- --ecrire`.
 > Rappel Lot 5 : la nav pilotée par modules est **rendue au build** (le layout ne
 > déclenche pas de rendu dynamique) — tester un basculement de module par
 > **rebuild**, pas par redémarrage serveur.

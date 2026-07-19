@@ -1,12 +1,28 @@
 # =============================================================================
 # MODÈLE de configuration pour VOTRE organisation
 # -----------------------------------------------------------------------------
-# Pour adapter le portail à votre collectivité, SANS toucher au code :
-#   1. cp configs/organisation.example.yml configs/organisation.yml
-#   2. renseignez les valeurs ci-dessous
-#   3. dans .env : CDH_CONFIG=organisation.yml
-#   4. remplacez les contenus de content/cases/<cas>/ par les vôtres
-#   5. relancez : npm run dev
+# Principe : adapter le portail = POINTER UNE CONFIG VERS UN CAS, sans jamais
+# toucher au code applicatif (src/). Le circuit complet de la fabrique :
+#
+#   1. npm run interview -- --cas <slug>     # cadrer le besoin (15 étapes) →
+#                                            #   cases/<slug>/harnais.yaml + configs/<slug>.yml
+#   2. npm run scaffold -- --cas <slug>      # générer l'arborescence du cas
+#   3. node scripts/import-source.mjs …      # amorcer chaque source, puis
+#      npm run validate-corpus -- --cas <slug>   # la contrôler
+#   4. CDH_CONFIG=<slug>.yml npm run dev     # servir VOTRE cas (port 3010)
+#      CDH_CONFIG=<slug>.yml npm run build   # ou un rendu figé de production
+#
+# Ce fichier est le MODÈLE d'une config produite manuellement (variante du
+# configs/<slug>.yml que l'interview génère pour vous). Pour l'utiliser tel quel :
+#   a. cp configs/organisation.example.yml configs/organisation.yml
+#   b. renseignez les valeurs ci-dessous (dont le champ `cas`)
+#   c. dans .env : CDH_CONFIG=organisation.yml
+#   d. remplacez les contenus de content/cases/<cas>/ par les vôtres
+#   e. relancez : npm run dev
+#
+# Sans CDH_CONFIG, l'application sert le cas de démonstration par défaut
+# (configs/demo.yml → cas « onboarding-agents »). La preuve de cette bascule
+# est consignée dans docs/RECETTE.md (§ Lot 6).
 #
 # Rappels de cadre :
 #   - n'indiquez que des FONCTIONS (jamais le nom d'une personne) ;
@@ -15,10 +31,11 @@
 #     en l'état et impose un renvoi vers le DPO.
 # =============================================================================
 
-# Cas d'usage servi par cette configuration (dossier cases/<cas> +
-# content/cases/<cas>). Décommentez pour servir un autre cas que le défaut.
-# La fabrique génère un nouveau cas via `npm run interview` puis `npm run scaffold`.
-# cas: "onboarding-agents"
+# Cas d'usage servi par cette configuration : dossier cases/<cas> (manifeste,
+# gouvernance, tests) + content/cases/<cas> (corpus). Doit correspondre au slug
+# choisi à l'étape « interview / scaffold » ci-dessus. Décommentez et adaptez
+# pour servir un autre cas que le défaut « onboarding-agents ».
+# cas: "mon-cas"
 
 organisation:
   nom: "Nom de votre collectivité"

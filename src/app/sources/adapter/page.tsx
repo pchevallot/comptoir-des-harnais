@@ -30,6 +30,40 @@ export default function AdapterSources() {
         </p>
       </div>
 
+      <div className="panneau">
+        <h2 style={{ marginTop: 0 }}>Repartir de la fabrique : pointer une config vers un cas</h2>
+        <p>
+          Ce portail est <strong>produit par une fabrique</strong>. L'adapter à votre organisation ne
+          demande <strong>aucune modification du code</strong> : vous produisez un <em>cas</em> avec
+          la fabrique, puis vous pointez la configuration dessus. Le circuit officiel :
+        </p>
+        <ol>
+          <li>
+            <code>npm run interview -- --cas &lt;slug&gt;</code> — cadrer le besoin en 15 étapes
+            guidées ; produit <code>cases/&lt;slug&gt;/harnais.yaml</code> et{" "}
+            <code>configs/&lt;slug&gt;.yml</code>.
+          </li>
+          <li>
+            <code>npm run scaffold -- --cas &lt;slug&gt;</code> — générer l'arborescence du cas depuis
+            le gabarit documentaire.
+          </li>
+          <li>
+            <code>import-source</code> puis <code>npm run validate-corpus -- --cas &lt;slug&gt;</code>{" "}
+            — préparer et contrôler vos sources (c'est l'objet des étapes ci-dessous).
+          </li>
+          <li>
+            <code>CDH_CONFIG=&lt;slug&gt;.yml npm run dev</code> — servir <strong>votre</strong> cas
+            avec la même application. Sans <code>CDH_CONFIG</code>, c'est le cas de démonstration par
+            défaut qui est servi.
+          </li>
+        </ol>
+        <p className="petit muet" style={{ marginBottom: 0 }}>
+          Cette bascule par configuration est démontrée pas à pas dans{" "}
+          <code>docs/RECETTE.md</code> (Lot 6). Les étapes ci-dessous détaillent la préparation d'une
+          source.
+        </p>
+      </div>
+
       <h2>Les étapes</h2>
       <ol>
         <li>
@@ -50,7 +84,7 @@ export default function AdapterSources() {
         </li>
         <li>
           <strong>Vérifier l'absence de données personnelles</strong> (voir ci-dessous), déposer le
-          fichier dans <code>content/…/sources/</code>, puis lancer les vérifications.
+          fichier dans <code>content/cases/&lt;slug&gt;/sources/</code>, puis lancer les vérifications.
         </li>
       </ol>
 

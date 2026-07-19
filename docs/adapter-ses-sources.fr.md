@@ -12,6 +12,48 @@ ce guide **ne** couvre **pas**.
 
 ---
 
+## 0. Où s'insère ce guide : le circuit de la fabrique
+
+Ce portail est **produit par une fabrique de harnais**. Adapter le portail à
+votre organisation, ce n'est pas modifier du code : c'est **produire un cas**
+avec la fabrique, puis **pointer la configuration** vers ce cas. Le code
+applicatif (`src/`) ne change jamais.
+
+Le circuit officiel, de bout en bout :
+
+```bash
+# 1. Cadrer le besoin, une question à la fois (15 étapes guidées) → produit
+#    cases/<slug>/harnais.yaml (le manifeste) et configs/<slug>.yml (l'identité).
+npm run interview -- --cas <slug>
+
+# 2. Générer l'arborescence du cas depuis le gabarit documentaire.
+npm run scaffold -- --cas <slug>
+
+# 3. Amorcer chaque source (ce guide, §3 à §8) dans content/cases/<slug>/sources/.
+node scripts/import-source.mjs <doc.txt> --id SRC-001 --titre "…" \
+     --out content/cases/<slug>/sources
+
+# 4. Contrôler la conformité du corpus (frontmatter, ids, longueur, motifs interdits).
+npm run validate-corpus -- --cas <slug>
+
+# 5. Servir VOTRE cas avec la même application (aucune modification de src/).
+CDH_CONFIG=<slug>.yml npm run dev     # http://localhost:3010
+CDH_CONFIG=<slug>.yml npm run build   # pour un rendu figé de production
+```
+
+Sans variable `CDH_CONFIG`, l'application sert le cas de démonstration par
+défaut (`configs/demo.yml` → cas `onboarding-agents`). Avec
+`CDH_CONFIG=<slug>.yml`, elle sert votre cas : même moteur, même garde-fous,
+identité et contenu différents. Cette bascule par configuration est la preuve,
+consignée dans `docs/RECETTE.md` (§ Lot 6), qu'on adapte l'application **sans y
+toucher**.
+
+> **Ce guide (§1 à §8) détaille l'étape 3** — la préparation et l'import d'une
+> source. Les étapes 1, 2, 4 et 5 sont portées par les scripts de la fabrique
+> ci-dessus et par les skills correspondantes (voir l'encart en fin de document).
+
+---
+
 ## 1. Faut-il forcément fournir ses documents en Markdown ?
 
 **Réponse courte : non pour partir, oui pour intégrer.** Vous partez de vos
@@ -137,7 +179,7 @@ Avant d'ajouter une source au portail :
       `date`, `statut`, `perimetre`, `classification` (`publique`/`interne`),
       `fictif`.
 - [ ] La source est classée `publique` ou `interne` (sinon : renvoi DPO).
-- [ ] Le fichier est déposé dans `content/<votre-harnais>/sources/`.
+- [ ] Le fichier est déposé dans `content/cases/<slug>/sources/` (le dossier du cas).
 - [ ] Les fiches qui citent cette source utilisent bien son `id`.
 - [ ] `npm run validate-harness` puis `npm test` passent au vert.
 
@@ -161,6 +203,9 @@ l'aide : `node scripts/import-source.mjs --help`.
 > `skills/adapter-corpus-onboarding/SKILL.md` (amorcer la source avec
 > `import-source` puis la contrôler avec `validate-corpus`). Le guide reste la
 > référence ; les skills en sont la version exécutable, une question à la fois.
+> En amont, `npm run interview` cadre le besoin et `npm run scaffold` crée
+> l'arborescence du cas (voir §0) ; en aval, `CDH_CONFIG=<slug>.yml npm run dev`
+> sert votre cas sans toucher au code.
 
 ---
 

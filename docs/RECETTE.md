@@ -684,3 +684,180 @@ serveur (un redémarrage ne régénère pas les pages statiques). Documenté ici
 Pas d'API `/api/fabrique/*` ni d'écriture navigateur ; pas de sous-routes
 `/fabrique/nouveau` ni `/fabrique/[slug]/etape/[n]` ; pas de refonte graphique ;
 aucune dépendance front nouvelle ; **Lot 6 non entamé**.
+
+
+## Lot 6 — Intégration de l'application finale existante
+
+- **Date** : 2026-07-19 (session S6, après `/clear`). Modèle : `claude-opus-4-8`.
+- **Spec d'autorité** : `specs/backlog-implementation.md` § Lot 6. Héritier direct
+  de la recette d'adaptation tierce V1 (§5 ci-dessus).
+- **Objectif prouvé** : *assembler une application = pointer une config vers un
+  cas*, **sans toucher au code applicatif** (`src/`). Un cas jetable `essai`,
+  produit par le circuit officiel de la fabrique, est servi par la **même**
+  application via `CDH_CONFIG=essai.yml`, puis supprimé. La preuve durable est
+  cette recette ; les artefacts `essai` ne sont **pas** versionnés (dépôt propre
+  en fin de lot).
+
+### Circuit officiel déroulé de bout en bout (cas jetable `essai`)
+
+Toutes les commandes ci-dessous ont été **réellement exécutées** ce jour.
+
+1. **Interview guidée (mode démo, slug `essai`).** Le gabarit
+   `templates/cases/documentaire/reponses-demo.yaml` porte durablement le slug
+   `demo-atelier` ; pour le Lot 6, il a été **patché temporairement** en
+   `slug: "essai"`, l'interview lancée, puis le fichier **restauré à l'identique**
+   (`git checkout -- templates/cases/documentaire/reponses-demo.yaml`, `git diff`
+   vide vérifié). `onboarding-agents` n'a jamais été touché.
+
+   ```bash
+   npm run interview -- --demo      # slug patché en « essai »
+   ```
+
+   → **6 fichiers produits, code 0** : `cases/essai/harnais.yaml` (manifeste),
+   `configs/essai.yml` (config du cas, `cas: essai`, organisation
+   « Communauté de communes de Roche-Vallonne », fictive), et la gouvernance
+   amorcée (`cases/essai/gouvernance/{fiche-besoin,classification,limites-refus}.md`,
+   `cases/essai/tests/comportement.yaml`).
+
+2. **Scaffold de l'arborescence.**
+
+   ```bash
+   npm run scaffold -- --cas essai
+   ```
+
+   → **9 fichiers créés** (structure `content/cases/essai/` : `sources/`,
+   `fiches/`, `parcours/`, `quiz/`, `checklist.md`, `README.fr.md`, +
+   `cases/essai/gouvernance/{fiche-validation,journal}.md`) ; **2 conservés/ignorés**
+   (`classification.md`, `limites-refus.md` déjà écrits par l'interview, non
+   réécrits sans `--force` — comportement idempotent attendu).
+
+3. **Corpus minimal, échec attendu d'abord.** Sur l'arborescence de gabarit
+   seule (les fichiers `EXEMPLE-*` sont **ignorés** par `validate-corpus`), le
+   corpus est vide :
+
+   ```bash
+   npm run validate-corpus -- --cas essai
+   ```
+
+   → **ÉCHEC attendu, nommé** : `✗ sources/ : aucune source dans
+   content/cases/essai/sources/` (+ 3 avertissements « source déclarée non
+   importée » : les 3 sources déclarées à l'étape 4 de l'interview n'ont pas
+   encore de fichier). C'est le message d'échec explicite exigé par le critère
+   d'acceptation (« corpus vide → erreurs nommées »).
+
+4. **Import d'une source d'exemple fictive.** Une source minimale (≈ 450 mots,
+   100 % fictive, fonctions uniquement, aucune donnée personnelle) a été rédigée
+   hors dépôt (`/tmp`) puis amorcée par le script officiel, avec un titre
+   correspondant à l'une des sources déclarées au manifeste :
+
+   ```bash
+   node scripts/import-source.mjs <doc.txt> --id SRC-001 \
+     --titre "Règlement du temps de travail" \
+     --proprietaire "Direction des ressources humaines" \
+     --date 2025-06-30 --statut active --classification interne \
+     --perimetre "Agents de la collectivité (règle générale, hors cas individuel)" \
+     --fictif true --out content/cases/essai/sources
+   ```
+
+   → `content/cases/essai/sources/SRC-001-reglement-temps-travail.md`.
+
+5. **Corpus conforme.**
+
+   ```bash
+   npm run validate-corpus -- --cas essai
+   ```
+
+   → **OK — 1 source, 0 erreur, 2 avertissements** (les 2 sources déclarées
+   restantes, volontairement non importées : corpus minimal assumé).
+
+6. **Orchestrateur sur le cas d'essai.**
+
+   ```bash
+   npm run validate-harness -- --cas essai
+   ```
+
+   → **OK** (aucune erreur bloquante). Synthèse : Corpus 0 erreur / 2 avert. ;
+   Garde-fous 0 erreur / **8 avertissements nommés** (socle de refus nominatif
+   et possessif non encore présent dans le corpus minimal, sources SRC-002…005
+   citées par les tests d'amorce mais non importées, « < 5 cas sourcés »,
+   « aucun cas hors-corpus ») ; Config. IA `local`/hors-ligne, non bloquante.
+   Ces avertissements sont **exactement** le retour attendu d'un cas neuf au
+   corpus minimal : ils nomment ce qui reste à faire, sans faux positif.
+
+### Preuve `CDH_CONFIG=essai.yml` puis bascule inverse
+
+Servi par la **même** application (aucune modification de `src/`) :
+
+| Config active | Commande | Identité servie sur `/` et `/gouvernance` | `/sources` |
+|---|---|---|---|
+| `essai.yml` | `CDH_CONFIG=essai.yml npx next dev -p <port>` | **Communauté de communes de Roche-Vallonne** | **SRC-001** (« Règlement du temps de travail ») + le `EXEMPLE-source.md` du gabarit (id placeholder `SRC-000`) |
+| *(aucune)* → `demo.yml` | `npx next dev -p <port>` | **Syndicat mixte du Val de Brenne** | **SRC-001 … SRC-016** (corpus dense `onboarding-agents`) |
+
+Vérifié par `curl` sur la page servie (`grep` de l'identité, des ids de sources
+et de la mention de gouvernance). La bascule est **totale et étanche** : le cas
+`essai` n'expose que son unique source, le cas par défaut ses 16 ; aucun mélange
+(les caches sont indexés par cas via `paths.ts`/`content.ts`).
+
+### Écart de recette : port 3010 squatté (aucun impact fonctionnel)
+
+Le port **3010** (port officiel du projet) était **occupé par un serveur
+`next dev` orphelin d'une session antérieure** (pré-Lot 4 : il sert encore
+l'ancienne organisation « Roche-Vallonne » avec un corpus à 6 sources). Toute
+tentative de démarrage sur 3010 renvoyait `EADDRINUSE`, et une première lecture
+`curl` a été **trompée** par cet orphelin (fausse identité). Correctif de
+recette : les deux vérifications HTTP ci-dessus ont été refaites sur un **port
+libre dédié (3021)**, serveur démarré proprement (`✓ Ready`, `✓ Compiled`), puis
+arrêté. L'orphelin d'une autre session **n'a pas été tué** (même arbitrage qu'au
+Lot 5 : ne pas interférer avec les serveurs d'autres sessions). Aucune incidence
+sur le produit : le port est un paramètre d'exécution, pas du code.
+
+### Aucun couplage résiduel `src/` ↔ cas découvert
+
+Le Lot 6 avait aussi pour rôle de **révéler** un éventuel couplage résiduel
+(cache global, chemin de cas codé en dur) qui aurait empêché
+`CDH_CONFIG=essai.yml`. **Aucun** n'a été trouvé : l'application a servi le cas
+`essai` sans la moindre retouche de `src/`. `git diff --stat -- src/` ne liste
+donc que `src/app/sources/adapter/page.tsx` (mise à jour documentaire de ce lot),
+conformément au critère d'acceptation.
+
+### Fichiers permanents modifiés (Lot 6)
+
+- `docs/RECETTE.md` — cette section (la preuve durable).
+- `docs/adapter-ses-sources.fr.md` — nouveau §0 « Deux chemins d'adaptation » et
+  encart « Version opérationnelle » alignés sur le circuit fabrique (interview →
+  scaffold → import-source → validate-corpus → `CDH_CONFIG` → dev/build) ;
+  chemins `content/cases/<slug>/sources/` corrigés.
+- `src/app/sources/adapter/page.tsx` — bloc « Repartir de la fabrique » (le
+  circuit officiel) + chemin `content/cases/<slug>/…` corrigé.
+- `configs/organisation.example.yml` — champ `cas` et **circuit complet**
+  documentés (renvoi vers l'interview/scaffold, `CDH_CONFIG`).
+- `docs/HANDOFF.md` — bloc de reprise mis à jour (Lot 6 terminé, cap Lot 7).
+
+### Nettoyage final (artefacts `essai` supprimés)
+
+```bash
+rm -rf cases/essai content/cases/essai configs/essai.yml
+```
+
+→ `git status --short` ne liste plus aucun artefact `essai` (seuls subsistent
+les `claude-code-runs/*` non suivis, arbitrage HANDOFF). La procédure ci-dessus
+est la trace durable ; le cas jetable ne pollue pas le dépôt.
+
+### Vérifications finales sur le cas par défaut (toutes exécutées ce jour)
+
+| Contrôle | Commande | Résultat |
+|---|---|---|
+| Corpus défaut | `npm run validate-corpus -- --cas onboarding-agents` | **16 sources, 0 erreur, 0 avertissement** |
+| Garde-fous défaut | `npm run validate-guardrails -- --cas onboarding-agents` | **0 erreur** (1 avert. « < 5 cas sourcés », admis jusqu'au Lot 7) |
+| Harnais défaut | `npm run validate-harness` | **OK** (corpus 0/0 ; garde-fous 1 avert. non bloquant) |
+| Tests | `npm test` | **36/36** |
+| Build | `npm run build` | **OK** — routes inchangées (`/fabrique` dynamique) |
+| Référence démo | `npm run generate-demo` | **aucun écart** (cas `onboarding-agents` intact) |
+| `git diff --stat -- src/` | — | **uniquement `src/app/sources/adapter/page.tsx`** |
+| Secrets / PII / ancien nom / concurrent | grep sur le dépôt | **aucun** |
+
+### Points non traités (non-objectifs du Lot 6)
+
+Aucun second cas d'usage **publié** (l'essai est jetable) ; aucun multi-cas
+simultané ni sélecteur de cas dans le navigateur ; **Lot 7 non entamé** (tests
+massifs, sécurité, RGPD, absence de secrets).

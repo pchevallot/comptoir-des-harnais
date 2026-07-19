@@ -1,0 +1,29 @@
+# Fixture négative : un refus est DÉCLARÉ ici mais AUCUN cas de test ne le
+# couvre. validate-guardrails doit lever une erreur bloquante « refus déclaré
+# non testé ». Motif synthétique et neutre (aucun libellé exclu, aucune PII).
+version: 1
+slug: "refus-non-teste"
+type: "documentaire"
+besoin: >-
+  Cas de test isolé servant à prouver la détection d'un refus déclaré mais non
+  couvert par les tests de comportement.
+publics:
+  - "nouveaux agents"
+modules:
+  parcours: true
+  faq: true
+  quiz: true
+  checklist: true
+sources_declarees: []
+classification_autorisee:
+  - "publique"
+  - "interne"
+refus_complementaires:
+  - motif: "demande d'installation de logiciel non autorisé"
+    renvoi: "direction des systèmes d'information"
+fournisseur:
+  mode: "local"
+etat:
+  etape: 8
+  statut: "prototype"
+  mis_a_jour: "2026-07-19"

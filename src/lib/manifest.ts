@@ -94,6 +94,23 @@ const ManifesteSchema = z
 
 export type Manifeste = z.infer<typeof ManifesteSchema>;
 
+/**
+ * Valide un objet manifeste sans lire de fichier (fonction pure). Miroir exact
+ * de `validerManifeste` de `scripts/lib/manifeste.mjs` : mêmes objets acceptés
+ * ou refusés. Le test `tests/structure/manifest.test.ts` garantit la
+ * non-divergence entre les deux implémentations (Lot 7).
+ */
+export function validerManifeste(donnee: unknown): { ok: boolean; erreurs: string[] } {
+  const parsed = ManifesteSchema.safeParse(donnee);
+  if (parsed.success) return { ok: true, erreurs: [] };
+  return {
+    ok: false,
+    erreurs: parsed.error.issues.map(
+      (i) => `${i.path.join(".") || "(racine)"} : ${i.message}`,
+    ),
+  };
+}
+
 /** Chemin du manifeste d'un cas donné. */
 export function cheminManifeste(slug: string): string {
   return path.join(PROJECT_ROOT, "cases", slug, "harnais.yaml");

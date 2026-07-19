@@ -1,10 +1,13 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
+import matter from "gray-matter";
+import yaml from "js-yaml";
 import { getFiches, getSources } from "@/lib/content";
 // Source unique de vérité des motifs interdits, partagée avec les scripts
 // (scripts/lib/motifs-interdits.mjs) — aucune regex n'est redéfinie ici.
 import { MOTIFS_SECRET, MOTIFS_PII } from "../../scripts/lib/motifs-interdits.mjs";
+import { validerManifeste } from "@/lib/manifest";
 
 /**
  * Tests de structure et de sécurité du dépôt (PRD §10.3-5 à 8).
@@ -16,7 +19,12 @@ const RACINE = process.cwd();
 
 function listerFichiers(dir: string, exts: string[]): string[] {
   const out: string[] = [];
-  const ignorer = new Set(["node_modules", ".next", ".git", "logs", "out", "dist", "coverage"]);
+  // « fixtures » est exclu : les fixtures négatives des tests de scripts
+  // (tests/scripts/fixtures/) contiennent À DESSEIN un motif interdit pour
+  // prouver que les validateurs le détectent — voir tests/scripts/fixtures/LISEZ-MOI.md.
+  const ignorer = new Set([
+    "node_modules", ".next", ".git", "logs", "out", "dist", "coverage", "fixtures",
+  ]);
   const parcourir = (d: string) => {
     for (const e of fs.readdirSync(d, { withFileTypes: true })) {
       if (ignorer.has(e.name)) continue;
@@ -99,4 +107,53 @@ describe("Sécurité du dépôt", () => {
     const layout = fs.readFileSync(path.join(RACINE, "src", "app", "layout.tsx"), "utf8");
     expect(layout).toContain("Données fictives");
   });
+});
+
+describe("Arborescence de la fabrique", () => {
+  const CAS = "onboarding-agents";
+
+  it("le cas onboarding-agents a sa structure cases/ et content/cases/", () => {
+    for (const rel of [
+      path.join("cases", CAS, "harnais.yaml"),
+      path.join("cases", CAS, "tests", "comportement.yaml"),
+      path.join("cases", CAS, "gouvernance", "limites-refus.md"),
+      path.join("content", "cases", CAS, "sources"),
+      path.join("content", "cases", CAS, "fiches"),
+    ]) {
+      expect(fs.existsSync(path.join(RACINE, rel)), `attendu : ${rel}`).toBe(true);
+    }
+  });
+
+  it("le gabarit généralisé templates/cases/documentaire/ est présent", () => {
+    expect(fs.existsSync(path.join(RACINE, "templates", "cases", "documentaire"))).toBe(true);
+  });
+
+  it("le manifeste du cas est valide selon le schéma strict", () => {
+    const brut = fs.readFileSync(path.join(RACINE, "cases", CAS, "harnais.yaml"), "utf8");
+    const res = validerManifeste(yaml.load(brut));
+    expect(res.ok, JSON.stringify(res.erreurs)).toBe(true);
+  });
+});
+
+describe("Skills de la fabrique", () => {
+  const CLES = ["name", "description", "etapes_parcours", "scripts_associes", "fichiers_produits"];
+  const dossiers = fs
+    .readdirSync(path.join(RACINE, "skills"), { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name);
+
+  it("au moins 8 skills sont présentes", () => {
+    expect(dossiers.length).toBeGreaterThanOrEqual(8);
+  });
+
+  for (const d of dossiers) {
+    it(`skill ${d} : SKILL.md présent avec les 5 clés de frontmatter`, () => {
+      const f = path.join(RACINE, "skills", d, "SKILL.md");
+      expect(fs.existsSync(f), `manque : ${f}`).toBe(true);
+      const { data } = matter(fs.readFileSync(f, "utf8"));
+      for (const cle of CLES) {
+        expect(cle in data, `skill ${d} : clé « ${cle} » manquante`).toBe(true);
+      }
+    });
+  }
 });

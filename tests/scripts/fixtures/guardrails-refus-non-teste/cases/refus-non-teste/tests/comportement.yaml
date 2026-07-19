@@ -1,0 +1,9 @@
+# Cas de test neutre, qui NE couvre PAS le refus déclaré au manifeste
+# (aucun des mots « demande / installation / logiciel / autorisé »).
+- id: "cas-neutre-travail"
+  type: comportement
+  question: "Quelle est la durée annuelle de travail ?"
+  attendu:
+    refuse: false
+    issue: "sourcee"
+    cite_source: "SRC-001"

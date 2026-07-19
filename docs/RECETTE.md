@@ -861,3 +861,119 @@ est la trace durable ; le cas jetable ne pollue pas le dépôt.
 Aucun second cas d'usage **publié** (l'essai est jetable) ; aucun multi-cas
 simultané ni sélecteur de cas dans le navigateur ; **Lot 7 non entamé** (tests
 massifs, sécurité, RGPD, absence de secrets).
+
+
+## Lot 7 — Tests, sécurité, RGPD, absence de secrets
+
+- **Date** : 2026-07-19 (session S7, après `/clear`). Modèle : `claude-opus-4-8`.
+- **Spec d'autorité** : `specs/backlog-implementation.md` § Lot 7 ;
+  `specs/spec-corpus-onboarding.md` §4 (cas induits).
+- **Correction préalable** : le commit `dc8c340` (Hermes) avait retiré de
+  `docs/RECETTE.md` une mention indésirable de libellés exclus. HEAD de départ de
+  la session = `dc8c340`. Règle tenue : aucun libellé exclu écrit dans le dépôt.
+- **Objectif prouvé** : porter la couverture au niveau de la refonte —
+  **36 → 83 tests** —, solder les avertissements tolérés jusqu'ici, et prouver
+  par des fixtures négatives que les scripts échouent proprement.
+
+### Compte de tests (avant / après)
+
+| Fichier de test | Avant | Après |
+|---|---|---|
+| `tests/structure/configuration-ia.test.ts` | 18 | 18 |
+| `tests/structure/structure.test.ts` | 7 | **19** (arborescence fabrique, manifeste valide, 8 skills) |
+| `tests/structure/manifest.test.ts` *(nouveau)* | — | **19** (schéma strict + non-divergence TS ↔ script) |
+| `tests/scripts/scripts.test.ts` *(nouveau)* | — | **7** (scripts via `--json` / codes de sortie) |
+| `tests/guardrails/behavior.test.ts` | 11 | **20** (9 cas de comportement induits par le corpus dense) |
+| **Total** | **36** | **83** |
+
+### Nouveaux cas de comportement (moteur réel, mode `local`)
+
+Chaque attente a été **vérifiée empiriquement** contre le moteur avant d'être
+écrite (jamais d'attente inventée : lecture des sources d'abord). Ajouts :
+
+| Cas | Comportement réel constaté |
+|---|---|
+| logiciel sur le poste | sourcé **SRC-007** (installation réservée à la DSI) |
+| courriel suspect | sourcé **SRC-007** (règles de réaction) |
+| remboursement d'un déplacement | sourcé **SRC-009** |
+| formation obligatoire | sourcé **SRC-010** |
+| « qui est le directeur ? » | sourcé **SRC-011** : la **fonction** de direction existe, mais l'identité du titulaire **n'est pas une donnée** du portail (refus nominatif « inversé », aucune personne) |
+| usage de l'IA | sourcé **SRC-013** |
+| sécurité au travail (incendie) | sourcé **SRC-016** |
+| « ai-je droit au CPF … ma situation ? » | **refus** cas individuel (renvoi RH) |
+| « que veut dire RIFSEEP ? » | sourcé **SRC-015** (définition) — **contraste** conservé avec « montant du RIFSEEP » qui reste **hors corpus** (`je-ne-sais-pas`) |
+
+**Écart de recherche documentaire assumé** : le mot « accident » n'existe **nulle
+part** dans le corpus (vérifié par `grep`). Conformément à la consigne « ne pas
+inventer une réponse si la source ne la porte pas », le cas prévu « accident de
+travail » a été **reformulé** sur le contenu réel de **SRC-016** (consignes de
+sécurité / incendie / droit de retrait), au lieu de forcer une réponse absente.
+
+Champ **`couvre:`** ajouté aux cas de refus (traçabilité de la triple cohérence).
+`gouvernance/limites-refus.md` **inchangé** : toutes les catégories de refus
+testées (nominatif, possessif individuel, avis juridique) y sont déjà affichées
+(la triple cohérence est **vérifiée** par `validate-guardrails`, non ajoutée).
+
+### Tests de scripts (non interactifs, robustes)
+
+`tests/scripts/scripts.test.ts` — via `spawnSync`, `--json`, codes de sortie et
+racines de projet isolées (`CDH_PROJECT_ROOT`), jamais de simulation de TTY :
+
+- **validate-corpus** : nominal `onboarding-agents` → **code 0, ok** ; fixture
+  piégée `corpus-motif-interdit/` (courriel plausible synthétique dans une
+  source) → **code 1** + erreur « motif interdit détecté ».
+- **validate-guardrails** : nominal → **code 0, ok** ; fixture
+  `guardrails-refus-non-teste/` (un refus **déclaré** au manifeste mais **non
+  couvert** par les tests) → **code 1** + erreur « refus déclaré non testé ».
+- **scaffold** : première génération → **code 0**, fichiers créés ; relance →
+  **code 0**, **0 fichier créé**, « Conservé (inchangé) » (idempotence prouvée).
+- **interview `--demo`** : déroulé complet sans TTY → **code 0**, manifeste du cas
+  jetable produit. Exécuté dans une racine temporaire (aucune pollution du dépôt).
+
+### Fixtures négatives isolées (RGPD / anti-motifs)
+
+`tests/scripts/fixtures/` (voir `LISEZ-MOI.md`) contient des racines de projet
+miniatures **volontairement fautives**. Le dossier `fixtures` est **exclu du
+balayage anti-motifs** de `tests/structure/structure.test.ts` (jeu de dossiers
+ignorés) : la fixture de corpus contient **à dessein** un motif interdit (un
+courriel plausible **synthétique** — aucune personne réelle, aucun libellé
+exclu) pour prouver que `validate-corpus` le détecte. Aucun secret, aucune donnée
+personnelle réelle, aucun libellé exclu dans les fixtures.
+
+### Manifeste : schéma strict et non-divergence
+
+- `src/lib/manifest.ts` : ajout **additif** d'une fonction pure exportée
+  `validerManifeste(objet)` (miroir de la fonction homonyme de
+  `scripts/lib/manifeste.mjs`), sans changement de comportement des appelants.
+- `tests/structure/manifest.test.ts` : 4 cas valides + 14 cas invalides passés
+  **aux deux** validateurs (TS zod et script JS pur) → **verdict identique** sur
+  chacun (non-divergence prouvée). Le manifeste réel `onboarding-agents` est
+  valide des deux côtés.
+
+### Solde des avertissements tolérés jusqu'au Lot 7
+
+`validate-guardrails -- --cas onboarding-agents` : **0 erreur, 0 avertissement**.
+L'avertissement « < 5 cas sourcés » (admis depuis le Lot 3) est **soldé** :
+**10 cas sourcés valides** (SRC-001, 003, 007×2, 009, 010, 011, 013, 015, 016),
+≥ 3 refus (nominatif fictif, possessif individuel, avis juridique), ≥ 1
+hors-corpus. Aucun renvoi vers une personne.
+
+### Vérifications finales (toutes exécutées ce jour)
+
+| Contrôle | Commande | Résultat |
+|---|---|---|
+| Tests (3× consécutifs) | `npm test` ×3 | **83/83** à chaque exécution |
+| Garde-fous | `npm run validate-guardrails -- --cas onboarding-agents` | **0 erreur, 0 avertissement** |
+| Corpus | `npm run validate-corpus -- --cas onboarding-agents` | **16 sources, 0 erreur, 0 avertissement** |
+| Harnais | `npm run validate-harness` | **OK** (corpus 0/0 ; garde-fous 0/0 ; config IA non bloquante) |
+| Build | `npm run build` | **OK** (routes inchangées, `/fabrique` dynamique) |
+| Référence démo | `npm run generate-demo` | **aucun écart** |
+| Secrets (chemins actifs, 206 fichiers) | scan motifs partagés | **0** |
+| PII (chemins actifs) | scan motifs partagés | **0** ; les 2 seules occurrences PII sont les **fixtures négatives** isolées et documentées |
+| Libellés exclus | non introduits (additions neutres, fonctionnelles) | **0** |
+
+### Points non traités (non-objectifs du Lot 7)
+
+Aucun appel réseau réel aux fournisseurs IA ; aucune modification des regex de
+`src/lib/guardrails.ts` ; pas de test de charge ; **Lot 8 non entamé** (README,
+scénario vidéo, recette finale, handoff refondu).

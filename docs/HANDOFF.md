@@ -14,8 +14,39 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 <!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
 <!-- ================================================================= -->
 
-> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 6 terminé**, au seuil du **Lot 7**
+> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 7 terminé**, au seuil du **Lot 8**
 >
+> > **Mise à jour 2026-07-19 (fin S7) : le Lot 7 est complet et vert.** Couverture
+> > de tests portée à la hauteur de la refonte : **36 → 83 tests** (configuration-ia
+> > 18, structure 19, manifeste 19, scripts 7, garde-fous 20). **9 cas de
+> > comportement** induits par le corpus dense, chacun **vérifié empiriquement**
+> > contre le moteur réel avant écriture (logiciel→SRC-007, courriel suspect→SRC-007,
+> > remboursement→SRC-009, formation→SRC-010, « qui est le directeur ? »→SRC-011
+> > *fonction sans personne*, IA→SRC-013, sécurité/incendie→SRC-016, CPF→**refus**
+> > individuel, « que veut dire RIFSEEP ? »→SRC-015 en **contraste** avec le montant
+> > RIFSEEP resté hors corpus). ⚠️ Le mot « accident » **n'existe pas** dans le
+> > corpus → le cas « accident de travail » a été **reformulé** sur le contenu réel
+> > de SRC-016 (pas d'attente inventée). Nouveau `tests/structure/manifest.test.ts`
+> > (schéma strict + **non-divergence** entre `src/lib/manifest.ts` et
+> > `scripts/lib/manifeste.mjs` : 4 valides / 14 invalides, verdict identique) —
+> > `src/lib/manifest.ts` a reçu un export **additif** `validerManifeste()`. Nouveau
+> > `tests/scripts/scripts.test.ts` (via `--json`/codes de sortie/`CDH_PROJECT_ROOT`,
+> > jamais de TTY) : validate-corpus nominal + **fixture piégée** (motif interdit
+> > détecté), validate-guardrails nominal + **fixture** (refus déclaré non testé
+> > détecté), **scaffold idempotent**, **interview `--demo`** en racine temporaire.
+> > **Fixtures négatives isolées** sous `tests/scripts/fixtures/` (dossier `fixtures`
+> > **exclu** du balayage anti-motifs de `structure.test.ts` — la fixture corpus
+> > porte à dessein un courriel plausible **synthétique**). **Avertissement
+> > « < 5 cas sourcés » soldé** : `validate-guardrails` = **0 erreur / 0 avertissement**
+> > (10 cas sourcés valides). Vérifs : `npm test` **83/83 ×3**, `validate-corpus`
+> > **16 sources 0/0**, `validate-harness` **OK**, `npm run build` **OK**,
+> > `generate-demo` **aucun écart**, scan secrets/PII **0** sur les chemins actifs
+> > (les 2 seules PII sont les fixtures isolées). Détail : `docs/RECETTE.md`
+> > § « Lot 7 ». La prochaine session attaque le **Lot 8** (README refondu, scénario
+> > vidéo, recette finale, handoff) — relire `specs/backlog-implementation.md`
+> > § Lot 8 avant de démarrer. **Relever le HEAD réel par `git log --oneline -1`**
+> > (le commit du Lot 7 est `test: renforcer la couverture sécurité et garde-fous (Lot 7)`).
+> >
 > > **Mise à jour 2026-07-19 (fin S6) : le Lot 6 est complet et vert.** Preuve
 > > d'adaptation par configuration livrée : un cas jetable **`essai`** a été
 > > produit par le **circuit officiel** de la fabrique (interview `--demo` slug

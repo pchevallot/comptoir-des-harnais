@@ -1,45 +1,79 @@
 # Licences du projet
 
-> **À qui s'adresse ce document ?** À toute personne qui souhaite réutiliser,
-> adapter ou diffuser le code ou les contenus de ce dépôt.
+> Ce document explique la répartition des licences. Il ne constitue pas un avis juridique.
 
-Ce dépôt réunit deux natures de travail, avec deux régimes de licence distincts.
-**Les deux choix ci-dessous sont provisoires** : la décision finale relève d'un
-**arbitrage humain (Pascal Chevallot)**.
+Comptoir des Harnais distingue deux natures de contributions :
 
-## Le code
+1. le **code logiciel** ;
+2. les **contenus documentaires et pédagogiques**.
 
-- **Périmètre** : `src/`, `scripts/`, `tests/`, fichiers de configuration
-  technique.
-- **Licence provisoire** : **MIT** (voir le fichier `LICENSE`).
-- **Alternative envisagée** : **EUPL 1.2**. Le PRD laisse ce choix ouvert entre
-  MIT et EUPL 1.2 ; il sera tranché par une décision humaine.
+Cette distinction évite de forcer une licence logicielle sur des contenus éditoriaux, et inversement.
 
-## Les contenus documentaires
+---
 
-- **Périmètre** : `content/`, `docs/` (documentation pédagogique, fiches,
-  sources fictives, éléments de gouvernance de la démonstration).
-- **Licence proposée** : **Creative Commons Attribution – Partage dans les Mêmes
-  Conditions 4.0 International (CC BY-SA 4.0)**, à titre **provisoire**.
+## Code logiciel — EUPL 1.2
 
-## Pourquoi deux licences ?
+Le code est publié sous licence **European Union Public Licence 1.2 (EUPL 1.2)**.
 
-Le code et les contenus n'ont pas les mêmes usages : une licence logicielle
-(MIT ou EUPL) convient au code, tandis qu'une licence de contenu (CC BY-SA)
-convient aux textes et documents pédagogiques. Séparer les deux permet à chacun
-de réutiliser ce dont il a besoin, dans le bon cadre.
+Périmètre principal :
 
-## Décision finale
+- `src/` ;
+- `scripts/` ;
+- `tests/` ;
+- fichiers de configuration technique ;
+- tout autre fichier explicitement présenté comme code logiciel.
 
-Tant que l'arbitrage humain n'est pas rendu, considérez ces choix comme
-**indicatifs et susceptibles d'évoluer**. En cas de doute sur un usage, référez-
-vous à la décision de Pascal Chevallot.
+Le texte de référence est le fichier [`LICENSE`](./LICENSE).
 
-## Ce que ce document ne couvre pas
+### Pourquoi EUPL 1.2 ?
 
-- Le texte intégral des licences (voir `LICENSE` pour le code ; le texte complet
-  de CC BY-SA 4.0 est publié par Creative Commons).
-- Les conditions d'usage des éventuelles dépendances tierces du projet, qui
-  restent régies par leurs propres licences.
-- Toute qualification juridique de votre réutilisation : elle relève de vos
-  propres conseils.
+L’EUPL 1.2 est une licence open source européenne, adaptée aux projets publics et aux logiques de communs numériques. Elle permet la réutilisation, la modification et la redistribution, tout en protégeant la circulation du code source et des améliorations distribuées.
+
+Ce choix est cohérent avec l’intention du projet : fournir un commun numérique utile aux acteurs publics, mutualisable et réutilisable sans captation exclusive.
+
+---
+
+## Contenus documentaires — CC BY-SA 4.0
+
+Les contenus documentaires, pédagogiques et méthodologiques sont publiés sous licence **Creative Commons Attribution – Partage dans les Mêmes Conditions 4.0 International (CC BY-SA 4.0)**, sauf mention contraire.
+
+Périmètre principal :
+
+- `docs/` ;
+- `content/` ;
+- `README.md` et documents d’explication ;
+- guides pédagogiques ;
+- corpus fictifs ;
+- supports méthodologiques ;
+- templates éditoriaux.
+
+Texte de référence : <https://creativecommons.org/licenses/by-sa/4.0/deed.fr>
+
+### Pourquoi CC BY-SA 4.0 ?
+
+CC BY-SA est adaptée aux textes et supports pédagogiques. Elle permet la réutilisation et l’adaptation, à condition de citer l’auteur et de partager les versions dérivées dans les mêmes conditions.
+
+---
+
+## Contributions
+
+En contribuant à ce dépôt, vous acceptez que votre contribution soit publiée sous la licence applicable au fichier modifié :
+
+- **EUPL 1.2** pour le code ;
+- **CC BY-SA 4.0** pour les contenus documentaires et pédagogiques.
+
+Si une contribution mélange code et contenu, la maintenabilité juridique prime : elle pourra être scindée avant intégration.
+
+---
+
+## Dépendances tierces
+
+Les dépendances du projet restent régies par leurs propres licences. La double licence de Comptoir des Harnais ne modifie pas les licences des bibliothèques tierces utilisées.
+
+---
+
+## Attribution
+
+Projet porté par **Le Comptoir des Signaux / Pascal Chevallot**.
+
+Merci de conserver cette attribution en cas de réutilisation, conformément aux licences applicables.

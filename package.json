@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Harnais IA pour acteurs publics — application d'onboarding RH documentaire, configurable, sourcée et gouvernée. Sans données personnelles réelles, sans dérive SIRH.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "EUPL-1.2",
   "type": "module",
   "engines": {
     "node": ">=20"

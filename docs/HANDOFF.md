@@ -294,7 +294,7 @@ individuel, et « je ne sais pas » quand la source manque.
   HTTP effectif reste à valider par l'exploitant.
 
 ### Risques / arbitrages Pascal (aucun ne bloque la poursuite technique)
-- Licence finale (MIT + CC BY-SA provisoires).
+- Licence finale validée : code en EUPL 1.2 ; contenus/documentation en CC BY-SA 4.0.
 - Fournisseur de modèle retenu pour la démo/vidéo.
 - Publication GitHub distante initiale demandée par Pascal sur son propre compte ;
   toute publication ultérieure doit rester explicite et vérifiée.

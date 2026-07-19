@@ -187,7 +187,7 @@ comptoir-des-harnais/
 ├── README.md               # renvoi + résumé anglais d'une page
 ├── CONTRIBUTING.fr.md      # comment contribuer
 ├── GLOSSAIRE.fr.md         # termes définis en langage courant
-├── LICENSE                 # licence du code (MIT, provisoire)
+├── LICENSE                 # licence du code (EUPL 1.2)
 ├── LICENSES.fr.md          # note sur les licences code / contenus
 ├── .env.example            # variables d'environnement documentées, sans secret
 ├── package.json            # scripts : dev, build, test, validate-harness…
@@ -266,9 +266,9 @@ réalistes. Toute contribution doit respecter cette règle (voir
 
 ## Licence
 
-- **Code** : licence **MIT** (choix provisoire à confirmer). Voir `LICENSE`.
-- **Contenus documentaires** (`content/`, `docs/`) : **CC BY-SA 4.0** proposée
-  (provisoire). Voir `LICENSES.fr.md`.
+- **Code** : licence **EUPL 1.2**. Voir `LICENSE`.
+- **Contenus documentaires** (`content/`, `docs/`) : **CC BY-SA 4.0**, sauf
+  mention contraire. Voir `LICENSES.fr.md`.
 
 ---
 

@@ -281,7 +281,7 @@ Ce parcours structure à la fois la documentation pédagogique (`docs/`), les te
 comptoir-des-harnais/
 ├── README.fr.md                        # Porte d'entrée : définition d'un harnais, promesse, limites, démarrage rapide, plan de lecture par persona
 ├── README.md                           # Renvoi vers README.fr.md + résumé anglais (1 page)
-├── LICENSE                             # Licence à confirmer (proposition : documentation CC BY-SA 4.0, code MIT ou EUPL — voir Points à confirmer)
+├── LICENSE                             # Code sous EUPL 1.2 ; contenus/documentation sous CC BY-SA 4.0
 ├── CONTRIBUTING.fr.md                  # Comment contribuer, périmètre accepté, règle « aucune donnée réelle »
 ├── GLOSSAIRE.fr.md                     # Termes définis en langage courant (harnais, source, garde-fou, registre, millésime…)
 ├── package.json                        # Scripts standard : dev, build, test
@@ -753,7 +753,7 @@ Durée totale cible : 12 minutes maximum.
 À arbitrer par Pascal avant ou pendant la V0 ; aucun ne bloque la validation du présent PRD sur le fond.
 
 1. **Nom définitif.** « Comptoir des Harnais » est retenu comme préférence ; vérifier avant publication la disponibilité du nom de dépôt GitHub, d'un éventuel nom de domaine, et l'absence d'homonymie gênante (marques, projets publics existants).
-2. **Licence.** Proposition à valider : contenu documentaire en CC BY-SA 4.0, code en MIT ou EUPL 1.2 (l'EUPL a une valeur de signal pour le secteur public européen ; le MIT maximise la réutilisation). Décision à prendre en V0.
+2. **Licence.** Décision validée : code sous EUPL 1.2 ; contenu documentaire et pédagogique sous CC BY-SA 4.0.
 3. **Stack web définitive.** Next.js est l'option recommandée (section 7.2) ; confirmer en V0 ce choix ou un équivalent, au regard des critères de sobriété, de pérennité et de maintenabilité par une petite équipe. Le choix ne remet pas en cause les principes de la section 7.1.
 4. **Modèles Claude Code.** Fable 5 a bien été utilisé pour la présente phase PRD (v0.1 et v0.2). Pour la phase d'implémentation, l'identifiant `claude-opus-4-8` est prévu : **à confirmer dans Claude Code au moment du lancement** ; en cas d'indisponibilité, ne pas substituer silencieusement — suspendre et demander l'arbitrage.
 5. **Fournisseur de modèle pour la démonstration vidéo.** Le cadre est agnostique, mais la FAQ générative de la démo devra tourner sur un modèle précis via l'interface substituable. Choix (et son affichage éventuel à l'écran) à arbitrer au regard du message de non-dépendance.

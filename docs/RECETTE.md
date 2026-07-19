@@ -19,7 +19,7 @@ d'autorité : `prd/PRD.md` (v0.2). À lire aussi : `docs/HANDOFF.md`.
 |---|---|---|---|
 | D1 | **Stack : Next.js 15 (App Router) + TypeScript strict + Vitest** | Recommandation PRD §7.2 ; un serveur est requis pour garder la clé de modèle côté serveur (§9.2-12) ; sobre et pérenne | Non (confirmable) |
 | D2 | **Fournisseur de modèle par défaut : `local`** (recherche documentaire déterministe, zéro appel réseau) | Démo et tests fonctionnent hors ligne et sans clé ; renforce réversibilité et « aucun appel réseau non documenté » (§7.4). Fournisseur externe = point de substitution documenté (`src/lib/model/anthropic.ts`) | Oui pour le fournisseur de la vidéo (§Points à confirmer n°5) |
-| D3 | **Licence : MIT (code) + CC BY-SA 4.0 (contenu), PROVISOIRE** | Défaut proposé par le PRD ; ne bloque pas le développement | Oui — décision finale (arbitrage n°2) |
+| D3 | **Licence : EUPL 1.2 (code) + CC BY-SA 4.0 (contenus)** | Décision finale validée par Pascal : cohérence avec les communs numériques publics et les autres projets CdS | Non |
 | D4 | **Collectivité fictive : « Communauté de communes de Roche-Vallonne »** | Nom manifestement inventé, réduit le risque de collision (le PRD proposait « Val d'Ancelle » ; « Ancelle » est un lieu réel, écarté par prudence) | Non |
 | D5 | **Pas de base de données** (contenus en Markdown/YAML) | PRD §7.1-3 | Non |
 | D6 | **Rendu Markdown maison minimal** (`src/components/Markdown.tsx`) | Éviter une dépendance de plus (sobriété §7.1) ; contenus contrôlés | Non |
@@ -142,8 +142,8 @@ Voir `docs/HANDOFF.md` §« Prochaines actions ». Points saillants restants :
 
 1. Licence finale (D3).
 2. Fournisseur de modèle pour la démonstration vidéo (D2).
-3. Création/publication d'un dépôt GitHub distant — **non faite** (interdit sans
-   instruction).
+3. Création/publication d'un dépôt GitHub distant — **faite** après instruction
+   explicite de Pascal : `https://github.com/pchevallot/comptoir-des-harnais`.
 4. Logo officiel — **non intégré** ; emplacement réservé dans l'en-tête.
 5. Nom définitif du projet et de la collectivité fictive (vérif. de collision).
 

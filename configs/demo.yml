@@ -7,6 +7,10 @@
 # fictives et servent uniquement à la démonstration.
 # =============================================================================
 
+# Cas d'usage servi par cette configuration : dossier cases/onboarding-agents/
+# (décisions, gouvernance, tests) + content/cases/onboarding-agents/ (corpus).
+cas: "onboarding-agents"
+
 organisation:
   nom: "Communauté de communes de Roche-Vallonne"
   type: "Communauté de communes (fictive)"

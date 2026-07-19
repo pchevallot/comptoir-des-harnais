@@ -328,6 +328,45 @@ pre code {
 .pastille-neutre { background: var(--cds-bleu-clair); border-color: var(--cds-bleu); color: var(--cds-bleu-nuit); }
 .pastille-attention { background: #fff4d6; border-color: var(--cds-or); color: #6b4e00; }
 
+/* Atelier de la fabrique — liste des 15 étapes du parcours. */
+.etapes-fabrique {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.etapes-fabrique .etape {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cds-bordure);
+  border-radius: 8px;
+  background: var(--cds-gris-clair);
+}
+.etapes-fabrique .etape.franchie {
+  background: #e2f2ea;
+  border-color: var(--cds-succes);
+}
+.etapes-fabrique .etape-marque {
+  flex: 0 0 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid var(--cds-bordure);
+}
+.etapes-fabrique .etape.franchie .etape-marque {
+  background: var(--cds-succes);
+  color: #fff;
+  border-color: var(--cds-succes);
+}
+
 @media (max-width: 640px) {
   h1 { font-size: 1.6rem; }
   .hero { padding: 1.5rem; }

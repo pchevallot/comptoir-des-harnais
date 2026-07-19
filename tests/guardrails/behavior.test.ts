@@ -4,6 +4,7 @@ import path from "node:path";
 import yaml from "js-yaml";
 import { repondre } from "@/lib/answer";
 import { getFiche, getSources } from "@/lib/content";
+import { CASE_DIR } from "@/lib/paths";
 
 /**
  * Exécution des cas de garde-fous déclarés en YAML (tests/guardrails/).
@@ -38,7 +39,8 @@ interface CasRegistre {
 }
 type Cas = CasComportement | CasContenu | CasRegistre;
 
-const fichier = path.join(process.cwd(), "tests", "guardrails", "comportement.yaml");
+// Cas de garde-fous du cas actif : cases/<cas>/tests/comportement.yaml.
+const fichier = path.join(CASE_DIR, "tests", "comportement.yaml");
 const cas = yaml.load(fs.readFileSync(fichier, "utf8")) as Cas[];
 
 const sansAccent = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();

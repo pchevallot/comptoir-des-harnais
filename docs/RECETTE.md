@@ -224,3 +224,98 @@ migration engageable.
   `demo-onboarding-rh` → `onboarding-agents` (migration en une fois, sans
   couche de compatibilité) et périmètre de la refonte.
 
+## Lot 1 — Architecture fabrique : `cases/`, `content/cases/`, manifeste, `/fabrique`
+
+- **Date** : 2026-07-19 (session S1, à la suite du Lot 0).
+
+### Déplacements (`git mv`, historique préservé)
+
+| Depuis | Vers |
+|---|---|
+| `content/demo-onboarding-rh/` | `content/cases/onboarding-agents/` |
+| `content/cases/onboarding-agents/gouvernance/` | `cases/onboarding-agents/gouvernance/` |
+| `tests/guardrails/comportement.yaml` | `cases/onboarding-agents/tests/comportement.yaml` |
+| `templates/onboarding-rh-documentaire/` | `templates/cases/documentaire/` (README généralisé, variables `{{...}}`) |
+
+Commit de déplacement séparé (`e2fec7c`) pour garder la détection de renommage
+git propre ; les points de couplage du code sont mis à jour dans le commit
+suivant.
+
+### Créations
+
+- `cases/onboarding-agents/harnais.yaml` — manifeste rétro-rempli **à la main**
+  depuis l'existant : `besoin` (de `configs/demo.yml`), `sources_declarees`
+  (6 entrées, des frontmatters), `classification_autorisee`
+  (`publique`/`interne`), `fournisseur.mode: local`, `etat.etape: 15`,
+  `etat.statut: prototype`, `modules` tous à `true`. `refus_complementaires: []`
+  (le cas ne déclare aucun refus au-delà du socle non négociable : liste vide,
+  honnête et traçable, plutôt qu'inventer un motif).
+- `src/lib/manifest.ts` — chargement + validation zod **stricte** (toute clé
+  inconnue = erreur), messages français, cache par slug ; exporte `Manifeste`
+  et `chargerManifeste(slug)`.
+- `src/app/fabrique/page.tsx` — tableau de bord de l'atelier, **rendu dynamique**
+  (`force-dynamic`) : les 15 étapes (libellés PRD v0.3 §4), l'état lu au
+  manifeste (`etat.etape`, statut, date), une preuve par étape (lien ou chemin).
+
+### Modifications des points de couplage
+
+- `src/lib/paths.ts` — chemins résolus par cas : `CONTENT_DIR =
+  content/cases/<cas>`, `CASE_DIR = cases/<cas>`, `GOUVERNANCE_DIR =
+  cases/<cas>/gouvernance`. Le cas actif est lu directement depuis la config
+  (champ `cas`, défaut `onboarding-agents`) **sans importer `config.ts`** pour
+  éviter un cycle. Nouvel export `CONTENT_REL` (chemin d'affichage).
+- `src/lib/content.ts` — chemins d'affichage dérivés de `CONTENT_REL` (plus de
+  chaîne codée en dur).
+- `src/lib/config.ts` — champ optionnel `cas` (zod, `[a-z0-9-]`, défaut
+  `onboarding-agents`).
+- `configs/demo.yml` — ajout de `cas: onboarding-agents` ;
+  `configs/organisation.example.yml` — champ `cas` commenté + circuit fabrique
+  documenté.
+- `scripts/validate-harness.mjs` — suppression du chemin codé en dur ;
+  résolution par `--cas`/config ; gouvernance lue dans `cases/<cas>/gouvernance`.
+- `scripts/import-source.mjs` — défaut `--out` = `content/cases/onboarding-agents/sources`.
+- `scripts/generate-demo.mjs` (transitoire, remplacé au Lot 4) — chemins alignés
+  sur la nouvelle arborescence pour rester un inventaire utile.
+- `tests/guardrails/behavior.test.ts` — runner lit
+  `cases/<cas>/tests/comportement.yaml` via `CASE_DIR`.
+- `src/components/Nav.tsx` — entrée `/fabrique` ajoutée (pilotage par `modules`
+  au Lot 5).
+- `src/app/sources/page.tsx` — libellé de registre dérivé de `CONTENT_REL`.
+
+### Vérifications (toutes exécutées ce jour)
+
+| Commande | Résultat |
+|---|---|
+| `npm test` | **36/36** (configuration-ia 18, structure 7, guardrails 11), aucun test supprimé |
+| `npm run build` | **OK** — la table des routes liste désormais `/fabrique` (21ᵉ route), rendue **dynamiquement** (`ƒ`). Le compteur « Generating static pages (20/20) » reste à 20 précisément parce que `/fabrique` est dynamique et n'est pas prérendu (conforme à l'exigence). |
+| `npm run validate-harness` | **OK** — cas `onboarding-agents`, 6 sources, 6 fiches, prototype |
+| `npm run validate-harness -- --cas onboarding-agents` | **OK** (résolution par `--cas`) |
+| Manifeste vs `src/lib/manifest.ts` | valide (chargé et rendu sur `/fabrique`) |
+| `npm run start` + `curl` | `/`, `/fabrique`, `/sources`, `/faq`, `/gouvernance`, `/limites` → **200** ; `/fabrique` affiche statut/besoin/étapes **lus au manifeste** ; `/sources` = mêmes 6 sources |
+| grep `demo-onboarding-rh` | aucune occurrence **active** (voir écart ci-dessous) |
+| scan secrets (sk-…/AKIA…/PRIVATE KEY) | **aucun** |
+
+### Écart documenté (grep `demo-onboarding-rh`)
+
+Occurrences restantes, toutes **documentaires/historiques**, aucune n'est un
+chemin actif du code ou du contenu :
+
+- `prd/PRD.md` (5 occurrences) : PRD **v0.2**, document d'autorité qui décrit
+  l'état **antérieur** à la refonte (arborescence et parcours en 10 étapes).
+  L'architecture (§Autorité) préserve v0.2 comme référence ; le réécrire
+  fausserait ce document. Assimilé à « historique ».
+- `docs/RECETTE.md` : la ligne du §5 (recette V1 « RÉALISÉE ») est un
+  enregistrement historique ; la ligne du Lot 0 **nomme** le renommage (rôle de
+  changelog). Toutes deux légitimes.
+
+La refonte narrative du README principal et du HANDOFF est explicitement prévue
+au **Lot 8** (backlog) ; les références de chemins fonctionnelles et
+utilisateur (guides, gabarit, page `/sources`, configs, scripts) ont, elles,
+été corrigées dans ce lot.
+
+### Points non traités (conformes aux non-objectifs du Lot 1)
+
+Pas de nouveau script (Lot 3), pas de nouvelle source (Lot 4), pas d'API locale
+ni de sous-routes d'atelier (Lots 5a/5b), pas de navigation par modules
+(Lot 5b), pas de couche de compatibilité (architecture §5).
+

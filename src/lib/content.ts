@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import yaml from "js-yaml";
 import {
   CONTENT_DIR,
+  CONTENT_REL,
   FICHES_DIR,
   GOUVERNANCE_DIR,
   PARCOURS_DIR,
@@ -19,9 +20,10 @@ import type {
 } from "./types";
 
 /**
- * Chargement des contenus métier depuis content/demo-onboarding-rh/.
- * Tous les contenus sont fictifs (cf. marquage « données fictives »). Le code
- * ne modifie jamais ces fichiers : ils sont le territoire des non-techniciens.
+ * Chargement des contenus métier depuis content/cases/<cas>/ (cas actif résolu
+ * dans paths.ts depuis la config). Tous les contenus sont fictifs (cf. marquage
+ * « données fictives »). Le code ne modifie jamais ces fichiers : ils sont le
+ * territoire des non-techniciens.
  */
 
 function lireMd(dossier: string): { data: Record<string, unknown>; content: string; fichier: string }[] {
@@ -53,7 +55,7 @@ export function getSources(): Source[] {
   if (sourcesCache) return sourcesCache;
   const chemin = SOURCES_DIR;
   sourcesCache = lireMd(chemin).map(({ data, content, fichier }) => {
-    const relatif = path.join("content/demo-onboarding-rh/sources", fichier);
+    const relatif = path.posix.join(CONTENT_REL, "sources", fichier);
     return {
       id: exigerChamp(data.id as string, "id", relatif),
       titre: exigerChamp(data.titre as string, "titre", relatif),
@@ -83,7 +85,7 @@ let fichesCache: Fiche[] | null = null;
 export function getFiches(): Fiche[] {
   if (fichesCache) return fichesCache;
   fichesCache = lireMd(FICHES_DIR).map(({ data, content, fichier }) => {
-    const relatif = path.join("content/demo-onboarding-rh/fiches", fichier);
+    const relatif = path.posix.join(CONTENT_REL, "fiches", fichier);
     const slug = (data.slug as string) ?? fichier.replace(/\.md$/, "");
     return {
       slug,

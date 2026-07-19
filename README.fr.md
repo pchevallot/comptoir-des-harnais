@@ -199,20 +199,26 @@ comptoir-des-harnais/
 │   └── lib/                # moteur documentaire, garde-fous, interface modèle
 │
 ├── content/                # contenus métier — modifiables sans coder
-│   └── demo-onboarding-rh/ # démo : collectivité fictive, données 100 % fictives
-│       ├── sources/        # 6 sources fictives (SRC-001 à SRC-006)
-│       ├── fiches/         # 6 fiches pédagogiques
-│       ├── parcours/       # parcours en 4 modules
-│       ├── quiz/           # questions de validation
-│       ├── checklist.md    # aide-mémoire RH
-│       └── gouvernance/    # classification, limites et refus, validation, journal
+│   └── cases/
+│       └── onboarding-agents/ # démo : collectivité fictive, données 100 % fictives
+│           ├── sources/    # 6 sources fictives (SRC-001 à SRC-006)
+│           ├── fiches/     # 6 fiches pédagogiques
+│           ├── parcours/   # parcours en 4 modules
+│           ├── quiz/       # questions de validation
+│           └── checklist.md # aide-mémoire RH
+│
+├── cases/                  # décisions et gouvernance par harnais produit
+│   └── onboarding-agents/
+│       ├── harnais.yaml    # manifeste — source de vérité du cas
+│       ├── gouvernance/    # classification, limites et refus, validation, journal
+│       └── tests/          # comportement.yaml (garde-fous du cas)
 │
 ├── configs/                # configuration de l'organisation (YAML)
 │   ├── demo.yml            # mode démo (collectivité fictive)
 │   └── organisation.example.yml  # modèle commenté à copier pour sa collectivité
 │
 ├── tests/                  # protègent le comportement et la structure
-│   ├── guardrails/         # réponses sourcées, refus des cas individuels
+│   ├── guardrails/         # runner des réponses sourcées, refus des cas individuels
 │   └── structure/          # contenus complets, absence de secrets et de données réelles
 │
 └── scripts/                # validate-harness, generate-demo

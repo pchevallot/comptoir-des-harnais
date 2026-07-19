@@ -84,7 +84,8 @@ comptoir-des-harnais/
 │  └─ lib/                   Moteur : config, content, retrieval, guardrails,
 │     └─ model/              answer, logging + interface modèle substituable
 ├─ content/                  CONTENU MÉTIER — territoire non-technicien (fictif en démo)
-│  └─ demo-onboarding-rh/    sources/ fiches/ parcours/ quiz/ gouvernance/ checklist.md
+│  └─ cases/onboarding-agents/  sources/ fiches/ parcours/ quiz/ checklist.md
+│                            (gouvernance + tests déplacés sous cases/onboarding-agents/)
 ├─ configs/                  demo.yml (démo) + organisation.example.yml (modèle commenté)
 ├─ tests/                    guardrails/ (comportement) + structure/ (structure & config IA)
 ├─ scripts/                  validate-harness.mjs, generate-demo.mjs, import-source.mjs

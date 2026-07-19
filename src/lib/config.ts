@@ -14,6 +14,12 @@ import { CONFIGS_DIR } from "./paths";
 const StatutHarnaisSchema = z.enum(["prototype", "interne", "production"]);
 
 const ConfigSchema = z.object({
+  // Cas d'usage servi par cette configuration (dossier cases/<cas> +
+  // content/cases/<cas>). Défaut : le premier harnais produit par la fabrique.
+  cas: z
+    .string()
+    .regex(/^[a-z0-9-]+$/, "doit être un slug en minuscules ([a-z0-9-])")
+    .default("onboarding-agents"),
   organisation: z.object({
     nom: z.string().min(1),
     type: z.string().min(1),

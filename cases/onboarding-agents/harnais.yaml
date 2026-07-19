@@ -1,0 +1,67 @@
+# =============================================================================
+# MANIFESTE du harnais « onboarding-agents » — source de vérité du cas.
+# -----------------------------------------------------------------------------
+# Rétro-rempli à la main depuis l'existant (Lot 1 de la refonte fabrique) : le
+# cas de démonstration devient le premier harnais produit par la fabrique, sans
+# régénération. Validé par src/lib/manifest.ts (schéma strict, zod).
+# AUCUN secret ici : le mode IA oui, jamais une clé (architecture §3).
+# =============================================================================
+version: 1
+slug: "onboarding-agents"
+type: "documentaire"
+
+# Besoin repris de configs/demo.yml (harnais.besoin).
+besoin: >-
+  Offrir aux nouveaux agents un point d'entrée documentaire clair, sourcé et à
+  jour, pour éviter de répéter les mêmes explications à chaque arrivée, sans
+  traiter aucune situation individuelle.
+
+publics:
+  - "nouveaux agents"
+  - "encadrants"
+
+# Modules affichés par l'application (navigation pilotée par le manifeste).
+modules:
+  parcours: true
+  faq: true
+  quiz: true
+  checklist: true
+
+# Sources déclarées (étape 4) — liste de contrôle pour l'import (étape 11).
+# Rétro-remplies depuis les frontmatters des 6 sources existantes.
+sources_declarees:
+  - titre: "Règlement du temps de travail"
+    proprietaire: "Direction des ressources humaines"
+    date_connue: "2025-06-30"
+  - titre: "Protection sociale complémentaire — mutuelles labellisées"
+    proprietaire: "Direction des ressources humaines"
+    date_connue: "2025-04-10"
+  - titre: "Note de service — télétravail"
+    proprietaire: "Direction des ressources humaines"
+    date_connue: "2025-09-15"
+  - titre: "Fiche marchés publics — les bons réflexes achat"
+    proprietaire: "Direction des affaires juridiques et de la commande publique"
+    date_connue: "2025-05-20"
+  - titre: "Contacts utiles du nouvel arrivant"
+    proprietaire: "Direction des ressources humaines"
+    date_connue: "2025-10-01"
+  - titre: "Règles internes — premiers jours et vie de service"
+    proprietaire: "Secrétariat général"
+    date_connue: "2025-08-25"
+
+classification_autorisee:
+  - "publique"
+  - "interne"
+
+# Refus qui s'ajoutent au socle non négociable (cas individuel, avis
+# juridique/médical, affirmation sans source). Le cas existant ne déclare pas
+# de refus complémentaire au-delà du socle : liste vide, honnête et traçable.
+refus_complementaires: []
+
+fournisseur:
+  mode: "local"
+
+etat:
+  etape: 15
+  statut: "prototype"
+  mis_a_jour: "2026-07-19"

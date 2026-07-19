@@ -5,7 +5,7 @@
 #   1. cp configs/organisation.example.yml configs/organisation.yml
 #   2. renseignez les valeurs ci-dessous
 #   3. dans .env : CDH_CONFIG=organisation.yml
-#   4. remplacez les contenus de content/demo-onboarding-rh/ par les vôtres
+#   4. remplacez les contenus de content/cases/<cas>/ par les vôtres
 #   5. relancez : npm run dev
 #
 # Rappels de cadre :
@@ -14,6 +14,11 @@
 #   - la présence de données personnelles ou sensibles rend le cas inéligible
 #     en l'état et impose un renvoi vers le DPO.
 # =============================================================================
+
+# Cas d'usage servi par cette configuration (dossier cases/<cas> +
+# content/cases/<cas>). Décommentez pour servir un autre cas que le défaut.
+# La fabrique génère un nouveau cas via `npm run interview` puis `npm run scaffold`.
+# cas: "onboarding-agents"
 
 organisation:
   nom: "Nom de votre collectivité"

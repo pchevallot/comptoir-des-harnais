@@ -11,9 +11,19 @@ import yaml from "js-yaml";
 import matter from "gray-matter";
 
 const RACINE = process.cwd();
-const CONTENT = path.join(RACINE, "content", "demo-onboarding-rh");
 const erreurs = [];
 const avertissements = [];
+
+// Résolution du cas actif : --cas <slug> > champ `cas` de la config > défaut.
+// (La refonte complète en orchestrateur est prévue au Lot 3 ; ici, on lève
+// seulement le chemin codé en dur au profit de la résolution par cas.)
+const argv = process.argv.slice(2);
+const idxCas = argv.indexOf("--cas");
+const casArg = idxCas >= 0 ? argv[idxCas + 1] : undefined;
+if (idxCas >= 0 && (!casArg || !/^[a-z0-9-]+$/.test(casArg))) {
+  console.error("Erreur : --cas attend un slug ([a-z0-9-]).");
+  process.exit(2);
+}
 
 function lireMd(dossier) {
   if (!fs.existsSync(dossier)) return [];
@@ -40,9 +50,17 @@ if (!fs.existsSync(configPath)) {
   }
 }
 
+// Cas actif et chemins dérivés (plus aucun chemin codé en dur).
+const cas = casArg ?? (typeof config?.cas === "string" ? config.cas : "onboarding-agents");
+const CONTENT = path.join(RACINE, "content", "cases", cas);
+const CASE = path.join(RACINE, "cases", cas);
+if (!fs.existsSync(CONTENT)) {
+  erreurs.push(`Cas introuvable : content/cases/${cas}/ (vérifiez le champ « cas » ou --cas).`);
+}
+
 // 2. Sources
 const sources = lireMd(path.join(CONTENT, "sources"));
-if (sources.length === 0) erreurs.push("Aucune source dans content/demo-onboarding-rh/sources/");
+if (sources.length === 0) erreurs.push(`Aucune source dans content/cases/${cas}/sources/`);
 const ids = new Set();
 const seuil = config?.seuil_anciennete_mois ?? 24;
 const limite = new Date();
@@ -75,16 +93,17 @@ for (const fi of fiches) {
   if (!fi.data?.limites) erreurs.push(`${f} : champ « limites » manquant`);
 }
 
-// 4. Documents de gouvernance attendus
+// 4. Documents de gouvernance attendus (désormais dans cases/<cas>/gouvernance/)
 for (const doc of ["limites-refus", "classification", "fiche-validation", "journal"]) {
-  if (!fs.existsSync(path.join(CONTENT, "gouvernance", `${doc}.md`))) {
-    avertissements.push(`gouvernance/${doc}.md absent`);
+  if (!fs.existsSync(path.join(CASE, "gouvernance", `${doc}.md`))) {
+    avertissements.push(`cases/${cas}/gouvernance/${doc}.md absent`);
   }
 }
 
 // --- Rapport ---------------------------------------------------------------
 console.log("\n=== Validation du harnais ===\n");
 console.log(`Configuration     : configs/${configFile}`);
+console.log(`Cas               : ${cas}`);
 console.log(`Sources           : ${sources.length}`);
 console.log(`Fiches            : ${fiches.length}`);
 console.log(`Statut du harnais : ${config?.harnais?.statut ?? "(inconnu)"}\n`);

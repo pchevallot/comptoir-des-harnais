@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSources } from "@/lib/content";
+import { CONTENT_REL } from "@/lib/paths";
 import { ClassificationBadge } from "@/components/Badges";
 
 /** Page « sources et dates de mise à jour » — le registre rendu visible (§6.1-7). */
@@ -53,7 +54,7 @@ export default function Sources() {
       </div>
 
       <p className="mentions">
-        Registre dérivé directement des fichiers de <code>content/demo-onboarding-rh/sources/</code>.
+        Registre dérivé directement des fichiers de <code>{CONTENT_REL}/sources/</code>.
         Contenus entièrement fictifs.
       </p>
     </>

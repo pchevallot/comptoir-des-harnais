@@ -12,6 +12,7 @@ export const RUBRIQUES: { href: string; libelle: string }[] = [
   { href: "/limites", libelle: "Limites & refus" },
   { href: "/gouvernance", libelle: "Gouvernance" },
   { href: "/configuration-ia", libelle: "Configuration IA" },
+  { href: "/fabrique", libelle: "Fabrique (atelier)" },
 ];
 
 export function Nav() {

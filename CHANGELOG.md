@@ -40,5 +40,3 @@ seul cas et un seul consommateur (architecture §5). Un tag local
 - Le port applicatif reste `3010`, la sémantique `CDH_CONFIG` et les 7 modes IA
   sont inchangés ; les clés IA restent côté serveur (`.env.local`).
 - Licence inchangée : code EUPL 1.2, contenus/documentation CC BY-SA 4.0.
-</content>
-</invoke>

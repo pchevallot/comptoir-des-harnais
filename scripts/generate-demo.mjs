@@ -8,23 +8,28 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const CONTENT = path.join(process.cwd(), "content", "demo-onboarding-rh");
+// Script transitoire (remplacé par generate-onboarding-demo au Lot 4). Chemins
+// alignés sur la nouvelle arborescence : corpus dans content/cases/<cas>/,
+// gouvernance dans cases/<cas>/.
+const CAS = "onboarding-agents";
+const CONTENT = path.join(process.cwd(), "content", "cases", CAS);
+const CASE = path.join(process.cwd(), "cases", CAS);
 const attendus = [
-  "sources",
-  "fiches",
-  "parcours/parcours.yml",
-  "quiz/quiz.yml",
-  "checklist.md",
-  "gouvernance/limites-refus.md",
-  "gouvernance/classification.md",
-  "gouvernance/fiche-validation.md",
-  "gouvernance/journal.md",
+  ["content", "sources"],
+  ["content", "fiches"],
+  ["content", "parcours/parcours.yml"],
+  ["content", "quiz/quiz.yml"],
+  ["content", "checklist.md"],
+  ["case", "gouvernance/limites-refus.md"],
+  ["case", "gouvernance/classification.md"],
+  ["case", "gouvernance/fiche-validation.md"],
+  ["case", "gouvernance/journal.md"],
 ];
 
 let manquants = 0;
 console.log("\n=== Inventaire du contenu de démonstration ===\n");
-for (const rel of attendus) {
-  const p = path.join(CONTENT, rel);
+for (const [racine, rel] of attendus) {
+  const p = path.join(racine === "content" ? CONTENT : CASE, rel);
   const ok = fs.existsSync(p);
   if (!ok) manquants++;
   let detail = "";

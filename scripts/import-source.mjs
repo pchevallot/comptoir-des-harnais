@@ -12,14 +12,14 @@
  * Exemples :
  *   node scripts/import-source.mjs doc.txt --id SRC-007 --titre "Règlement horaires"
  *   node scripts/import-source.mjs doc.md --id SRC-008 --classification publique \
- *        --proprietaire "Direction de la communication" --out content/demo-onboarding-rh/sources
+ *        --proprietaire "Direction de la communication" --out content/cases/onboarding-agents/sources
  *   node scripts/import-source.mjs --help
  */
 import fs from "node:fs";
 import path from "node:path";
 
 const RACINE = process.cwd();
-const DEFAUT_OUT = path.join("content", "demo-onboarding-rh", "sources");
+const DEFAUT_OUT = path.join("content", "cases", "onboarding-agents", "sources");
 
 function aide() {
   console.log(`

@@ -75,15 +75,15 @@ Vous pouvez enrichir l'exemple d'onboarding RH uniquement avec des fichiers.
 
 **Ajouter une source :**
 
-1. Créez un fichier dans `content/demo-onboarding-rh/sources/`, en suivant la
-   nomenclature existante : `SRC-00X-sujet.md`.
+1. Créez un fichier dans `content/cases/onboarding-agents/sources/`, en suivant
+   la nomenclature existante : `SRC-00X-sujet.md`.
 2. Reprenez la structure des sources existantes (identifiant, titre,
    propriétaire par **fonction**, date de version, statut, périmètre).
 3. Gardez le contenu **fictif** et marqué comme tel.
 
 **Ajouter une fiche :**
 
-1. Créez un fichier dans `content/demo-onboarding-rh/fiches/`.
+1. Créez un fichier dans `content/cases/onboarding-agents/fiches/`.
 2. Reprenez la structure d'une fiche existante ; chaque fiche cite ses
    **sources** (identifiants `SRC-…`), sa **date** et son **statut**.
 3. Si la fiche doit apparaître dans le parcours ou le quiz, mettez à jour les

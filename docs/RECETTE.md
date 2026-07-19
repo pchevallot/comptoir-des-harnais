@@ -664,7 +664,7 @@ serveur (un redémarrage ne régénère pas les pages statiques). Documenté ici
 | `/fabrique` filmable | grep du HTML servi | contient « 15 étapes », « onboarding-agents », « rapport », « Skill », « Script », « En coulisse », « Modules actifs », « Ouvrir l'application » |
 | Bandeau accueil | grep `/` | « produit par la fabrique » + lien « Voir comment » présents |
 | Nav par modules | `quiz: false` → **rebuild** → grep pages prérendues | nav `index/sources/gouvernance` sans `href="/quiz"`, `/parcours` conservé ; `quiz.html` **toujours généré** (route directe servie) ; manifeste **restauré**, rebuild propre → `/quiz` de retour |
-| Motifs interdits / ancien nom | grep `Hypervibe\|Flavien\|Bernabotto\|Public IA` | **aucun** |
+| Motifs interdits / ancien nom | scan des libellés explicitement exclus du projet | **aucun** |
 | Secrets | grep `sk-…/AKIA…/PRIVATE KEY/ghp_` sur `src scripts docs cases content configs skills tests` | **aucun** |
 
 > ⚠️ Port 3010 occupé par des serveurs d'autres sessions (relevés `next-server`

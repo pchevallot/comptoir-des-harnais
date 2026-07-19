@@ -16,20 +16,28 @@ est prévue pour des sessions Opus 4.8, par lots (voir backlog).
 | 1 | [`PRD-v0.3-harnais-fabrique.md`](./PRD-v0.3-harnais-fabrique.md) | Repositionnement produit, vocabulaire, parcours guidé en 15 étapes, non-objectifs |
 | 2 | [`architecture-harnais-fabrique.md`](./architecture-harnais-fabrique.md) | Arborescence cible, manifeste `harnais.yaml`, migrations, compatibilité, dette |
 | 3 | [`spec-skills.md`](./spec-skills.md) | Les 8 skills locales du projet (format, contrat, erreurs) |
-| 4 | [`spec-scripts-deterministes.md`](./spec-scripts-deterministes.md) | Les 8 scripts (CLI, arguments, sorties, codes retour, frontière déterminisme/modèle) |
+| 4 | [`spec-scripts-deterministes.md`](./spec-scripts-deterministes.md) | Le moteur déterministe : logique partagée `scripts/lib/atelier/`, les 8 scripts (arguments, sorties, codes retour), frontière déterminisme/modèle |
 | 5 | [`spec-corpus-onboarding.md`](./spec-corpus-onboarding.md) | Corpus fictif dense : 16 sources spécifiées une à une |
 | 6 | [`spec-parcours-video.md`](./spec-parcours-video.md) | Scénario vidéo aligné sur la refonte, plan par plan |
 | 7 | [`backlog-implementation.md`](./backlog-implementation.md) | Lots 0 à 8 pour Opus 4.8, critères d'acceptation, commandes de vérification |
 
 ## Décisions majeures (résumé)
 
-1. **La fabrique est pilotée en ligne de commande, pas par une seconde webapp.**
-   Le guidage (« le harnais vous interroge ») est porté par
-   `scripts/interview-harness.mjs`, sobre, résumable, en français. L'application
-   web reste la **sortie** du cas d'usage. Une seule page web nouvelle :
-   `/fabrique` (lecture seule, montre l'état du manifeste). Arbitrage : une
-   webapp de fabrique doublerait la surface de code pour un gain démonstratif
-   faible ; le terminal filme très bien et assume le côté « atelier ».
+1. **L'expérience principale est un atelier web local guidé ; les scripts
+   déterministes sont le moteur vérifiable de l'atelier.** Le guidage
+   (« le harnais vous interroge ») est porté par les routes `/fabrique/*` de
+   l'application locale : questions simples, une étape à la fois, progression
+   visible, en français. Les actions (générer, valider, produire le rapport)
+   passent par une API serveur locale (`/api/fabrique/...`) qui appelle la
+   même logique déterministe que les scripts — le navigateur ne manipule
+   jamais de secret et n'écrit que dans le workspace du dépôt. Le CLI
+   (`scripts/interview-harness.mjs`) reste disponible pour développeurs, OPSN
+   et CI, mais n'est plus la première expérience. Arbitrage : le public non
+   technique doit d'abord voir un **atelier guidé** compréhensible en navigateur ;
+   l'atelier vit dans la **même** application Next.js que le portail
+   (pas de seconde webapp), la surface de code supplémentaire est bornée aux
+   routes `/fabrique/*` et à l'API locale, sans comptes, sans base de
+   données, sans authentification.
 2. **Un cas d'usage = un dossier `cases/<slug>/` avec un manifeste
    `harnais.yaml`** qui est la source de vérité de tout ce que l'interview a
    collecté. Les scripts lisent le manifeste ; l'application lit le manifeste ;
@@ -42,9 +50,9 @@ est prévue pour des sessions Opus 4.8, par lots (voir backlog).
    Elles ne dépendent d'aucune skill externe à ce dépôt.
 5. **Frontière stricte déterminisme / modèle** : tout ce qui est structure,
    validation, génération de fichiers, contrôles et rapport est fait par des
-   scripts Node reproductibles. Le modèle n'intervient que pour composer des
-   réponses FAQ (déjà le cas) et, en atelier, pour aider à rédiger — jamais
-   pour valider.
+   scripts Node reproductibles, que l'atelier web appelle via l'API locale.
+   Le modèle n'intervient que pour composer des réponses FAQ (déjà le cas)
+   et, en atelier, pour aider à rédiger — jamais pour valider.
 6. **Le corpus passe de 6 sources courtes à 16 sources denses**
    (SRC-001 à SRC-016, 700 à 1 800 mots chacune), toutes fictives, toutes
    `publique` ou `interne`, aucune donnée personnelle. Le périmètre reste

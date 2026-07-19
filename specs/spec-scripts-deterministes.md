@@ -4,6 +4,12 @@ Les scripts sont la colonne vertébrale reproductible de la fabrique : même
 entrée → même sortie, exécutables seuls, rapport en français, codes de sortie
 exploitables. **Rien de ce qu'un script garantit n'est délégué au modèle.**
 
+Ils sont le **moteur vérifiable de l'atelier web** : les handlers
+`/api/fabrique/*` appellent les mêmes fonctions, exposées par
+`scripts/lib/atelier/*.mjs` (§0). Le CLI reste disponible pour développeurs,
+OPSN et CI — c'est une interface alternative sur la même logique, pas
+l'expérience principale.
+
 Conventions communes :
 
 - Node ≥ 20, ESM (`.mjs`), dépendances limitées à celles du projet
@@ -32,10 +38,42 @@ Scripts npm à ajouter dans `package.json` :
 
 ---
 
-## 1. `scripts/interview-harness.mjs` — le guidage
+## 0. `scripts/lib/atelier/` — la logique partagée du parcours
+
+**Rôle.** Porter la logique des 15 étapes **une seule fois**, sous forme de
+fonctions à effets confinés au workspace, consommées par trois clients :
+les handlers `/api/fabrique/*` (l'atelier web, expérience principale),
+l'interview CLI (§1) et les tests.
+
+**Modules.**
+
+- `etapes.mjs` — définition déclarative des 15 étapes : id, libellé
+  (verbatim PRD v0.3 §4), skill associée, questions (texte, type de réponse,
+  valeur proposée), validations de forme, fichiers produits. C'est la source
+  unique reprise par l'atelier, le CLI et la page de progression ;
+- `reponses.mjs` — validation d'une réponse (dates `AAAA-MM-JJ`, heuristique
+  anti-« Prénom Nom », slug `[a-z0-9-]+`, minimums exigés comme les 3 refus
+  de l'étape 8) et application au manifeste et aux fichiers du cas (via
+  `scripts/lib/manifeste.mjs`) ;
+- `actions.mjs` — exécution des actions déterministes d'une étape
+  (scaffold, validations, rapport) en appelant les fonctions des scripts
+  correspondants, avec retour structuré
+  `{ ok, erreurs, avertissements, fichiers }`.
+
+**Règles.** Aucune lecture ni écriture de secret ; aucune E/S hors du
+workspace du dépôt ; aucune dépendance à un TTY ; mêmes messages français
+que les scripts ; le refus d'éligibilité (étape 1) est un résultat normal,
+pas une exception. Chaque script CLI ci-dessous est une **enveloppe mince**
+(arguments + affichage) autour de ces fonctions : aucune logique d'étape ni
+de validation n'est dupliquée dans un script ou un handler.
+
+## 1. `scripts/interview-harness.mjs` — le mode CLI du parcours
 
 **Rôle.** Conduire les 15 étapes du parcours (PRD v0.3 §4) en questions/
 réponses au terminal, et matérialiser chaque réponse en fichiers.
+**Mode alternatif** à l'atelier web `/fabrique`, à logique strictement
+identique (`scripts/lib/atelier/`) ; publics : développeurs, OPSN, CI
+(mode `--demo`).
 
 **CLI.**
 ```text
@@ -65,7 +103,8 @@ manifeste existant si reprise.
   slug `[a-z0-9-]+` ;
 - étapes 10, 13, 14, 15 : l'interview n'exécute pas elle-même — elle affiche
   la commande exacte à lancer (`npm run scaffold -- --cas <slug>`…), pour que
-  chaque action reste visible et filmable ;
+  chaque action reste explicite et scriptable (dans l'atelier web, ces mêmes
+  actions sont déclenchées par le bouton valider/générer via l'API) ;
 - mode `--demo` : réponses lues depuis
   `templates/cases/documentaire/reponses-demo.yaml` — c'est ce qui rend
   l'interview **testable en CI** sans TTY.

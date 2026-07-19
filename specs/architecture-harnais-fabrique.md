@@ -44,7 +44,9 @@ comptoir-des-harnais/                 LA FABRIQUE
 │                                     quiz/ checklist.md
 ├── skills/                           8 skills projet (spec-skills.md)
 │   └── <nom>/SKILL.md
-├── scripts/                          déterminisme (spec-scripts-deterministes.md)
+├── scripts/                          moteur déterministe (spec-scripts-deterministes.md)
+│   └── lib/atelier/                  logique des 15 étapes, partagée entre
+│                                     CLI, API locale et tests
 ├── templates/
 │   ├── harnais-metier/               inchangé (gabarits génériques)
 │   └── cases/documentaire/           gabarit d'un cas complet (ex-onboarding-rh-
@@ -53,8 +55,12 @@ comptoir-des-harnais/                 LA FABRIQUE
 ├── configs/
 │   ├── demo.yml                      gagne `cas: onboarding-agents`
 │   └── organisation.example.yml      idem, commenté
-├── src/                              rendu web final — inchangé dans son rôle
-│   └── app/fabrique/page.tsx         nouvelle page lecture seule
+├── src/                              rendu web : portail du cas + atelier
+│   ├── app/fabrique/                 ATELIER web guidé : tableau de bord,
+│   │                                 nouveau, [slug], [slug]/etape/[numero],
+│   │                                 [slug]/rapport
+│   └── app/api/fabrique/             API serveur locale (handlers minces →
+│                                     scripts/lib/atelier/)
 ├── tests/                            runner + tests transverses (structure,
 │                                     config IA, absence de secrets)
 └── docs/, prd/, specs/               inchangés dans leur rôle
@@ -68,9 +74,39 @@ Répartition des responsabilités :
   décisions (relu par DPO/DSI), `content/` celui des contenus métier (relu par
   le métier). Les deux restent hors de `src/`.
 
+## 2 bis. Les trois couches de l'expérience
+
+1. **Interface atelier locale (`/fabrique`)** — l'expérience principale,
+   pensée pour un utilisateur non technique : guidage pas à pas de type
+   assistant, formulaires courts, progression visible, panneau « skill
+   mobilisée », affichage des fichiers produits et des contrôles.
+   La sauvegarde est locale, dans les fichiers du projet, via l'API serveur
+   locale (`/api/fabrique/...`).
+2. **Scripts déterministes (`scripts/*.mjs`)** — le moteur vérifiable de
+   l'atelier : même logique qu'auparavant (génération, validations,
+   rapport), mais consommée par trois clients — l'interface (via l'API), le
+   CLI (développeurs, OPSN, CI) et les tests. Les validations ne sont jamais
+   confiées au modèle.
+3. **Application finale** — le portail d'onboarding des agents sur
+   `localhost:3010`, sortie du harnais, servie par la même application
+   Next.js que l'atelier.
+
+**Où vit la logique partagée : `scripts/lib/atelier/*.mjs`** (et non
+`src/lib/fabrique/`). Arbitrage : cette logique doit être importable par
+trois consommateurs — les scripts CLI (`.mjs`, sans transpilation), les
+handlers Next (`src/app/api/fabrique/`) et les tests. Next importe sans
+difficulté un module ESM `.mjs` situé hors de `src/` ; l'inverse (importer
+du TypeScript de `src/` depuis un `.mjs`) est précisément le problème
+d'interop déjà identifié pour `diagnostic.ts` (spec scripts §5). On étend
+donc la règle existante : les modules partagés vivent en `.mjs` sous
+`scripts/lib/`, et `src/` les importe. `src/lib/manifest.ts` (zod) reste la
+validation côté application ; le test de non-divergence du Lot 7 couvre les
+deux.
+
 ## 3. Le manifeste `cases/<slug>/harnais.yaml`
 
-Nouveau fichier, écrit par l'interview, lu par les scripts et par `/fabrique`.
+Nouveau fichier, écrit par l'atelier (via l'API locale) ou par l'interview
+CLI, lu par les scripts et par `/fabrique`.
 Schéma zod dans `src/lib/manifest.ts` (nouveau module). Format :
 
 ```yaml
@@ -105,14 +141,14 @@ etat:
 Règles :
 
 - **aucun secret, jamais** dans le manifeste (le mode IA oui, la clé non) ;
-- `etat.etape` n'avance que via l'interview ou les scripts — c'est ce qui rend
-  la progression filmable et vérifiable ;
+- `etat.etape` n'avance que via l'atelier (API locale), le CLI ou les
+  scripts — c'est ce qui rend la progression démontrable et vérifiable ;
 - `configs/<x>.yml` garde l'identité de l'organisation et la gouvernance
   affichée (rôle inchangé) et gagne un champ `cas: <slug>` qui fait le lien.
   Arbitrage : on ne fusionne pas config et manifeste — la config est « qui je
   suis », le manifeste est « ce que la fabrique a décidé et produit ».
 
-## 4. Modifications de `src/` (minimales)
+## 4. Modifications de `src/` (bornées à l'atelier et aux points de couplage)
 
 1. `src/lib/paths.ts` : le chemin contenu devient
    `content/cases/<cas>` où `<cas>` est lu depuis la config active
@@ -122,11 +158,27 @@ Règles :
    messages d'erreur en français, cache comme `content.ts`.
 3. `src/lib/config.ts` : champ optionnel `cas` (défaut `onboarding-agents`)
    + validation.
-4. `src/app/fabrique/page.tsx` (nouveau, statique) : les 15 étapes, l'état du
-   manifeste, liens vers les preuves. Aucune écriture, aucun `process.env`
-   secret.
-5. `src/app/page.tsx` : bandeau « produit par la fabrique » + lien `/fabrique`.
-6. Navigation (`src/components/Nav.tsx`) : entrée `/fabrique` ; modules
+4. `src/app/fabrique/` (nouveau) : l'atelier web guidé — `page.tsx`
+   (tableau de bord des harnais), `nouveau/page.tsx` (démarrage d'un cas),
+   `[slug]/page.tsx` (progression des 15 étapes),
+   `[slug]/etape/[numero]/page.tsx` (étape guidée : questions courtes,
+   réponse proposée, panneau « skill mobilisée », encart « en coulisse »
+   avec la commande équivalente, bouton valider/générer),
+   `[slug]/rapport/page.tsx` (rapport de gouvernance). Rendu dynamique :
+   l'état est lu à la requête (manifeste + API), pas figé au build. Aucun
+   `process.env` secret côté client, aucun champ de saisie de clé.
+5. `src/app/api/fabrique/` (nouveau) : handlers de l'API serveur locale.
+   Chaque handler est une enveloppe mince autour de
+   `scripts/lib/atelier/*.mjs` : validation des entrées (slug `[a-z0-9-]+`,
+   numéro d'étape 1–15, réponses typées), appel de la fonction déterministe,
+   réponse JSON `{ ok, erreurs, avertissements, fichiers }`. Contraintes non
+   négociables : écritures confinées à `cases/`, `content/cases/` et
+   `configs/` (chemins résolus côté serveur et vérifiés contre la racine du
+   dépôt — **aucun chemin fourni par le client**) ; jamais d'écriture dans
+   `.env.local` ; jamais de lecture ni d'affichage d'une valeur de secret ;
+   aucun appel réseau sortant.
+6. `src/app/page.tsx` : bandeau « produit par la fabrique » + lien `/fabrique`.
+7. Navigation (`src/components/Nav.tsx`) : entrée `/fabrique` ; modules
    affichés selon `modules` du manifeste (parcours/faq/quiz/checklist).
 
 Tout le reste de `src/lib` (retrieval, guardrails, answer, logging, model/)
@@ -179,8 +231,14 @@ ad hoc (remplacé par `generate-onboarding-demo.mjs` spécifié).
 - `templates/cases/documentaire/` et `content/cases/onboarding-agents/`
   peuvent diverger ; garde-fou : `validate-corpus --template` compare les
   structures (avertissement, non bloquant) ;
-- la page `/fabrique` lit le manifeste au build : après une interview, il faut
-  relancer `npm run dev` pour voir l'état à jour — documenté, acceptable en
-  local ;
-- l'interview écrit du YAML : tout écrit passe par `js-yaml` (`dump`), jamais
-  par concaténation de chaînes, pour éviter les fichiers invalides.
+- l'API locale de l'atelier écrit dans le workspace depuis le navigateur :
+  risque borné par conception — chemins confinés au dépôt et résolus côté
+  serveur, aucun chemin fourni par le client, serveur strictement local (pas
+  d'exposition réseau, comme le reste de l'application), pas de secret
+  accessible ; ces limites sont rappelées sur `/fabrique` ;
+- deux clients (atelier et CLI) pour une même logique : la règle « toute
+  logique d'étape vit dans `scripts/lib/atelier/`, jamais dupliquée dans un
+  handler ou dans l'interview » est le garde-fou contre la divergence ;
+- l'atelier et l'interview écrivent du YAML : tout écrit passe par `js-yaml`
+  (`dump`), jamais par concaténation de chaînes, pour éviter les fichiers
+  invalides.

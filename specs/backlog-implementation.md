@@ -116,9 +116,11 @@ Non applicable (lot d'infrastructure).
 
 Faire exister l'arborescence cible (architecture §2) avec le cas renommé
 `onboarding-agents`, son manifeste `harnais.yaml` rétro-rempli, les points de
-couplage du code mis à jour, et une première page `/fabrique` en lecture
-seule. À la fin du lot, l'application fonctionne exactement comme avant, sur
-la nouvelle arborescence, plus la route `/fabrique`.
+couplage du code mis à jour, et la **première version du tableau de bord de
+l'atelier `/fabrique`** — minimale mais déjà orientée interface : c'est le
+socle sur lequel les Lots 5a/5b brancheront les étapes guidées et l'API. À la
+fin du lot, l'application fonctionne exactement comme avant, sur la nouvelle
+arborescence, plus la route `/fabrique`.
 
 ### Fichiers à créer / modifier
 
@@ -145,11 +147,14 @@ la nouvelle arborescence, plus la route `/fabrique`.
 - `src/lib/manifest.ts` — chargement + validation zod du manifeste, messages
   d'erreur en français, cache calqué sur `content.ts` ; exporte le type
   `Manifeste` et `chargerManifeste(slug)` ;
-- `src/app/fabrique/page.tsx` — page **statique**, lecture seule : titre, les
-  15 étapes du parcours (libellés du PRD v0.3 §4) avec l'état courant
-  (`etat.etape`), le statut, et un lien par preuve existante (`/sources`,
-  `/gouvernance`, `/limites`, `/configuration-ia`). Version minimale dans ce
-  lot ; enrichissement pédagogique au Lot 5.
+- `src/app/fabrique/page.tsx` — tableau de bord de l'atelier, version
+  minimale : titre, le cas `onboarding-agents` avec les 15 étapes du parcours
+  (libellés du PRD v0.3 §4), l'état courant (`etat.etape`), le statut, et un
+  lien par preuve existante (`/sources`, `/gouvernance`, `/limites`,
+  `/configuration-ia`). **Rendu dynamique** (état lu à la requête, pas figé
+  au build) pour que les Lots 5a/5b y branchent les actions sans changer de
+  modèle de rendu. Les sous-routes (`/fabrique/nouveau`, `/fabrique/[slug]`,
+  étapes, rapport) et l'API arrivent aux Lots 5a/5b.
 
 **Modifications :**
 
@@ -193,7 +198,7 @@ la nouvelle arborescence, plus la route `/fabrique`.
 - [ ] `cases/onboarding-agents/harnais.yaml` valide au sens de
       `src/lib/manifest.ts` ;
 - [ ] `npm test` vert (36/36, chemins ajustés — aucun test supprimé) ;
-- [ ] `npm run build` : 21 routes, `/fabrique` statique ;
+- [ ] `npm run build` : 21 routes, `/fabrique` rendue dynamiquement ;
 - [ ] `npm run validate-harness` vert sur la nouvelle arborescence ;
 - [ ] l'application rend exactement les mêmes contenus qu'avant (mêmes 6
       sources sur `/sources`, même FAQ) ;
@@ -220,9 +225,10 @@ npm run dev &   # puis vérifier /, /sources, /faq, /fabrique sur :3010
 
 ### Non-objectifs
 
-- Pas de nouveau script (Lot 3), pas de nouvelle source (Lot 4), pas de
-  bandeau d'accueil ni de navigation par modules (Lot 5), pas de couche de
-  compatibilité (décision d'architecture §5 : migration en une fois).
+- Pas de nouveau script (Lot 3), pas de nouvelle source (Lot 4), pas d'API
+  locale ni de sous-routes d'atelier (Lots 5a/5b), pas de bandeau d'accueil
+  ni de navigation par modules (Lot 5b), pas de couche de compatibilité
+  (décision d'architecture §5 : migration en une fois).
 
 ### Dépendances
 
@@ -230,8 +236,8 @@ npm run dev &   # puis vérifier /, /sources, /faq, /fabrique sur :3010
 
 ### Livrable démontrable en vidéo
 
-`/fabrique` (les 15 étapes, l'état du manifeste) — préfiguration du plan 7 du
-scénario vidéo.
+`/fabrique` (les 15 étapes, l'état du manifeste) — préfiguration du tableau
+de bord du plan 2 du scénario vidéo.
 
 ---
 
@@ -321,19 +327,24 @@ npm test && npm run build
 
 ### Livrable démontrable en vidéo
 
-`cat skills/concevoir-garde-fous/SKILL.md` — c'est le plan 3 du scénario
-vidéo, intégralement.
+Le contenu de `skills/concevoir-garde-fous/SKILL.md` — c'est ce que le
+panneau « skill mobilisée » de l'atelier affichera au plan 3 du scénario
+vidéo (le fichier est la source, le panneau du Lot 5b le rend visible).
 
 ---
 
-## Lot 3 — Scripts déterministes
+## Lot 3 — Couche déterministe réutilisable et scripts
 
 ### Objectif
 
-Implémenter les 8 scripts de `specs/spec-scripts-deterministes.md` :
-l'interview en 15 étapes, le scaffolding, les trois validateurs, le rapport de
-gouvernance, la régénération démo, et la refonte de l'orchestrateur. Tout est
-reproductible, en français, sans réseau, sans secret.
+Produire la **couche déterministe réutilisable** de la fabrique
+(`scripts/lib/`, dont `scripts/lib/atelier/` — la logique des 15 étapes
+consommée ensuite par l'API du Lot 5a, par le CLI et par les tests) et
+implémenter les 8 scripts de `specs/spec-scripts-deterministes.md` :
+l'interview CLI en 15 étapes (mode alternatif à l'atelier web), le
+scaffolding, les trois validateurs, le rapport de gouvernance, la
+régénération démo, et la refonte de l'orchestrateur. Tout est reproductible,
+en français, sans réseau, sans secret.
 
 ### Fichiers à créer / modifier
 
@@ -348,6 +359,12 @@ reproductible, en français, sans réseau, sans secret.
 - `scripts/generate-onboarding-demo.mjs` (spec §7 — squelette : modes
   vérification/écriture ; son contenu de référence `scripts/demo/` arrive au
   Lot 4) ;
+- `scripts/lib/atelier/` — la logique partagée des 15 étapes (spec §0) :
+  `etapes.mjs` (définition déclarative : libellés, questions, skill associée,
+  validations, fichiers produits), `reponses.mjs` (validation et application
+  d'une réponse), `actions.mjs` (exécution des actions déterministes, retour
+  `{ ok, erreurs, avertissements, fichiers }`) — importable sans TTY ni
+  transpilation, car consommée par les handlers `/api/fabrique/*` au Lot 5a ;
 - `scripts/lib/motifs-interdits.mjs` — module partagé des regex interdites
   (courriel plausible, téléphone, NIR, IBAN, motif de clé), **extraites de
   `tests/structure/`** pour une source unique de vérité ;
@@ -374,9 +391,9 @@ reproductible, en français, sans réseau, sans secret.
 
 ### Tâches atomiques
 
-1. Créer `scripts/lib/` (motifs, manifeste, diagnostic) en premier — tout le
-   reste s'appuie dessus ; adapter `tests/structure/` pour importer les motifs
-   partagés (mêmes regex, zéro divergence).
+1. Créer `scripts/lib/` (motifs, manifeste, diagnostic, **atelier/**) en
+   premier — tout le reste s'appuie dessus ; adapter `tests/structure/` pour
+   importer les motifs partagés (mêmes regex, zéro divergence).
 2. Implémenter les validateurs (`validate-corpus`, `validate-guardrails`,
    `validate-provider-config`) : contrôles, codes de sortie 0/1/2, `--json`,
    messages français préfixés du fichier fautif — liste exhaustive des
@@ -391,7 +408,9 @@ reproductible, en français, sans réseau, sans secret.
    défaut, récapitulatif `o/N`, reprise via `etat.etape`, refus d'éligibilité
    en code 0, heuristique anti-« Prénom Nom », validation dates/slug) ; les
    étapes 10/13/14/15 affichent la commande à lancer sans l'exécuter ;
-   mode `--demo` non interactif lisant `reponses-demo.yaml`.
+   mode `--demo` non interactif lisant `reponses-demo.yaml`. L'interview est
+   une **enveloppe mince** autour de `scripts/lib/atelier/` : aucune logique
+   d'étape ni de validation dupliquée dans le script.
 6. Implémenter `build-harness-report.mjs` : agrégation des `--json` des trois
    validateurs, rapport conforme spec §6, date d'horloge confinée à l'en-tête.
 7. Vérifier chaque script : `--help` présent, aucun accès réseau, aucun
@@ -400,6 +419,8 @@ reproductible, en français, sans réseau, sans secret.
 ### Critères d'acceptation
 
 - [ ] les 7 scripts npm nouveaux répondent à `--help` ;
+- [ ] les fonctions de `scripts/lib/atelier/` sont importables et exécutables
+      sans TTY (vérifié par un test d'import direct) — condition du Lot 5a ;
 - [ ] `npm run interview -- --demo` déroule les 15 étapes sans TTY et sort en
       0, en produisant des fichiers dans un cas jetable ;
 - [ ] `npm run scaffold -- --cas essai --dry-run` liste sans créer ;
@@ -457,13 +478,16 @@ git clean -n  # relever puis supprimer le cas "essai" de test avant commit
 
 - Requiert Lots 1 (arborescence, manifeste) et 2 (cohérence skills ↔ scripts,
   vérifiée dans les deux sens à la fin du lot).
-- Conditionne Lots 4 (validation du corpus), 5 (démo interview), 7 (tests des
-  scripts), 8 (rapport dans la vidéo).
+- Conditionne Lots 4 (validation du corpus), 5a/5b (l'API et l'atelier
+  consomment `scripts/lib/atelier/`), 7 (tests des scripts), 8 (rapport dans
+  la vidéo).
 
 ### Livrable démontrable en vidéo
 
-Plans 2 (interview + refus d'éligibilité), 4 (scaffold `--dry-run` +
-`validate-corpus`), 5 (`validate-provider`), 8 (`rapport`) du scénario vidéo.
+Le moteur des plans 2, 4, 5 et 8 du scénario (les actions que l'atelier
+déclenchera via l'API) ; en attendant les Lots 5a/5b, le circuit est
+démontrable en CLI (`interview --demo`, `scaffold --dry-run`,
+`validate-corpus`, `rapport`).
 
 ---
 

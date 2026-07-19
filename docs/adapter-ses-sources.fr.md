@@ -155,6 +155,13 @@ inséré. **Il ne fait ni conversion PDF, ni OCR, ni contrôle de contenu** : la
 relecture et le retrait des données personnelles restent à votre charge. Voir
 l'aide : `node scripts/import-source.mjs --help`.
 
+> **Version opérationnelle.** Ce guide est mis en œuvre pas à pas par deux
+> skills de la fabrique : `skills/classifier-sources/SKILL.md` (déclarer une
+> source et classer ses données, `publique`/`interne`) et
+> `skills/adapter-corpus-onboarding/SKILL.md` (amorcer la source avec
+> `import-source` puis la contrôler avec `validate-corpus`). Le guide reste la
+> référence ; les skills en sont la version exécutable, une question à la fois.
+
 ---
 
 ## Ce que ce document ne couvre pas

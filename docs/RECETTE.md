@@ -319,3 +319,64 @@ Pas de nouveau script (Lot 3), pas de nouvelle source (Lot 4), pas d'API locale
 ni de sous-routes d'atelier (Lots 5a/5b), pas de navigation par modules
 (Lot 5b), pas de couche de compatibilité (architecture §5).
 
+## Lot 2 — Skills locales (`skills/<nom>/SKILL.md`)
+
+- **Date** : 2026-07-19 (session S2).
+- **Périmètre** : extraire des guides existants (`docs/cycle-de-vie.fr.md`,
+  `docs/adapter-ses-sources.fr.md`, PRD) les 8 skills de `specs/spec-skills.md`.
+  Aucune modification de `src/`, `content/`, `configs/`, `scripts/`.
+
+### Fichiers créés (8 skills)
+
+| Skill | `etapes_parcours` | Scripts associés (spec, Lot 3) |
+|---|---|---|
+| `skills/cadrer-besoin-public/SKILL.md` | [1, 2, 3, 6] | `interview-harness` |
+| `skills/classifier-sources/SKILL.md` | [4, 5] | `interview-harness`, `validate-corpus` |
+| `skills/concevoir-garde-fous/SKILL.md` | [7, 8] | `interview-harness`, `validate-guardrails` |
+| `skills/configurer-fournisseur-ia/SKILL.md` | [9] | `validate-provider-config` |
+| `skills/adapter-corpus-onboarding/SKILL.md` | [11] | `import-source`, `validate-corpus` |
+| `skills/generer-tests-harnais/SKILL.md` | [13] | `validate-guardrails` |
+| `skills/verifier-securite-rgpd/SKILL.md` | [15] | `validate-harness`, `build-harness-report` |
+| `skills/preparer-demo-video/SKILL.md` | [] (hors parcours) | `validate-harness`, `build-harness-report` |
+
+Chaque `SKILL.md` : frontmatter (`name`, `description`, `etapes_parcours`,
+`scripts_associes`, `fichiers_produits`) + les 5 sections obligatoires
+(« Quand l'activer », « Ce que je demande », « Ce que je produis », « Ce que je
+refuse », « Réussite »), questions une à la fois avec exemples
+`onboarding-agents`, refus verbatim du stockage de clé, refus des données
+personnelles réelles, refus des cas individuels RH, renvoi aux scripts
+déterministes du Lot 3 (écrits contre leur spec, non encore implémentés).
+
+### Fichiers modifiés
+
+- `docs/cycle-de-vie.fr.md` : encart « Version opérationnelle » renvoyant vers
+  les 7 skills du parcours.
+- `docs/adapter-ses-sources.fr.md` : encart renvoyant vers
+  `classifier-sources` et `adapter-corpus-onboarding`.
+
+### Vérifications (toutes exécutées ce jour)
+
+| Commande / contrôle | Résultat |
+|---|---|
+| `ls skills/*/SKILL.md \| wc -l` | **8** |
+| `gray-matter` parse des 8 | **OK** — 8/8, les 5 clés de frontmatter présentes |
+| 5 sections obligatoires par skill | **5/5** sur les 8 |
+| Union des `etapes_parcours` | `[1,2,3,4,5,6,7,8,9,11,13,15]` = exactement les étapes du PRD v0.3 §4 déclarant une skill (10/12/14 = « — », aucune orpheline, aucune surnuméraire) |
+| Motifs de secrets/clés dans `skills/` | **aucun** ; `[REDACTED]` utilisé pour l'exemple de clé |
+| Civilité + Nom | uniquement « Madame Martin » (cas de refus fictif) |
+| Courriels littéraux | **aucun** |
+| Mention concurrentielle / ancien nom écarté | **aucune** |
+| `npm test` | **36/36** (inchangé — skills hors `src/`) |
+| `npm run build` | **OK** (table de routes inchangée, `/fabrique` dynamique) |
+| `npm run validate-harness` | **OK** — 6 sources, 6 fiches, prototype |
+
+### Écarts
+
+Aucun. `scripts_associes` référence des scripts encore à implémenter (Lot 3) :
+c'est conforme au backlog (« la skill est écrite contre sa spec »).
+
+### Points non traités (non-objectifs du Lot 2)
+
+Pas d'implémentation des scripts appelés (Lot 3) ; pas de mécanique
+d'activation spéciale (le format fichier suffit).
+

@@ -47,6 +47,16 @@ Qui met à jour, à quel rythme ? Comment un lecteur signale-t-il une erreur ? Q
 
 Ces dix étapes portent les mêmes numéros et les mêmes intitulés dans la documentation, les modèles à remplir, le contenu de démonstration et l'application. L'utilisateur garde les mêmes repères d'un bout à l'autre.
 
+> **Version opérationnelle.** Chaque grande étape est activable pas à pas par
+> une skill de la fabrique (`skills/<nom>/SKILL.md`) : `cadrer-besoin-public`
+> (cadrer le besoin, le type, l'organisation, les publics),
+> `classifier-sources` (lister et classer les sources),
+> `concevoir-garde-fous` (règles et refus), `configurer-fournisseur-ia`
+> (mode IA), `adapter-corpus-onboarding` (import du corpus),
+> `generer-tests-harnais` (tests) et `verifier-securite-rgpd` (rapport de
+> gouvernance). Ce document reste la référence pédagogique ; les skills en sont
+> la version exécutable, une question à la fois.
+
 ---
 
 ## Les trois statuts

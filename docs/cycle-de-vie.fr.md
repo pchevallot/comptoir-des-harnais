@@ -7,7 +7,7 @@
 - **P3 — la direction des systèmes d'information et la sécurité (DSI/RSSI).** Pour situer son rôle dans le parcours.
 - **P4 — le délégué à la protection des données (DPO) et les juristes.** Pour repérer où se place la qualification des données.
 
-Après cette lecture, vous saurez à quoi ressemble le parcours en dix étapes, ce que veulent dire les trois statuts, et qui porte la responsabilité à chaque grande étape.
+Après cette lecture, vous saurez à quoi ressemble le parcours — dix grandes étapes pédagogiques, déclinées en quinze étapes opérationnelles dans la fabrique —, ce que veulent dire les trois statuts, et qui porte la responsabilité à chaque grande étape.
 
 ---
 
@@ -56,6 +56,40 @@ Ces dix étapes portent les mêmes numéros et les mêmes intitulés dans la doc
 > `generer-tests-harnais` (tests) et `verifier-securite-rgpd` (rapport de
 > gouvernance). Ce document reste la référence pédagogique ; les skills en sont
 > la version exécutable, une question à la fois.
+
+---
+
+## Le parcours opérationnel en 15 étapes
+
+Les dix grandes étapes ci-dessus sont la **vue pédagogique** du cycle. Dans la
+fabrique, elles se déclinent en **15 étapes opérationnelles**, portées par
+l'atelier (`/fabrique` pour l'état, `npm run interview` pour dérouler) et par
+les scripts déterministes. Ces 15 libellés sont **identiques mot pour mot**
+dans le PRD v0.3 §4, la page `/fabrique`, `scripts/lib/atelier/etapes.mjs`, les
+skills et le README :
+
+| # | Étape | Skill | Grande étape pédagogique |
+|---|---|---|---|
+| 1 | Choisir le type de harnais | `cadrer-besoin-public` | 2 |
+| 2 | Cadrer le besoin | `cadrer-besoin-public` | 1 |
+| 3 | Décrire l'organisation | `cadrer-besoin-public` | 1 |
+| 4 | Déclarer les sources | `classifier-sources` | 3 |
+| 5 | Classer les données | `classifier-sources` | 4 |
+| 6 | Définir les publics | `cadrer-besoin-public` | 5 |
+| 7 | Questions autorisées | `concevoir-garde-fous` | 5 |
+| 8 | Définir les refus | `concevoir-garde-fous` | 6 |
+| 9 | Choisir le fournisseur IA | `configurer-fournisseur-ia` | 7 |
+| 10 | Générer la structure | — (action déterministe) | 7 |
+| 11 | Importer/contrôler le corpus | `adapter-corpus-onboarding` | 3, 7 |
+| 12 | Générer/assembler l'application | — (branchement config) | 7 |
+| 13 | Exécuter les tests | `generer-tests-harnais` | 8 |
+| 14 | Ouvrir l'application du cas | — | 7 |
+| 15 | Produire le rapport de gouvernance | `verifier-securite-rgpd` | 9, 10 |
+
+Chaque étape est journalisée dans le manifeste (`cases/<slug>/harnais.yaml`,
+champ `etat.etape`). La validation humaine et la décision de statut (étape 9
+pédagogique) restent des actes humains, hors de tout automatisme : voir
+ci-dessous.
 
 ---
 

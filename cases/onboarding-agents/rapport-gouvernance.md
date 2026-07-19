@@ -63,8 +63,7 @@ Socle non négociable (toujours refusé) : cas individuels, avis juridique/médi
 
 ### Garde-fous
 
-- 0 erreur(s), 1 avertissement(s).
-  - ! 2 cas sourcés valides (< 5 attendus) — corpus/tests denses au Lot 7.
+- 0 erreur(s), 0 avertissement(s).
 
 ### Configuration IA (non bloquante)
 

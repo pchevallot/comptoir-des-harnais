@@ -14,8 +14,32 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 <!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
 <!-- ================================================================= -->
 
-> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 7 terminé**, au seuil du **Lot 8**
+> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lots 0 à 8 terminés, refonte close sur la branche**
 >
+> > **Mise à jour 2026-07-19 (fin S8) : le Lot 8 est complet et vert. La refonte
+> > est terminée sur `refonte-fabrique`.** Documentation refondue « fabrique
+> > d'abord » : `README.md` présente la fabrique avant le portail (parcours en
+> > 15 étapes, démarrage par `npm run interview`, structure exacte, 9 scripts
+> > npm) ; `docs/architecture.fr.md` et `docs/cycle-de-vie.fr.md` alignés sur les
+> > 15 étapes et l'arborescence par cas ; `cases/onboarding-agents/demo/plan-demo.md`
+> > **créé** (plan de démo vérifié commande par commande). `docs/RECETTE.md`
+> > § « Lot 8 » porte la synthèse finale des 8 lots et le **tableau PRD v0.3 §6 →
+> > preuves**. **Écart majeur assumé et consigné** : l'**atelier guidé navigateur**
+> > (sous-routes `/fabrique/nouveau`, `/fabrique/[slug]/etape/[n]`,
+> > `/fabrique/[slug]/rapport` et API `/api/fabrique/*`) **n'existe pas** (non-objectif
+> > Lot 5, lot ultérieur) → **critères §6 n°1 et n°6 non atteints, honnêtement
+> > documentés** ; `/fabrique` est un tableau de bord **en lecture seule**. Le
+> > `plan-demo.md` adapte les plans concernés au terminal + `/fabrique`, sans
+> > jamais mettre en scène un bouton inexistant. **Chiffres réels finaux** :
+> > `npm test` **83/83**, `npm run build` **OK** (24 pages, `/fabrique` `ƒ`),
+> > `validate-corpus` **16 sources 0/0**, `validate-guardrails` **0/0**,
+> > `validate-harness` **OK**, `generate-demo` **aucun écart**. `rapport-gouvernance.md`
+> > régénéré (avertissement Lot 7 soldé → 0/0). Scan secrets/PII/libellés exclus
+> > sur chemins actifs : **0** (2 PII = fixtures négatives isolées). **Aucun push,
+> > aucun merge, aucun tag** : décision de fusion réservée à Pascal. **Relever le
+> > HEAD réel par `git log --oneline -1`** (le commit du Lot 8 est
+> > `docs: finaliser la refonte fabrique (Lot 8)`).
+> >
 > > **Mise à jour 2026-07-19 (fin S7) : le Lot 7 est complet et vert.** Couverture
 > > de tests portée à la hauteur de la refonte : **36 → 83 tests** (configuration-ia
 > > 18, structure 19, manifeste 19, scripts 7, garde-fous 20). **9 cas de
@@ -188,9 +212,12 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 > |---|---|---|
 > | Skills présentes | `find skills -maxdepth 2 -name SKILL.md \| wc -l` | **8** |
 > | Frontmatter skills | script `gray-matter` ci-dessous | **8/8 OK** (5 clés chacun) |
-> | Tests | `npm test` | **36/36** (configuration-ia 18, structure 7, guardrails 11) |
-> | Build | `npm run build` | **OK** — 20 pages statiques + `/fabrique` dynamique (`ƒ`) = 21 routes |
-> | Harnais | `npm run validate-harness` | **OK** — cas `onboarding-agents`, 6 sources, 6 fiches, prototype |
+> | Tests | `npm test` | **83/83** (configuration-ia 18, structure 19, manifeste 19, scripts 7, garde-fous 20) |
+> | Build | `npm run build` | **OK** — 24 pages prérendues, `/fabrique` dynamique (`ƒ`) ; 3 routes `ƒ` (`/api/faq`, `/configuration-ia`, `/fabrique`) |
+> | Harnais | `npm run validate-harness` | **OK** — cas `onboarding-agents`, **16 sources**, **10 fiches**, corpus 0/0, garde-fous 0/0, config IA `local` non bloquante |
+> | Corpus | `npm run validate-corpus -- --cas onboarding-agents` | **16 sources, 0 erreur, 0 avertissement** |
+> | Garde-fous | `npm run validate-guardrails -- --cas onboarding-agents` | **0 erreur, 0 avertissement** |
+> | Référence démo | `npm run generate-demo` | **aucun écart** (cas conforme à `scripts/demo/`) |
 > | Secrets | grep `sk-…`/`AKIA…`/`PRIVATE KEY` sur `skills content cases configs scripts src` | **0** |
 > | Concurrent / ancien nom | grep interdits sur `docs specs skills` | **0** |
 >
@@ -420,10 +447,13 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 > 8. **Commit local** par lot/demi-lot, message français conventionnel. **Aucun
 >    push, aucun merge.**
 >
-> **Lots 3, 4, 5 et 6 sont verts.** Prochaine étape : **Lot 7** (tests,
-> sécurité, RGPD, absence de secrets — relire `specs/backlog-implementation.md`
-> § Lot 7 avant de démarrer). Ne pas modifier le corpus ni l'organisation démo
-> sans passer par la référence `scripts/demo/onboarding-agents/` puis
+> **Les Lots 0 à 8 sont verts ; la refonte est close sur la branche** (voir la
+> mise à jour « fin S8 » en tête de ce bloc — elle fait foi). Les §E/§F ci-dessous
+> sont **historiques** (rédigés au seuil du Lot 3) et conservés comme trace ; ils
+> ne décrivent plus la prochaine étape. **Il n'y a plus de lot à réaliser** : la
+> seule décision ouverte est humaine (fusion `refonte-fabrique` → `main`,
+> réservée à Pascal). Ne pas modifier le corpus ni l'organisation démo sans
+> passer par la référence `scripts/demo/onboarding-agents/` puis
 > `npm run generate-demo -- --ecrire`.
 > Rappel Lot 5 : la nav pilotée par modules est **rendue au build** (le layout ne
 > déclenche pas de rendu dynamique) — tester un basculement de module par

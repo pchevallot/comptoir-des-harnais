@@ -977,3 +977,143 @@ hors-corpus. Aucun renvoi vers une personne.
 Aucun appel réseau réel aux fournisseurs IA ; aucune modification des regex de
 `src/lib/guardrails.ts` ; pas de test de charge ; **Lot 8 non entamé** (README,
 scénario vidéo, recette finale, handoff refondu).
+
+
+## Lot 8 — README, scénario vidéo, recette finale, handoff
+
+- **Date** : 2026-07-19 (session S8, après `/clear`). Modèle : `claude-opus-4-8`.
+- **Spec d'autorité** : `specs/backlog-implementation.md` § Lot 8 ;
+  `specs/PRD-v0.3-harnais-fabrique.md` §3 et §6 ; `specs/spec-parcours-video.md`.
+- **HEAD de départ** : `5c2c6b5` (`test: renforcer la couverture sécurité et
+  garde-fous (Lot 7)`).
+- **Objectif** : rendre le dépôt lisible à froid et raconter la fabrique
+  d'abord, partout, sans surpromettre — chaque affirmation reliée à un fichier
+  ou une commande réellement exécutée.
+
+### Chiffres réels relevés ce jour (jamais recopiés)
+
+| Élément | Valeur constatée | Commande |
+|---|---|---|
+| Tests | **83/83** (configuration-ia 18, structure 19, manifeste 19, scripts 7, garde-fous 20) | `npm test` |
+| Build | **OK** — 24 pages prérendues, `/fabrique` `ƒ` dynamique ; 16 entrées de route dont 3 dynamiques (`/api/faq`, `/configuration-ia`, `/fabrique`) | `npm run build` |
+| Corpus | **16 sources, 0 erreur, 0 avertissement** | `npm run validate-corpus -- --cas onboarding-agents` |
+| Garde-fous | **0 erreur, 0 avertissement** | `npm run validate-guardrails -- --cas onboarding-agents` |
+| Harnais | **OK** — corpus 0/0, garde-fous 0/0, config IA `local` non bloquante | `npm run validate-harness` |
+| Référence démo | **aucun écart** | `npm run generate-demo` |
+| Fiches | **10** | `getFiches()` / `/fabrique` |
+| Modules de parcours | **7** | `content/cases/onboarding-agents/parcours/parcours.yml` |
+| Questions de quiz | **14** | `content/cases/onboarding-agents/quiz/quiz.yml` |
+| Skills | **8** | `ls skills` |
+| Scripts npm harnais | **9** (`interview`, `scaffold`, `validate-corpus`, `validate-guardrails`, `validate-provider`, `validate-harness`, `rapport`, `generate-demo`, `import-source`) | `package.json` |
+
+### Fichiers modifiés (permanents, Lot 8)
+
+- `README.md` — **refonte fabrique d'abord** : titre et ouverture présentent la
+  fabrique avant le portail ; « Un harnais n'est pas un prompt » ; parcours en
+  15 étapes (schéma texte `besoin → atelier → génération → corpus → validation →
+  application → rapport` + tableau des 15 libellés verbatim) ; démarrage rapide
+  commençant par `npm run interview -- --demo`, puis `/fabrique` (décrit
+  honnêtement comme **tableau de bord en lecture seule**), puis `npm run dev`
+  pour l'application ; structure du dépôt exacte (`cases/`, `content/cases/`,
+  `skills/`, `scripts/lib/`) ; tableau des 9 scripts npm ; configuration IA
+  (7 modes) ; sécurité/gouvernance ; licences ; English summary réécrit
+  « fabrique d'abord ». Badges, licences et maintenance conservés.
+- `docs/architecture.fr.md` — §1 : rôle de la fabrique, arborescence par
+  territoires (`cases/`, `content/cases/`, `skills/`, `scripts/lib/`), manifeste
+  par cas ; §2 : corpus 16 sources, chemin `content/cases/<cas>/` ; §3 : 7 modes
+  IA (catalogue) au lieu de 3.
+- `docs/cycle-de-vie.fr.md` — nouvelle section « Le parcours opérationnel en
+  15 étapes » (15 libellés verbatim + correspondance aux 10 grandes étapes
+  pédagogiques) ; intro alignée (dix étapes pédagogiques → quinze opérationnelles).
+- `cases/onboarding-agents/demo/plan-demo.md` — **créé** (nouveau dossier
+  `demo/`) : plan de démonstration vérifié commande par commande, conforme au
+  dépôt réel, avec **écart majeur consigné** (voir ci-dessous).
+- `docs/RECETTE.md` — cette section + synthèse finale + tableau PRD §6.
+- `docs/HANDOFF.md` — bloc de reprise à froid finale (Lots 0–8).
+- `CHANGELOG.md` — entrée de refonte finalisée (Lots 2–8).
+- `cases/onboarding-agents/rapport-gouvernance.md` — **régénéré** par
+  `npm run rapport` : l'avertissement « < 5 cas sourcés » (soldé au Lot 7) y
+  était encore inscrit ; le rapport affiche désormais **0 erreur / 0
+  avertissement**, cohérent avec l'état réel des garde-fous. Seule modification :
+  cette ligne (le reste, dont la date d'en-tête, inchangé).
+
+### Écart majeur consigné : atelier guidé navigateur non implémenté
+
+`specs/spec-parcours-video.md` et le PRD v0.3 §3 bis décrivent des **sous-routes
+d'atelier** (`/fabrique/nouveau`, `/fabrique/[slug]/etape/[n]`,
+`/fabrique/[slug]/rapport`) et une **API `/api/fabrique/*`** qui **n'existent
+pas** dans le dépôt (non-objectifs explicites du Lot 5, réservés à un lot
+ultérieur). Ce qui existe : `/fabrique` en **lecture seule** (état du manifeste
++ 15 étapes + encarts « en coulisse »), le portail complet, et le **CLI de
+l'atelier** (`npm run interview`). Conformément à la skill `preparer-demo-video`
+(« je ne mets pas en scène un résultat qui n'existe pas »), `plan-demo.md`
+**adapte** chaque plan concerné : l'atelier guidé se montre au terminal et via
+`/fabrique`, jamais par une saisie de réponses au navigateur. L'écart est
+documenté en tête de `plan-demo.md`, pas masqué.
+
+### Plan de démo — commandes réellement exécutées
+
+Toutes le 2026-07-19, mode `local` (voir `cases/onboarding-agents/demo/plan-demo.md`) :
+
+| Plan | Commande / action | Résultat |
+|---|---|---|
+| 1 | `head -40 README.md` | « fabrique » avant le portail |
+| 2 | `npm run interview -- --demo` | 15 étapes, code 0 (cas jouet `demo-atelier` supprimé après essai) |
+| 3 | ouverture `skills/concevoir-garde-fous/SKILL.md` | frontmatter + 5 sections |
+| 4 | `npm run validate-corpus -- --cas onboarding-agents` | 16 sources, 0/0 |
+| 5 | `curl /configuration-ia` (serveur port libre) | 200, mode `local`, aucune clé affichée |
+| 6 | `npm test` + `npm run validate-guardrails -- --cas onboarding-agents` | 83/83 ; 0/0 |
+| 7 | `curl /` + POST `/api/faq` | Val de Brenne + bandeau fabrique ; télétravail → **SRC-003** cité ; « Madame Martin » → **refus** cas individuel |
+| 8 | `npm run rapport -- --cas onboarding-agents` | rapport écrit, mention « ne vaut pas validation juridique » |
+
+> Serveur de vérification HTTP lancé sur un **port libre dédié (3018)**, `✓ Ready`
+> attendu avant tout `curl`, puis **arrêté** (process identifié par `PORT=3018`
+> dans son `environ`). Les serveurs `next-server` orphelins d'**autres sessions**
+> (dont le squat historique du port 3010) n'ont **pas** été tués (même arbitrage
+> que Lots 5/6). Cas jouet `demo-atelier` supprimé (`git status` propre).
+
+### Tableau de correspondance — critères d'acceptation PRD v0.3 §6 → preuves
+
+| # | Critère PRD v0.3 §6 | Statut | Preuve (2026-07-19) |
+|---|---|---|---|
+| 1 | l'atelier `/fabrique` conduit les 15 étapes **dans le navigateur** avec reprise, sans secret | **Non atteint (assumé)** | `/fabrique` existe en **lecture seule** (200, 15 étapes, aucun champ de clé) ; la conduite guidée navigateur (saisie) est un lot ultérieur — cf. `plan-demo.md` §écart et Lot 5 non-objectifs |
+| 2 | `npm run interview` déroule les 15 étapes, `--demo` exécutable en CI | **Atteint** | `npm run interview -- --demo` → 15 étapes, code 0 ; testé par `tests/scripts/scripts.test.ts` |
+| 3 | `npm run scaffold -- --cas essai` produit une arborescence que `validate-harness -- --cas essai` sait évaluer (échec attendu si corpus vide) | **Atteint** | prouvé au Lot 6 (circuit `essai` : scaffold → corpus vide « erreurs nommées » → import → OK) et par `tests/scripts/scripts.test.ts` (scaffold idempotent) |
+| 4 | `onboarding-agents` = 16 sources conformes, `npm test` vert | **Atteint** | `validate-corpus` 16 sources 0/0 ; `npm test` 83/83 |
+| 5 | chaque skill de `spec-skills.md` existe et est citée par son étape | **Atteint** | 8 `skills/*/SKILL.md` ; union des `etapes_parcours` = étapes du parcours (test structure) ; citées sur `/fabrique` |
+| 6 | routes `/fabrique/nouveau`, `[slug]`, `etape/[n]`, `rapport` + handlers `/api/fabrique/*` testés | **Non atteint (assumé)** | sous-routes et API **absentes** (non-objectif Lot 5, lot ultérieur) — cf. `plan-demo.md` §écart |
+| 7 | le README raconte la fabrique d'abord ; « fabrique » avant le portail | **Atteint** | `head -40 README.md` : titre et ouverture = fabrique |
+| 8 | chaque plan de `spec-parcours-video.md` correspond à un élément exécutable | **Atteint par adaptation** | `plan-demo.md` : chaque plan mappé à une action réelle ; les plans reposant sur les sous-routes absentes sont **adaptés** (terminal + `/fabrique`), l'écart consigné |
+
+**Bilan honnête** : 6 critères sur 8 atteints ; **2 non atteints assumés**
+(critères 1 et 6 : l'atelier guidé navigateur et ses sous-routes/API, hors
+périmètre des lots livrés — le PRD les cadre en V1.5, le backlog les a
+explicitement reportés). Aucun critère n'est présenté comme atteint s'il ne
+l'est pas.
+
+### Synthèse finale de la refonte (Lots 0 → 8)
+
+| Lot | Livrable | Preuve durable |
+|---|---|---|
+| 0 | Branche `refonte-fabrique`, tag `avant-refonte-fabrique`, CHANGELOG d'ouverture | §« Lot 0 » |
+| 1 | Arborescence fabrique (`cases/`, `content/cases/`), manifeste, `/fabrique`, `src/lib/manifest.ts` | §« Lot 1 » |
+| 2 | 8 skills `skills/<nom>/SKILL.md` | §« Lot 2 » |
+| 3 | Couche déterministe `scripts/lib/` + atelier + 3 validateurs + orchestrateur + interview | §« Lot 3 » |
+| 4 | Corpus dense 16 sources, 10 fiches, 7 modules, 14 quiz ; référence versionnée | §« Lot 4 » |
+| 5 | `/fabrique` pédagogique (état réel + 15 étapes + preuves) ; nav par modules ; bandeau accueil | §« Lot 5 » |
+| 6 | Preuve d'adaptation par configuration (cas jetable `essai` via le circuit officiel) | §« Lot 6 » |
+| 7 | Couverture 36 → **83 tests** ; avertissements soldés ; fixtures négatives | §« Lot 7 » |
+| 8 | README fabrique d'abord, docs alignées, `plan-demo.md` vérifié, recette + handoff finalisés | cette section |
+
+**État final vérifié le 2026-07-19** : `npm test` **83/83**, `npm run build`
+**OK**, `validate-harness` **OK** (0/0/0), `generate-demo` **aucun écart**. Scan
+secrets/PII/libellés exclus sur les chemins actifs : **0** (les 2 seules
+occurrences PII sont les fixtures négatives isolées et documentées du Lot 7).
+**Aucun push, aucun merge, aucun tag** : la refonte est close **sur la branche**,
+la décision de fusion revient à Pascal.
+
+### Points non traités (non-objectifs du Lot 8)
+
+Aucun tournage vidéo (le lot livre le **plan** vérifié) ; aucune implémentation
+des sous-routes d'atelier ni de l'API `/api/fabrique/*` (lot ultérieur) ; aucun
+push, merge ou changement de licence.

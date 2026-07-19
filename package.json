@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate-harness": "node scripts/validate-harness.mjs",
-    "generate-demo": "node scripts/generate-demo.mjs"
+    "generate-demo": "node scripts/generate-demo.mjs",
+    "import-source": "node scripts/import-source.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

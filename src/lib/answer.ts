@@ -107,8 +107,29 @@ export async function repondre(question: string): Promise<ReponseFAQ> {
   }
 
   // 5. Composition strictement sourcée.
-  const texte = await provider.composer(q, extraits);
+  //    Un échec du fournisseur (réseau, clé invalide, délai) ne doit jamais
+  //    faire tomber la requête : on dégrade proprement en affichant les sources.
   const sources = sourcesUniques(extraits.map((e) => e.source));
+  let texte: string | null;
+  try {
+    texte = await provider.composer(q, extraits);
+  } catch {
+    journaliser({
+      evenement: "degrade",
+      fournisseur: provider.nom,
+      statutHarnais: getConfig().harnais.statut,
+      sourcesCitees: sources.map((s) => s.id),
+    });
+    return {
+      issue: "degrade",
+      texte:
+        "La réponse assistée est momentanément indisponible (le fournisseur de modèle n'a pas pu être joint). " +
+        "Le reste du portail reste consultable. Les sources ci-dessous correspondent à votre question.",
+      sources,
+      renvoi: undefined,
+      mentions: mentions(dateLaPlusRecente(sources)),
+    };
+  }
 
   if (!texte) {
     return {

@@ -281,6 +281,53 @@ ul.propre { list-style: none; padding: 0; }
   color: #5a6472;
 }
 
+/* --- Code et exemples de configuration ------------------------------------ */
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--cds-bleu-clair);
+  color: var(--cds-bleu-nuit);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+pre {
+  background: var(--cds-bleu-nuit);
+  color: #f4f7fb;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* --- Pastilles d'état (diagnostic de configuration) ----------------------- */
+.pastille {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--cds-bordure);
+}
+.pastille::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+.pastille-ok { background: #e2f2ea; border-color: var(--cds-succes); color: var(--cds-succes); }
+.pastille-neutre { background: var(--cds-bleu-clair); border-color: var(--cds-bleu); color: var(--cds-bleu-nuit); }
+.pastille-attention { background: #fff4d6; border-color: var(--cds-or); color: #6b4e00; }
+
 @media (max-width: 640px) {
   h1 { font-size: 1.6rem; }
   .hero { padding: 1.5rem; }

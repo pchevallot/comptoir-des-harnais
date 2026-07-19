@@ -1,51 +1,106 @@
 import type { Extrait } from "../retrieval";
 import type { ModelProvider } from "./types";
+import { getProviderInfo } from "./catalogue";
 
 /**
- * Point de substitution documenté — fournisseur de modèle génératif externe.
+ * Fournisseur Anthropic (Claude) — API Messages (`POST {baseUrl}/v1/messages`).
  *
- * Cette implémentation illustre COMMENT brancher un modèle d'IA générative
- * externe derrière l'interface substituable, sans coder le fournisseur en dur
- * dans le reste de l'application. Elle n'est active que si MODEL_PROVIDER=anthropic
- * ET qu'une clé est présente dans l'environnement.
+ * Sécurité (PRD §9.2-12) :
+ *   - la clé est lue UNIQUEMENT côté serveur (variable d'environnement), jamais
+ *     exposée au navigateur ni journalisée ;
+ *   - seuls les identifiants de sources sont journalisés (cf. src/lib/logging.ts).
  *
- * Sécurité : la clé est lue UNIQUEMENT côté serveur (variable d'environnement),
- * jamais exposée au navigateur. Aucune source interne n'est journalisée, seuls
- * les identifiants de sources le sont (cf. src/lib/logging.ts).
+ * Garde-fous (PRD §6.2) : le sourçage exclusif est imposé par l'application (la
+ * consigne système ci-dessous), puis re-vérifié en sortie par answer.ts.
  *
- * Note V1 : l'appel réseau réel n'est pas exécuté ici (le dépôt de démonstration
- * fonctionne hors ligne avec le fournisseur « local »). Pour l'activer, remplacez
- * le corps de composer() par l'appel HTTP au fournisseur de votre choix, en
- * conservant impérativement la consigne « répondre uniquement à partir des
- * extraits fournis, citer les sources, ne jamais inventer ».
+ * Compatibilité : la clé peut être fournie via MODEL_API_KEY (générique) ou via
+ * ANTHROPIC_API_KEY (spécifique), au choix de l'exploitant.
  */
+
+const CONSIGNE_SYSTEME =
+  "Tu es l'assistant documentaire d'un portail d'accueil de collectivité. " +
+  "Réponds UNIQUEMENT à partir des extraits de sources fournis. Si les extraits " +
+  "ne suffisent pas, dis explicitement que tu ne sais pas et renvoie vers le " +
+  "service des ressources humaines. N'invente jamais de fait, de chiffre, de " +
+  "droit ou de référence. Ne traite aucun cas individuel. Cite les identifiants " +
+  "de sources (par exemple SRC-003) que tu utilises. Réponds en français, sobrement.";
+
+const VERSION_API = "2023-06-01";
+const DELAI_MS = 30_000;
+
 export class AnthropicProvider implements ModelProvider {
   readonly nom = "anthropic";
-  private readonly cle: string | undefined;
+  private readonly baseUrl: string;
+  private readonly modele: string;
+  private readonly clef: string | undefined;
 
   constructor() {
-    this.cle = process.env.ANTHROPIC_API_KEY?.trim() || undefined;
+    const info = getProviderInfo("anthropic");
+    this.baseUrl = (process.env.MODEL_BASE_URL?.trim() || info.baseUrlDefaut || "").replace(
+      /\/+$/,
+      "",
+    );
+    this.modele = process.env.MODEL_NAME?.trim() || info.modeleExemple || "";
+    this.clef =
+      process.env.MODEL_API_KEY?.trim() || process.env.ANTHROPIC_API_KEY?.trim() || undefined;
   }
 
   estDisponible(): boolean {
-    return Boolean(this.cle);
+    return Boolean(this.clef && this.baseUrl && this.modele);
   }
 
-  async composer(_question: string, extraits: Extrait[]): Promise<string | null> {
+  async composer(question: string, extraits: Extrait[]): Promise<string | null> {
+    if (extraits.length === 0) return null;
     if (!this.estDisponible()) {
       throw new Error(
-        "Fournisseur « anthropic » sélectionné mais ANTHROPIC_API_KEY absente. " +
-          "Renseignez la clé dans .env, ou repassez MODEL_PROVIDER=local.",
+        "Fournisseur « anthropic » sélectionné mais configuration incomplète " +
+          "(MODEL_API_KEY / ANTHROPIC_API_KEY, MODEL_NAME). " +
+          "Complétez .env.local, ou repassez MODEL_PROVIDER=local.",
       );
     }
-    if (extraits.length === 0) return null;
 
-    // Point d'intégration : construire le message avec la consigne de sourçage
-    // exclusif, appeler le fournisseur, retourner le texte. Laissé non câblé en
-    // V1 pour garantir un dépôt fonctionnel hors ligne (cf. en-tête de fichier).
-    throw new Error(
-      "Appel au fournisseur externe non câblé dans la démonstration V1. " +
-        "Voir src/lib/model/anthropic.ts pour le point d'intégration.",
-    );
+    const contexte = extraits
+      .map((e) => `[${e.source.id} — ${e.source.titre}] ${e.passage}`)
+      .join("\n\n");
+
+    const controleur = new AbortController();
+    const minuteur = setTimeout(() => controleur.abort(), DELAI_MS);
+    try {
+      const reponse = await fetch(`${this.baseUrl}/v1/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": this.clef as string,
+          "anthropic-version": VERSION_API,
+        },
+        body: JSON.stringify({
+          model: this.modele,
+          max_tokens: 1024,
+          temperature: 0,
+          system: CONSIGNE_SYSTEME,
+          messages: [
+            {
+              role: "user",
+              content: `Question : ${question}\n\nExtraits de sources autorisés :\n${contexte}`,
+            },
+          ],
+        }),
+        signal: controleur.signal,
+      });
+
+      if (!reponse.ok) {
+        throw new Error(`Réponse du fournisseur « anthropic » : HTTP ${reponse.status}.`);
+      }
+
+      const data = (await reponse.json()) as { content?: { type?: string; text?: string }[] };
+      const texte = data.content
+        ?.filter((b) => b.type === "text")
+        .map((b) => b.text ?? "")
+        .join("")
+        .trim();
+      return texte && texte.length > 0 ? texte : null;
+    } finally {
+      clearTimeout(minuteur);
+    }
   }
 }

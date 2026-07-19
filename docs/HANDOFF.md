@@ -166,3 +166,33 @@ la poursuite technique.
    réel du dépôt ; noter les écarts (O8).
 8. **Optionnel** : élargir le corpus (V1.2) ; câbler un fournisseur externe dans
    `src/lib/model/anthropic.ts` si retenu pour la vidéo.
+
+---
+
+## 11. Mise à jour session n°2 — configuration IA et sources
+
+Session Opus 4.8 n°2 réalisée partiellement jusqu'à `max turns (50)`, puis vérifiée par Hermes.
+
+### Ajouts réalisés
+
+- Page `/configuration-ia` : diagnostic côté serveur du fournisseur courant, statut sans exposition de clé, explications RGPD/souveraineté.
+- Fournisseurs pris en charge dans le catalogue : `local`, `none`, `anthropic`, `openai`, `openrouter`, `mistral`, `ollama`.
+- `.env.example` enrichi : `MODEL_PROVIDER`, `MODEL_DISPLAY_NAME`, `MODEL_API_KEY`, `MODEL_BASE_URL`, `MODEL_NAME`, `CDH_CONFIG`.
+- Adapters : `src/lib/model/openai-compatible.ts`, `catalogue.ts`, `diagnostic.ts`, mise à jour `index.ts` et `anthropic.ts`.
+- Guide `docs/adapter-ses-sources.fr.md` et page `/sources/adapter` : Word/PDF/LibreOffice possibles en entrée, mais Markdown/texte relu comme format canonique intégré.
+- Script `scripts/import-source.mjs` pour amorcer une source depuis `.md` ou `.txt`, sans OCR/PDF robuste.
+- Tests de configuration IA : `tests/structure/configuration-ia.test.ts`.
+
+### Vérification post-session
+
+- `npm test` → **36/36 tests passés**.
+- `npm run build` → **OK**, 20 routes, dont `/configuration-ia` et `/sources/adapter`.
+
+### Point de reprise
+
+Si une prochaine session reprend ici :
+
+1. lire `prd/PRD.md`, `docs/HANDOFF.md`, `docs/RECETTE.md` ;
+2. vérifier visuellement `/configuration-ia` et `/sources/adapter` avec navigateur disponible ;
+3. envisager une session de QA UX/vidéo plutôt que nouvelles fonctionnalités ;
+4. ne pas ajouter de saisie directe de clés API côté navigateur : secrets uniquement `.env.local` / serveur.

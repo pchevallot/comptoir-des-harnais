@@ -146,3 +146,37 @@ Voir `docs/HANDOFF.md` §« Prochaines actions ». Points saillants restants :
    instruction).
 4. Logo officiel — **non intégré** ; emplacement réservé dans l'en-tête.
 5. Nom définitif du projet et de la collectivité fictive (vérif. de collision).
+
+---
+
+## 9. Session n°2 — Configuration IA et adaptation des sources
+
+Session lancée avec Opus 4.8 (`claude-opus-4-8`). Elle a atteint la limite de tours Claude Code (`Reached max turns (50)`) avant de produire un résumé final complet, mais les artefacts produits ont été vérifiés manuellement après coup.
+
+### 9.1 Réponse produit : formats de sources
+
+- État V1 : le format **canonique intégré au harnais** est Markdown (`.md`) avec frontmatter, plus YAML/JSON pour configuration, parcours, quiz et tests.
+- Décision : une collectivité **peut partir de Word/PDF/LibreOffice/pages intranet**, mais doit convertir, relire et nettoyer ces contenus en Markdown ou texte contrôlé avant intégration.
+- Raison : traçabilité, versionnement, réversibilité, lisibilité GitHub, absence de métadonnées cachées, contrôle DPO/DSI.
+- Ajout : `docs/adapter-ses-sources.fr.md` et page applicative `/sources/adapter`.
+- Ajout : `scripts/import-source.mjs` pour amorcer une source depuis `.md` ou `.txt`. Il ne fait pas d'OCR/PDF robuste en V1.
+
+### 9.2 Réponse produit : configuration IA
+
+- Ajout d'une page visible : `/configuration-ia`.
+- La page affiche le fournisseur courant, le statut de configuration, les modes disponibles et les exemples `.env.local`, **sans jamais afficher de clé**.
+- Règle sécurité : aucune clé API côté navigateur, localStorage, cookie, Markdown, YAML ou fichier commité. Les secrets restent dans `.env.local` ou variables d'environnement serveur.
+- Fournisseurs décrits/supportés : `local`, `none`, `anthropic`, `openai`, `openrouter`, `mistral`, `ollama`.
+- Ajouts techniques : `src/lib/model/catalogue.ts`, `diagnostic.ts`, `openai-compatible.ts`, mise à jour `index.ts`, `anthropic.ts`, `.env.example`.
+
+### 9.3 Vérifications post-session exécutées par Hermes
+
+| Commande | Résultat |
+|---|---|
+| `npm test` | **OK** — 3 fichiers, 36 tests passés |
+| `npm run build` | **OK** — Next.js build, 20 routes générées, dont `/configuration-ia` et `/sources/adapter` |
+
+### 9.4 Dette restante
+
+- Claude Code n'a pas commité automatiquement la session n°2 car il a atteint `max turns`. Commit réalisé ensuite après vérification.
+- Vérification visuelle navigateur encore à faire dans un environnement disposant de Chrome/Playwright ou navigateur agent.

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getSources } from "@/lib/content";
 import { ClassificationBadge } from "@/components/Badges";
 
@@ -12,6 +13,14 @@ export default function Sources() {
         les sources ci-dessous. Chaque source indique son propriétaire (une fonction), sa date de
         version, son statut et son périmètre. Une information sans source n'a pas sa place ici.
       </p>
+
+      <div className="panneau panneau-info">
+        <p style={{ margin: 0 }}>
+          Vous adaptez le portail à votre collectivité ? Partez de vos documents Word/PDF existants
+          et convertissez-les en sources vérifiées :{" "}
+          <Link href="/sources/adapter">comment adapter ses sources</Link>.
+        </p>
+      </div>
 
       <div className="registre">
         {sources.map((s) => (

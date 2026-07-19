@@ -135,7 +135,7 @@ describe("Fabrique de fournisseur", () => {
 
 describe("Diagnostic de configuration — aucune fuite de clé", () => {
   it("n'expose JAMAIS la valeur d'une clé, seulement sa présence", () => {
-    const FAUSSE_CLE = "sk-test-NE-DOIT-JAMAIS-APPARAITRE-1234567890";
+    const FAUSSE_CLE = "[REDACTED_TEST_API_KEY]";
     process.env.MODEL_PROVIDER = "anthropic";
     process.env.MODEL_API_KEY = FAUSSE_CLE;
     const d = diagnostiquerConfiguration();

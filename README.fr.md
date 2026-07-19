@@ -1,5 +1,10 @@
 # Comptoir des Harnais
 
+> **Note.** La documentation principale du projet est désormais
+> [`README.md`](./README.md) (en français, plus complète et à jour). Le présent
+> document est conservé comme version d'origine ; en cas de divergence, se
+> référer à [`README.md`](./README.md).
+
 **Un harnais IA pour acteurs publics — comprendre, construire, gouverner.**
 
 Ce dépôt open source explique ce qu'est un harnais IA pour le secteur public et

@@ -33,7 +33,7 @@ build ; documenter ; continuer si les critères sont remplis.
 | E — Moteur documentaire | **terminé** | interface modèle substituable, recherche sourcée, mentions, journalisation |
 | F — Garde-fous | **terminé** | refus cas individuels / juridique / médical ; formulations proscrites |
 | G — Tests | **terminé** | 18 tests verts ; runner YAML ; validate-harness |
-| H — Doc & scénario | **en cours** | docs pédagogiques + README + templates rédigés ; RESTE : recette adaptation tierce, vérif O1–O8, passe cohérence H3, scénario vidéo |
+| H — Doc & scénario | **quasi terminé** | docs pédagogiques + README + templates rédigés ; recette tierce + O1–O8 consignées ; RESTE : passe cohérence H3 fine, scénario vidéo (O8) |
 
 **Critère de session atteint** : `npm install`, `npm test` (18/18), `npm run build`
 (19 routes), `npm run dev`/`start` fonctionnent ; app visible et cohérente ; aucune
@@ -156,15 +156,13 @@ la poursuite technique.
    'LLM|RAG|fine-tuning|embedding|SIRH' docs README*.md GLOSSAIRE.fr.md` — chaque
    occurrence doit être définie/encadrée ou retirée. *Critère : aucune occurrence
    non maîtrisée.*
-3. **Recette d'adaptation tierce (§10.4)** : `cp configs/organisation.example.yml
-   configs/organisation.yml`, créer un mini `content/` alternatif fictif OU
-   dupliquer et modifier, `CDH_CONFIG=organisation.yml npm run validate-harness`,
-   lancer l'app, consigner dans RECETTE. *Critère : portail change sans toucher à
-   `src/`.*
-4. **Consigner O1–O8** (§2.1) dans RECETTE, un critère par ligne, vérifié.
-5. **Passe de cohérence H3** : mêmes intitulés d'étapes partout, liens internes,
-   rubrique « ce que ce document ne couvre pas » présente dans chaque guide.
-6. **Scénario vidéo** (§13) : vérifier que chaque séquence correspond à un élément
-   réel du dépôt ; noter les écarts.
-7. **Premier commit atomique** si pertinent (git est initialisé, local uniquement —
-   NE PAS créer de dépôt distant).
+3. ~~Recette d'adaptation tierce (§10.4)~~ — **FAIT** (voir RECETTE §5).
+4. ~~Consigner O1–O8~~ — **FAIT** (voir RECETTE §6 ; O8 partiel).
+5. ~~Premier commit atomique local~~ — **FAIT** (commit `1508107`, 108 fichiers).
+6. **Passe de cohérence H3** : mêmes intitulés d'étapes partout, liens internes,
+   rubrique « ce que ce document ne couvre pas » présente dans chaque guide
+   (revue croisée à finaliser).
+7. **Scénario vidéo** (§13) : vérifier que chaque séquence correspond à un élément
+   réel du dépôt ; noter les écarts (O8).
+8. **Optionnel** : élargir le corpus (V1.2) ; câbler un fournisseur externe dans
+   `src/lib/model/anthropic.ts` si retenu pour la vidéo.

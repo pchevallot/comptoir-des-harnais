@@ -93,24 +93,52 @@ Reproduire : `npm install && npm test && npm run build`.
 
 ---
 
-## 5. Dette et suites (à traiter avant clôture V1)
+## 5. Recette d'adaptation tierce (§10.4) — RÉALISÉE
 
-Voir `docs/HANDOFF.md` §« Prochaines actions » pour la liste ordonnée. Points
-saillants :
+Preuve que l'adaptation à une **2ᵉ collectivité fictive** se fait sans toucher au
+code (`src/`), uniquement par la configuration :
 
-1. **Recette d'adaptation tierce (§10.4)** : réaliser une fois le remplacement des
-   sources/config par une 2ᵉ collectivité fictive sans toucher au code, et le
-   consigner.
-2. **Vérification O1–O8 une à une** (§2.1) à consigner.
-3. **Passe de cohérence H3** : liens internes, mêmes numéros d'étapes partout,
-   rubriques « ce que ce document ne couvre pas » dans chaque guide.
-4. **Scénario vidéo** (§13) à aligner sur le dépôt réel.
-5. **Élargissement possible du corpus** (plus de sources/fiches) et robustesse aux
+- Création d'un `configs/organisation.yml` fictif (« Syndicat mixte des Coteaux de
+  Bellerive », statut `interne`).
+- `CDH_CONFIG=organisation.yml node scripts/validate-harness.mjs` → **OK**.
+- `CDH_CONFIG=organisation.yml npx next build` → **OK**.
+- Rendu vérifié en exécution : la page d'accueil affiche « Syndicat mixte des
+  Coteaux de Bellerive » et la page gouvernance « Statut : usage interne ».
+- Aucune modification de `src/`. L'artefact `organisation.yml` a été retiré ; le
+  dépôt ne livre que `demo.yml` et `organisation.example.yml`.
+
+Le remplacement des **sources** se fait de la même façon : on édite les fichiers de
+`content/demo-onboarding-rh/` (le registre en est dérivé), sans toucher au code.
+
+## 6. Vérification des objectifs O1–O8 (§2.1)
+
+| Obj. | Vérifié | Preuve |
+|---|---|---|
+| O1 — dépôt lisible et autoportant | Oui | README.fr.md + docs pédagogiques + GLOSSAIRE |
+| O2 — app locale fonctionnelle | Oui | `npm install` → `npm run dev`/`build` → app visible (19 routes) |
+| O3 — configurable sans code | Oui | Recette tierce §5 (config + contenus en MD/YAML) |
+| O4 — garde-fous démontrables | Oui | FAQ sourcée (SRC-003) / refus cas individuel / hors-corpus ; tests |
+| O5 — RGPD/AI Act/cyber dès V1 | Oui | classification affichée, sources datées, limites, gouvernance, « ne vaut pas validation juridique », threat model |
+| O6 — couche pédagogique générique | Oui | `docs/*.fr.md` lisibles sans exécuter de code |
+| O7 — réplicabilité | Oui | `npm test` (18/18) après clone propre ; scripts reproductibles |
+| O8 — préparer la diffusion | Partiel | scénario vidéo (§13) à aligner finement — voir dette |
+
+## 7. Dette et suites (à traiter avant clôture V1)
+
+Voir `docs/HANDOFF.md` §« Prochaines actions ». Points saillants restants :
+
+1. **Passe de cohérence H3** : liens internes, mêmes numéros d'étapes partout,
+   rubriques « ce que ce document ne couvre pas » (présentes dans les guides ;
+   revue croisée à finaliser).
+2. **Scénario vidéo** (§13) à aligner plan par plan sur le dépôt réel.
+3. **Élargissement possible du corpus** (plus de sources/fiches) et robustesse aux
    reformulations (V1.2).
+4. **FAQ générative externe** : `src/lib/model/anthropic.ts` laissé non câblé
+   (intégration documentée) — à activer si un fournisseur est retenu pour la vidéo.
 
 ---
 
-## 6. Risques / arbitrages humains requis (Pascal)
+## 8. Risques / arbitrages humains requis (Pascal)
 
 1. Licence finale (D3).
 2. Fournisseur de modèle pour la démonstration vidéo (D2).

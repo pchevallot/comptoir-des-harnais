@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { getFiches, getSources } from "@/lib/content";
+// Source unique de vérité des motifs interdits, partagée avec les scripts
+// (scripts/lib/motifs-interdits.mjs) — aucune regex n'est redéfinie ici.
+import { MOTIFS_SECRET, MOTIFS_PII } from "../../scripts/lib/motifs-interdits.mjs";
 
 /**
  * Tests de structure et de sécurité du dépôt (PRD §10.3-5 à 8).
@@ -63,15 +66,10 @@ describe("Sécurité du dépôt", () => {
   ]);
 
   it("aucun motif de secret (clé d'API) dans le dépôt", () => {
-    const motifs: RegExp[] = [
-      /sk-[A-Za-z0-9]{16,}/,
-      /AKIA[0-9A-Z]{16}/,
-      /-----BEGIN\s+(RSA|OPENSSH|PRIVATE)\s+KEY-----/,
-    ];
     const fautifs: string[] = [];
     for (const f of fichiersTexte) {
       const contenu = fs.readFileSync(f, "utf8");
-      if (motifs.some((m) => m.test(contenu))) fautifs.push(path.relative(RACINE, f));
+      if (MOTIFS_SECRET.some((m) => m.regex.test(contenu))) fautifs.push(path.relative(RACINE, f));
     }
     expect(fautifs, `secrets potentiels : ${fautifs.join(", ")}`).toHaveLength(0);
   });
@@ -85,14 +83,12 @@ describe("Sécurité du dépôt", () => {
 
   it("aucune donnée personnelle réaliste dans les contenus (content/)", () => {
     const fichiersContenu = listerFichiers(path.join(RACINE, "content"), [".md", ".yml", ".yaml"]);
-    // Courriels non manifestement fictifs et numéros de téléphone français réels.
-    const emailReel = /[A-Za-z0-9._%+-]+@(?!exemple\.|example\.|fictif\.)[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
-    const telReel = /\b0[1-9](?:[ .]?\d{2}){4}\b/;
-    const numSecu = /\b[12]\d{2}(?:[ ]?\d{2}){5}\b/;
+    // Motifs partagés avec validate-corpus : courriel plausible (hors exemple.fr),
+    // téléphone français, NIR, IBAN.
     const fautifs: string[] = [];
     for (const f of fichiersContenu) {
       const contenu = fs.readFileSync(f, "utf8");
-      if (emailReel.test(contenu) || telReel.test(contenu) || numSecu.test(contenu)) {
+      if (MOTIFS_PII.some((m) => m.regex.test(contenu))) {
         fautifs.push(path.relative(RACINE, f));
       }
     }

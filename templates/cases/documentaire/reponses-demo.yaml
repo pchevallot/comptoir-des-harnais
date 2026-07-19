@@ -1,0 +1,94 @@
+# =============================================================================
+# Réponses du mode --demo de l'interview (npm run interview -- --demo).
+# -----------------------------------------------------------------------------
+# Ces réponses non interactives déroulent les 15 étapes du parcours sans TTY :
+# c'est ce qui rend l'interview testable en CI. Le cas produit est JETABLE
+# (slug ci-dessous) — il ne doit jamais écraser « onboarding-agents ».
+# Aucune donnée personnelle réelle : organisation et fonctions sont fictives.
+# Les clés correspondent aux identifiants de questions de scripts/lib/atelier/etapes.mjs.
+# =============================================================================
+
+slug: "demo-atelier"
+
+etapes:
+  # 1 — Choisir le type de harnais
+  1:
+    type: "documentaire"
+    eligibilite: "n"
+
+  # 2 — Cadrer le besoin
+  2:
+    tache: "Réexpliquer à chaque arrivée les mêmes règles d'accueil (plusieurs fois par mois)."
+    acteur: "Le service RH et les encadrants, une demi-journée dispersée par arrivée."
+    consequence: "Informations contradictoires, questions répétées, démarrage ralenti du nouvel agent."
+    consommateur: "Le nouvel agent lui-même, et son encadrant."
+    reussite: "Le nouvel agent trouve seul une réponse sourcée et à jour, sans solliciter le service RH."
+    besoin: >-
+      Offrir aux nouveaux agents un point d'entrée documentaire clair, sourcé et à
+      jour, pour éviter de répéter les mêmes explications à chaque arrivée, sans
+      traiter aucune situation individuelle.
+
+  # 3 — Décrire l'organisation
+  3:
+    organisation.nom: "Communauté de communes de Roche-Vallonne"
+    organisation.type: "Communauté de communes (fictive)"
+    organisation.fictive: "o"
+    gouvernance.responsable_metier: "Direction des ressources humaines"
+    gouvernance.dpo: "Délégué à la protection des données (mutualisé)"
+    gouvernance.dsi_rssi: "Direction des systèmes d'information et sécurité (mutualisée)"
+
+  # 4 — Déclarer les sources (boucle jusqu'à « terminé »)
+  4:
+    - titre: "Règlement du temps de travail"
+      proprietaire: "Direction des ressources humaines"
+      date_connue: "2025-06-30"
+    - titre: "Note de service — télétravail"
+      proprietaire: "Direction des ressources humaines"
+      date_connue: "2025-09-15"
+    - titre: "Contacts utiles du nouvel arrivant"
+      proprietaire: "Direction des ressources humaines"
+      date_connue: "2025-10-01"
+
+  # 5 — Classer les données
+  5:
+    donnees_personnelles: "n"
+    classification: "interne"
+
+  # 6 — Définir les publics
+  6:
+    publics: "nouveaux agents, encadrants"
+    modules.parcours: "o"
+    modules.faq: "o"
+    modules.quiz: "o"
+    modules.checklist: "o"
+
+  # 7 — Questions autorisées (boucle, minimum 5)
+  7:
+    - question: "Combien de jours de télétravail sont possibles ?"
+      cite_source: "SRC-003"
+      mots_attendus: "jours, responsable"
+    - question: "Quelle est la durée annuelle de travail ?"
+      cite_source: "SRC-001"
+      mots_attendus: "1 607, heures"
+    - question: "Qui contacter pour ma mutuelle ?"
+      cite_source: "SRC-002"
+      mots_attendus: "ressources humaines"
+    - question: "Quels sont les bons réflexes achat ?"
+      cite_source: "SRC-004"
+      mots_attendus: "marché, seuil"
+    - question: "Qui contacter selon ma question ?"
+      cite_source: "SRC-005"
+      mots_attendus: "service, RH"
+
+  # 8 — Définir les refus (boucle, minimum 3)
+  8:
+    - motif: "Question sur une personne nommée ou identifiable"
+      renvoi: "Direction des ressources humaines"
+    - motif: "Demande d'avis juridique"
+      renvoi: "Service juridique"
+    - motif: "Demande d'avis médical ou d'aptitude"
+      renvoi: "Médecine du travail"
+
+  # 9 — Choisir le fournisseur IA
+  9:
+    fournisseur.mode: "local"

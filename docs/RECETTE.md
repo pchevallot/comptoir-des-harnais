@@ -380,3 +380,121 @@ c'est conforme au backlog (« la skill est écrite contre sa spec »).
 Pas d'implémentation des scripts appelés (Lot 3) ; pas de mécanique
 d'activation spéciale (le format fichier suffit).
 
+
+## Lot 3 — Couche déterministe réutilisable et scripts
+
+- **Date** : 2026-07-19 (session S3, après `/clear`). Modèle : `claude-opus-4-8`.
+- **Spec d'autorité** : `specs/spec-scripts-deterministes.md` (§0 à §8).
+- **Portée réalisée** : Lot 3 **complet** (S3 + interview) — la couche partagée,
+  les 3 validateurs, l'orchestrateur, le scaffold, le rapport, le squelette de
+  régénération démo, **et** l'interview CLI (`--demo` testable sans TTY).
+
+### Fichiers créés
+
+Couche partagée (`scripts/lib/`) :
+- `motifs-interdits.mjs` — source unique des motifs interdits (secrets + PII :
+  courriel plausible hors `exemple.fr`, téléphone, NIR, IBAN, clés). Importé par
+  les scripts **et** par `tests/structure/structure.test.ts` (zéro divergence).
+- `manifeste.mjs` — lecture/validation/écriture du manifeste (**seul point
+  d'écriture** de `harnais.yaml`). Validation ré-implémentée en JS pur, **miroir**
+  de `src/lib/manifest.ts` (zod) ; test de non-divergence prévu au Lot 7.
+- `diagnostic-env.mjs` — miroir `.mjs` de `src/lib/model/{index,catalogue,diagnostic}.ts`
+  (repli arbitré spec §5 : import TS impraticable en `.mjs`) ; test de
+  non-divergence prévu au Lot 7. Ne renvoie jamais la valeur d'une clé.
+- `cli.mjs` — utilitaires partagés (`--help`, `--cas`, `--json`, résolution du cas).
+- `atelier/etapes.mjs` — définition déclarative des 15 étapes (libellés verbatim
+  PRD v0.3 §4, skill, script, fichiers, genre, questions). Garde-fou : 15 étapes.
+- `atelier/reponses.mjs` — validation de forme (dates, slug, heuristique
+  anti-« Prénom Nom », énumérations, booléens, listes, minimums) **et** application
+  d'une collecte complète aux fichiers (manifeste, config, gouvernance, tests).
+- `atelier/actions.mjs` — dispatch des actions déterministes d'une étape →
+  `{ ok, erreurs, avertissements, fichiers }` (consommé par l'API du Lot 5a).
+
+Scripts (`scripts/`) :
+- `validate-corpus.mjs`, `validate-guardrails.mjs`, `validate-provider-config.mjs`,
+  `scaffold-harness.mjs`, `build-harness-report.mjs`, `interview-harness.mjs`,
+  `generate-onboarding-demo.mjs` (squelette : contenu de référence au Lot 4).
+- `templates/cases/documentaire/reponses-demo.yaml` — réponses du mode `--demo`
+  (cas jetable `demo-atelier`, jamais `onboarding-agents`).
+
+### Fichiers modifiés
+
+- `scripts/validate-harness.mjs` → **orchestrateur** (spec §8) : conserve la
+  signature CLI et l'en-tête historique (Configuration/Cas/Sources/Fiches/Statut),
+  ajoute une synthèse par sous-validateur. La configuration IA est **non bloquante**.
+- `package.json` → 7 scripts npm ajoutés ; `generate-demo` **retargeté** vers
+  `generate-onboarding-demo.mjs` (clé unique ; `scripts/generate-demo.mjs`
+  **conservé** jusqu'au Lot 4).
+- `tests/structure/structure.test.ts` → importe `motifs-interdits.mjs` (plus
+  aucune regex locale).
+
+### Migration des contrôles vers `validate-corpus` (aucun contrôle perdu)
+
+| Contrôle (ancien `validate-harness`) | Devenu |
+|---|---|
+| Config présente + sections + statut valide | **Reste** dans l'orchestrateur |
+| `content/cases/<cas>/` existe | **Reste** (via `validate-corpus`, + cohérence `config.cas`↔dossier dans l'orchestrateur) |
+| ≥ 1 source | `validate-corpus` (contrôle 1/frontmatter) |
+| Frontmatter source (id, titre, proprietaire, date, perimetre) | `validate-corpus` — **élargi** aux 8 champs (statut, classification, fictif) |
+| `fictif: true` | `validate-corpus` — **conditionné** à `organisation.fictive: true` (spec §3.3 ; pour `onboarding-agents` la config a `fictive: true` → comportement identique) |
+| id unique | `validate-corpus` — **+ format `SRC-\d{3}` + préfixe de nom de fichier** |
+| classification ∈ {publique, interne} | `validate-corpus` |
+| Obsolescence (date < seuil) | `validate-corpus` (avertissement) |
+| Fiches → sources présentes + `limites` | `validate-corpus` |
+| Gouvernance présente (limites-refus, classification, fiche-validation, journal) | **Reste** dans l'orchestrateur (avertissements) |
+| — (nouveau) | Manifeste chargé/validé ; cohérence `config.cas` ↔ dossier |
+
+### Écarts documentés (décisions délibérées, à ré-arbitrer au Lot 4/7)
+
+- **Longueur de source (spec §3.4 : `< 120 mots → erreur`)** — implémenté en
+  **avertissement** au Lot 3 (« source très courte »), car le corpus d'amorce
+  (`onboarding-agents`) fait 102–158 mots : une erreur bloquante rendrait
+  `validate-harness` rouge, en contradiction avec le critère « vert, avertissements
+  admis ». **À re-durcir au Lot 4** quand le corpus dense (700–1 800 mots) est en
+  place (message d'avertissement le rappelle explicitement).
+- **Garde-fous — minimums de volume** (≥ 5 cas sourcés, ≥ 1 hors-corpus, socle) :
+  émis en **avertissements nommés** (admis jusqu'au Lot 7) ; seules les
+  **incohérences structurelles** (refus déclaré non testé, refus testé non affiché,
+  renvoi vers une personne) sont **bloquantes**. L'appariement refus↔affichage se
+  fait par **catégorie** (nominatif/individuel/juridique/médical) et non par
+  mot-clé littéral, pour que le refus nominatif fictif (« Madame Martin ») corresponde
+  à « cas individuel » de `limites-refus.md`.
+
+### Cohérence skills ↔ scripts (deux sens)
+
+- Sens 1 : chaque `scripts_associes` des 8 skills désigne un script qui **existe**
+  désormais (import-source, validate-corpus, validate-guardrails,
+  validate-provider-config, validate-harness, build-harness-report,
+  interview-harness). **OK.**
+- Sens 2 : `scaffold-harness.mjs` et `generate-onboarding-demo.mjs` ne sont
+  associés à **aucune** skill — **par conception** : ils portent les étapes 10 et
+  12 du parcours (PRD v0.3 §4), dont la colonne « Skill » vaut « — ». Ce ne sont
+  pas des orphelins : ils sont référencés par le parcours (`etapes.mjs`) et par
+  l'orchestrateur/l'atelier.
+
+### Vérifications (toutes exécutées ce jour)
+
+| Contrôle | Commande | Résultat |
+|---|---|---|
+| `--help` des 7 scripts npm | `for s in … npm run $s -- --help` | **7/7 OK** |
+| Atelier importable sans TTY | import direct `etapes/reponses/actions` | **OK** (15 étapes, actions ok) |
+| Interview `--demo` | `npm run interview -- --demo` | **6 fichiers, code 0** (cas jetable `demo-atelier`) |
+| Chaîne complète sur cas produit | scaffold → validate-guardrails → rapport | **OK** (manifeste valide, 3 refus couverts) |
+| Refus d'éligibilité (étape 1) | démo patchée `eligibilite: o` | **code 0**, manifeste `etape: 1` |
+| Scaffold idempotent / `--force` | `--dry-run` → `--cas essai` → relance → `--force` | **créé / conservé / `.avant-force.bak`** ; refus d'écraser `onboarding-agents` sans `--force` |
+| `validate-corpus onboarding-agents` | — | **vert** (0 erreur, 6 avertissements « maigre/courte ») |
+| `validate-guardrails onboarding-agents` | — | **vert** (0 erreur, 1 avertissement « < 5 sourcés ») |
+| Non-fuite de clé | `MODEL_API_KEY=fausse-valeur-test npm run validate-provider \| grep -c` | **0** |
+| `rapport onboarding-agents` | — | `cases/onboarding-agents/rapport-gouvernance.md` (mention juridique présente) |
+| `validate-harness` | — | **OK** (agrège les sous-validateurs, config IA non bloquante) |
+| Déterminisme | deux runs `validate-corpus --json` | **identiques** |
+| Secrets dans les nouveaux fichiers | grep motifs | **0** |
+| Tests | `npm test` | **36/36** |
+| Build | `npm run build` | **OK** (routes inchangées) |
+| Cas jetables nettoyés | `essai`, `demo-atelier`, `demo-refus` | **supprimés avant commit** |
+
+### Points non traités (non-objectifs du Lot 3)
+
+Aucun appel au modèle (frontière stricte respectée) ; pas de contenu de démo
+dense (Lot 4) ; pas d'OCR/PDF ; `scripts/generate-demo.mjs` **conservé** (retiré
+au Lot 4) ; pas d'API `/api/fabrique/*` (Lot 5a) ; pas de nouvelle source.

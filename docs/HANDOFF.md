@@ -14,7 +14,18 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 <!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
 <!-- ================================================================= -->
 
-> # 🏭 Reprise de la refonte « harnais-fabrique » — au seuil du **Lot 3**
+> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 3 terminé**, au seuil du **Lot 4**
+>
+> > **Mise à jour 2026-07-19 (fin S3) : le Lot 3 est complet et vert** (couche
+> > `scripts/lib/` + `scripts/lib/atelier/`, 3 validateurs, orchestrateur,
+> > scaffold, rapport, interview CLI `--demo`, squelette generate-demo). Détail,
+> > migration des contrôles et écarts documentés : `docs/RECETTE.md` § « Lot 3 ».
+> > Les §E ci-dessous décrivent le Lot 3 tel qu'il a été **réalisé** ; la
+> > prochaine session attaque le **Lot 4** (corpus dense 16 sources) —
+> > **ne pas** commencer le Lot 4 sans relire `specs/backlog-implementation.md`
+> > § Lot 4 et `specs/spec-corpus-onboarding.md`. Rappels Lot 4 : re-durcir le
+> > seuil `< 120 mots` de `validate-corpus` en **erreur**, et supprimer
+> > `scripts/generate-demo.mjs` une fois `scripts/demo/onboarding-agents/` peuplé.
 >
 > **Branche de travail : `refonte-fabrique` (et elle seule).** Ne jamais
 > revenir sur `main` : `main` est l'état V1 publié, figé au tag
@@ -59,6 +70,12 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   migrés (`paths.ts`, `config.ts`, `content.ts`, configs, scripts, tests, Nav).
 > - **Lot 2** — 8 skills `skills/<nom>/SKILL.md` (frontmatter 5 clés, 5 sections),
 >   + 2 renvois dans `docs/cycle-de-vie.fr.md` et `docs/adapter-ses-sources.fr.md`.
+> - **Lot 3** — couche déterministe : `scripts/lib/` (motifs, manifeste,
+>   diagnostic-env, cli) + `scripts/lib/atelier/` (etapes, reponses, actions,
+>   importables sans TTY) ; scripts `validate-corpus`, `validate-guardrails`,
+>   `validate-provider-config`, `scaffold-harness`, `build-harness-report`,
+>   `interview-harness` (`--demo`), `generate-onboarding-demo` (squelette) ;
+>   orchestrateur `validate-harness` ; 7 scripts npm. **Vert** (36/36, build OK).
 >
 > Détail lot par lot : `docs/RECETTE.md` § « Recette de la refonte fabrique ».
 >

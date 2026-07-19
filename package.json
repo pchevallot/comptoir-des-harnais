@@ -16,7 +16,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate-harness": "node scripts/validate-harness.mjs",
-    "generate-demo": "node scripts/generate-demo.mjs",
+    "interview": "node scripts/interview-harness.mjs",
+    "scaffold": "node scripts/scaffold-harness.mjs",
+    "validate-corpus": "node scripts/validate-corpus.mjs",
+    "validate-guardrails": "node scripts/validate-guardrails.mjs",
+    "validate-provider": "node scripts/validate-provider-config.mjs",
+    "rapport": "node scripts/build-harness-report.mjs",
+    "generate-demo": "node scripts/generate-onboarding-demo.mjs",
     "import-source": "node scripts/import-source.mjs"
   },
   "dependencies": {

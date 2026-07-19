@@ -25,13 +25,16 @@ export const MOTIFS_SECRET = [
 
 /**
  * Données personnelles réalistes. Interdites dans les contenus : le cadre est
- * documentaire (règles générales), jamais nominatif. Un courriel en
- * `exemple.fr` / `example.*` / `fictif.*` est explicitement toléré (exemples).
+ * documentaire (règles générales), jamais nominatif. Un courriel dont le domaine
+ * comporte un label `exemple` / `example` / `fictif` est explicitement toléré
+ * (ex. `contact@exemple.fr` mais aussi `rh@valdebrenne.exemple.fr`) : ce sont des
+ * adresses de démonstration, jamais des adresses réelles.
  */
 export const MOTIFS_PII = [
   {
     nom: "courriel plausible (hors domaine d'exemple)",
-    regex: /[A-Za-z0-9._%+-]+@(?!exemple\.|example\.|fictif\.)[A-Za-z0-9.-]+\.[A-Za-z]{2,}/,
+    regex:
+      /[A-Za-z0-9._%+-]+@(?!(?:[A-Za-z0-9-]+\.)*(?:exemple|example|fictif)\.)[A-Za-z0-9.-]+\.[A-Za-z]{2,}/,
   },
   {
     nom: "numéro de téléphone français",

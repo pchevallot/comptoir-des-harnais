@@ -12,8 +12,8 @@
 cas: "onboarding-agents"
 
 organisation:
-  nom: "Communauté de communes de Roche-Vallonne"
-  type: "Communauté de communes (fictive)"
+  nom: "Syndicat mixte du Val de Brenne"
+  type: "Syndicat mixte (fictif)"
   fictive: true
 
 harnais:

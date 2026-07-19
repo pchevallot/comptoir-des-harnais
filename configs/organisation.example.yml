@@ -25,6 +25,12 @@ organisation:
   type: "Type (commune, EPCI, syndicat mixte, centre de gestion…)"
   # Passez à false uniquement lorsque vous utilisez de vraies sources validées.
   fictive: true
+  # Exemple secondaire (fictif) montrant une autre organisation possible :
+  #   nom: "Communauté de communes de Roche-Vallonne"
+  #   type: "Communauté de communes (fictive)"
+  #   fictive: true
+  # La démonstration livrée (configs/demo.yml) s'appuie, elle, sur le
+  # « Syndicat mixte du Val de Brenne » (également fictif).
 
 harnais:
   nom: "Portail d'accueil des nouveaux arrivants"

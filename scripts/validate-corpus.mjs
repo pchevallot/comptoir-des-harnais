@@ -34,7 +34,7 @@ avec le manifeste (sources_declarees), fiches (sources citées, limites).
 `;
 
 const SEUIL_MAIGRE = 400; // < 400 mots → avertissement « source maigre »
-const SEUIL_COURT = 120; // < 120 mots → avertissement « source très courte » (bloquant au Lot 4)
+const SEUIL_COURT = 120; // < 120 mots → ERREUR bloquante (corpus dense, Lot 4)
 const CHAMPS_SOURCE = ["id", "titre", "proprietaire", "date", "statut", "perimetre", "classification", "fictif"];
 const RE_ID = /^SRC-\d{3}$/;
 
@@ -133,8 +133,8 @@ export function validerCorpus(cas, options = {}) {
     // 4. longueur
     const mots = compterMots(s.content ?? "");
     if (mots < SEUIL_COURT) {
-      avertissements.push(
-        `${f} : source très courte (${mots} mots < ${SEUIL_COURT}) — à étoffer (bloquant à partir du corpus dense, Lot 4)`,
+      erreurs.push(
+        `${f} : source trop courte (${mots} mots < ${SEUIL_COURT}) — corpus dense attendu (cible 700–1 800)`,
       );
     } else if (mots < SEUIL_MAIGRE) {
       avertissements.push(`${f} : source maigre (${mots} mots < ${SEUIL_MAIGRE}, cible 700–1 800)`);

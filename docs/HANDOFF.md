@@ -14,18 +14,23 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 <!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
 <!-- ================================================================= -->
 
-> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 3 terminé**, au seuil du **Lot 4**
+> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 4 terminé**, au seuil du **Lot 5**
 >
-> > **Mise à jour 2026-07-19 (fin S3) : le Lot 3 est complet et vert** (couche
-> > `scripts/lib/` + `scripts/lib/atelier/`, 3 validateurs, orchestrateur,
-> > scaffold, rapport, interview CLI `--demo`, squelette generate-demo). Détail,
-> > migration des contrôles et écarts documentés : `docs/RECETTE.md` § « Lot 3 ».
-> > Les §E ci-dessous décrivent le Lot 3 tel qu'il a été **réalisé** ; la
-> > prochaine session attaque le **Lot 4** (corpus dense 16 sources) —
-> > **ne pas** commencer le Lot 4 sans relire `specs/backlog-implementation.md`
-> > § Lot 4 et `specs/spec-corpus-onboarding.md`. Rappels Lot 4 : re-durcir le
-> > seuil `< 120 mots` de `validate-corpus` en **erreur**, et supprimer
-> > `scripts/generate-demo.mjs` une fois `scripts/demo/onboarding-agents/` peuplé.
+> > **Mise à jour 2026-07-19 (fin S4) : le Lot 4 est complet et vert.** Corpus
+> > dense **16 sources** (`SRC-001` à `SRC-016`, ≈ 16 300 mots), **10 fiches**,
+> > **7 modules** de parcours, **14 questions** de quiz ; bascule vers
+> > l'organisation fictive **« Syndicat mixte du Val de Brenne »** ; contenu de
+> > référence versionné dans `scripts/demo/onboarding-agents/` (miroir de vérité,
+> > `npm run generate-demo` sans écart) ; seuil `< 120 mots` de `validate-corpus`
+> > **re-durci en erreur** ; `scripts/generate-demo.mjs` **supprimé** (la clé npm
+> > `generate-demo` pointe vers `generate-onboarding-demo.mjs`). `validate-corpus`
+> > : **16 sources, 0 erreur, 0 avertissement**. `npm test` 36/36, `npm run build`
+> > OK (24 pages). Détail, écarts et correctif RIFSEEP : `docs/RECETTE.md`
+> > § « Lot 4 ». Les §E ci-dessous décrivent le **Lot 3** (historique) ; la
+> > prochaine session attaque le **Lot 5** (API `/api/fabrique/*` + navigation par
+> > modules) — relire `specs/backlog-implementation.md` § Lot 5 avant de démarrer.
+> > Rappel : l'avertissement garde-fous « < 5 cas sourcés » reste admis jusqu'au
+> > **Lot 7** (n'ajouter aucun cas comportemental détaillé du Lot 7 hors de ce lot).
 >
 > **Branche de travail : `refonte-fabrique` (et elle seule).** Ne jamais
 > revenir sur `main` : `main` est l'état V1 publié, figé au tag
@@ -57,7 +62,7 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   session) sont non suivis / modifiés — artefacts, **laissés non suivis**
 >   (arbitrage Pascal). Ne pas les commiter, ne pas les supprimer.
 >
-> ## B. Lots terminés (0, 1, 2) — vérifiés verts
+> ## B. Lots terminés (0 à 4) — vérifiés verts
 >
 > - **Lot 0** — baseline : tag `avant-refonte-fabrique`, branche créée, état de
 >   référence consigné (`docs/RECETTE.md` § « Lot 0 »), `CHANGELOG.md` annonçant
@@ -76,6 +81,11 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   `validate-provider-config`, `scaffold-harness`, `build-harness-report`,
 >   `interview-harness` (`--demo`), `generate-onboarding-demo` (squelette) ;
 >   orchestrateur `validate-harness` ; 7 scripts npm. **Vert** (36/36, build OK).
+> - **Lot 4** — corpus dense : 16 sources (≈ 16 300 mots), 10 fiches, 7 modules,
+>   14 questions de quiz, organisation « Syndicat mixte du Val de Brenne » ;
+>   référence versionnée `scripts/demo/onboarding-agents/` (`generate-demo` sans
+>   écart) ; seuil `< 120 mots` durci en erreur ; `generate-demo.mjs` supprimé.
+>   `validate-corpus` 16 sources 0/0. **Vert** (36/36, build OK, 24 pages).
 >
 > Détail lot par lot : `docs/RECETTE.md` § « Recette de la refonte fabrique ».
 >
@@ -317,7 +327,10 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 > 8. **Commit local** par lot/demi-lot, message français conventionnel. **Aucun
 >    push, aucun merge.**
 >
-> **Ne pas commencer le Lot 4 (corpus dense) avant que le Lot 3 soit vert.**
+> **Lot 3 et Lot 4 sont verts.** Prochaine étape : **Lot 5** (API d'atelier +
+> navigation par modules). Ne pas modifier le corpus ni l'organisation démo sans
+> passer par la référence `scripts/demo/onboarding-agents/` puis
+> `npm run generate-demo -- --ecrire`.
 
 > **Modèle exigé : `claude-opus-4-8` (Opus 4.8). Ne pas substituer.** Il était
 > disponible au moment des sessions précédentes. Si une future session ne le

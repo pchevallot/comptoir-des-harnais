@@ -498,3 +498,99 @@ Scripts (`scripts/`) :
 Aucun appel au modèle (frontière stricte respectée) ; pas de contenu de démo
 dense (Lot 4) ; pas d'OCR/PDF ; `scripts/generate-demo.mjs` **conservé** (retiré
 au Lot 4) ; pas d'API `/api/fabrique/*` (Lot 5a) ; pas de nouvelle source.
+
+
+## Lot 4 — Corpus dense « onboarding-agents » (16 sources)
+
+- **Date** : 2026-07-19 (session S4, après `/clear`). Modèle : `claude-opus-4-8`.
+- **Spec d'autorité** : `specs/spec-corpus-onboarding.md`. Backlog : § Lot 4.
+- **Portée réalisée** : Lot 4 **complet** — corpus dense 16 sources, 10 fiches,
+  7 modules de parcours, 14 questions de quiz, bascule vers l'organisation
+  fictive **« Syndicat mixte du Val de Brenne »**, référence versionnée
+  `scripts/demo/onboarding-agents/`, `generate-demo` branché.
+
+### Contenu de référence versionné
+
+`scripts/demo/onboarding-agents/` devient le **miroir de vérité** du cas démo
+(34 fichiers : `content/…` = corpus, `case/…` = manifeste + gouvernance).
+`npm run generate-demo` **vérifie** l'égalité octet à octet ; `-- --ecrire`
+**réécrit** le cas déployé depuis la référence. Les 16 sources ont été rédigées
+dans la référence puis déployées ; `generate-demo` (mode vérification) ne
+signale **aucun écart**.
+
+### Corpus (16 sources, `SRC-001` à `SRC-016`)
+
+- 6 sources existantes **densifiées** (ids/thèmes conservés) + 10 **créées**,
+  conformes au tableau `spec-corpus-onboarding.md` §2 (titres, propriétaires
+  fonction, classifications).
+- **Total ≈ 16 279 mots** (cible 17 500 ±15 % = 14 875–20 125 → dans la
+  fourchette). Chaque source vise 700–1 800 mots (fourchette respectée : la
+  plus courte, SRC-005 « Contacts », ≈ 658 mots de corps, admise par la
+  tolérance ±20 % pour une source volontairement tabulaire).
+- Frontmatter complet (8 champs), `fictif: true`, dates 2025–2026 (aucune sous
+  le seuil d'obsolescence), fonctions uniquement, courriels
+  `@valdebrenne.exemple.fr`, poste neutralisé `01 00 00 00 0X` **uniquement**
+  dans SRC-005. SRC-003 conserve « 2 jours max/semaine » et « 3 jours de
+  présence ».
+
+### Fiches / parcours / quiz / gouvernance
+
+- **10 fiches** (ajouts : `informatique-securite`, `frais-deplacement`,
+  `formation`, `ia-interne`) ; chacune cite ≥ 1 source et porte un champ
+  `limites`.
+- **Parcours : 7 modules** (premiers-jours, temps-de-travail,
+  environnement-professionnel, protection-sociale, numerique-securite,
+  deplacements-frais, formation).
+- **Quiz : 14 questions** sourcées (renvoi fiche + source).
+- `configs/demo.yml` → organisation « Syndicat mixte du Val de Brenne ».
+  `configs/organisation.example.yml` → Roche-Vallonne conservé en **exemple
+  secondaire commenté**. `harnais.yaml` → 16 `sources_declarees` alignées sur
+  les frontmatters. Gouvernance (classification, journal, limites-refus,
+  fiche-validation) réalignée sur 16 sources. Rapport régénéré.
+
+### Scripts
+
+- `scripts/generate-demo.mjs` **supprimé** (`git rm`) ; la clé npm
+  `generate-demo` pointe vers `generate-onboarding-demo.mjs` (inchangée).
+- `validate-corpus.mjs` : seuil `< 120 mots` **re-durci en erreur bloquante**
+  (était un avertissement au Lot 3).
+- `scripts/lib/motifs-interdits.mjs` : la tolérance du motif « courriel
+  plausible » est étendue aux **sous-domaines** d'exemple (le négatif accepte
+  désormais `rh@valdebrenne.exemple.fr`, pas seulement `x@exemple.fr`). Motif
+  partagé avec `tests/structure/` → un seul point de changement, zéro
+  divergence ; la sémantique reste : tout courriel **réel** est rejeté.
+
+### Écart de recherche documentaire corrigé (contraste RIFSEEP)
+
+La définition de **RIFSEEP** ajoutée au glossaire (SRC-015, exigée par la spec)
+faisait passer la question hors-corpus « quel est le montant du RIFSEEP pour un
+attaché principal ? » de `je-ne-sais-pas` à `sourcee` (le test existant
+`hors-corpus-rifseep` échouait). Cause : la recherche par mots-clés
+(`retrieval.ts`, seuil 2 racines distinctes) trouvait des passages combinant les
+racines génériques `montan` + `princi` (SRC-004) ou `rifsee` + `montan`
+(glossaire). **Correction sans toucher au code** : découpler ces mots dans le
+corpus (SRC-004 « quelle que soit la dépense », « les règles d'égalité » ;
+SRC-015 « aucun chiffrage » au lieu de « aucun montant »). Vérifié : plus aucun
+passage ne score ≥ 2 pour cette question → `je-ne-sais-pas` rétabli. Le montant
+du RIFSEEP reste donc **hors corpus** (cas existant conservé), sa définition
+reste disponible pour la démonstration.
+
+### Vérifications (toutes exécutées ce jour)
+
+| Contrôle | Commande | Résultat |
+|---|---|---|
+| Nombre de sources | `ls …/sources \| wc -l` | **16** |
+| Corpus | `npm run validate-corpus -- --cas onboarding-agents` | **16 sources, 0 erreur, 0 avertissement** |
+| Référence ↔ disque | `npm run generate-demo` | **aucun écart** |
+| Rapport | `npm run rapport -- --cas onboarding-agents` | régénéré (mention juridique présente) |
+| Harnais | `npm run validate-harness` | **OK** (corpus 0/0 ; garde-fous 1 avert. « < 5 cas sourcés », non bloquant, admis jusqu'au Lot 7) |
+| Tests | `npm test` | **36/36** |
+| Build | `npm run build` | **OK (exit 0)** — 24 pages statiques (10 fiches), `/fabrique` dynamique |
+| Civilité + Nom dans sources | grep | **aucun** |
+| Motif concurrent / ancien nom | grep sur tout le dépôt | **aucun** |
+| Roche-Vallonne dans le corpus | grep | **aucun** (présent seulement en exemple commenté de `organisation.example.yml`) |
+
+### Points non traités (non-objectifs du Lot 4)
+
+Lot 5 non entamé ; pas de nouveaux cas comportementaux détaillés du Lot 7 (les
+tests existants restent verts) ; interface `/fabrique` non modifiée.

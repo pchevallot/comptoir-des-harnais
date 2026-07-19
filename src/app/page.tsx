@@ -7,6 +7,11 @@ export default function Accueil() {
   const config = getConfig();
   return (
     <>
+      <p className="bandeau-fabrique">
+        Ce portail a été produit par la fabrique <strong>Comptoir des Harnais</strong>.{" "}
+        <Link href="/fabrique">Voir comment</Link>.
+      </p>
+
       <section className="hero">
         <h1>Bienvenue dans votre harnais d'onboarding RH</h1>
         <p>

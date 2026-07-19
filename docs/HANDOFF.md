@@ -14,8 +14,27 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 <!-- contradiction, CE BLOC fait foi pour la refonte en cours.         -->
 <!-- ================================================================= -->
 
-> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 4 terminé**, au seuil du **Lot 5**
+> # 🏭 Reprise de la refonte « harnais-fabrique » — **Lot 5 terminé**, au seuil du **Lot 6**
 >
+> > **Mise à jour 2026-07-19 (fin S5) : le Lot 5 est complet et vert.**
+> > `/fabrique` montre désormais l'**état réel du manifeste** (slug, type,
+> > statut, étape, date, organisation, mode IA, 16 sources, 10 fiches, modules
+> > actifs) et les **15 étapes**, chacune avec skill + script + **preuve réelle**
+> > (lien applicatif ou fichier versionné) + encart « en coulisse » (commande
+> > équivalente). Bandeau « produit par la fabrique » sur `/`. **Navigation
+> > pilotée par modules** (`Nav.tsx`, composant serveur) : masque
+> > parcours/faq/quiz/checklist selon `manifeste.modules` — testé par rebuild
+> > (`quiz:false` → nav sans `/quiz`, route `/quiz` toujours servie), puis
+> > restauré. `/gouvernance` référence le rapport `rapport-gouvernance.md`.
+> > Interview CLI : finition UX seule (refus d'éligibilité reformulé, moins de
+> > jargon), architecture inchangée. `npm test` 36/36, `npm run build` OK,
+> > `npm run validate-harness` OK, `interview --demo` code 0. 6 fichiers `src/`
+> > + scripts modifiés, **aucune** dépendance front, **aucune** API d'écriture.
+> > Détail, méthode de test nav et écarts : `docs/RECETTE.md` § « Lot 5 ». La
+> > prochaine session attaque le **Lot 6** — relire `specs/backlog-implementation.md`
+> > avant de démarrer. **Relever le HEAD réel par `git log --oneline -1`** (le
+> > commit du Lot 5 est `feat: rendre la fabrique visible et pédagogique (Lot 5)`).
+> >
 > > **Mise à jour 2026-07-19 (fin S4) : le Lot 4 est complet et vert.** Corpus
 > > dense **16 sources** (`SRC-001` à `SRC-016`, ≈ 16 300 mots), **10 fiches**,
 > > **7 modules** de parcours, **14 questions** de quiz ; bascule vers
@@ -62,7 +81,7 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   session) sont non suivis / modifiés — artefacts, **laissés non suivis**
 >   (arbitrage Pascal). Ne pas les commiter, ne pas les supprimer.
 >
-> ## B. Lots terminés (0 à 4) — vérifiés verts
+> ## B. Lots terminés (0 à 5) — vérifiés verts
 >
 > - **Lot 0** — baseline : tag `avant-refonte-fabrique`, branche créée, état de
 >   référence consigné (`docs/RECETTE.md` § « Lot 0 »), `CHANGELOG.md` annonçant
@@ -86,6 +105,13 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 >   référence versionnée `scripts/demo/onboarding-agents/` (`generate-demo` sans
 >   écart) ; seuil `< 120 mots` durci en erreur ; `generate-demo.mjs` supprimé.
 >   `validate-corpus` 16 sources 0/0. **Vert** (36/36, build OK, 24 pages).
+> - **Lot 5** — interface guidée et pédagogie visible : `/fabrique` reflète
+>   l'état réel du manifeste + 15 étapes (skill + script + preuve + « en
+>   coulisse ») ; bandeau « produit par la fabrique » sur `/` ; `Nav.tsx`
+>   pilotée par `manifeste.modules` (composant serveur) ; `/gouvernance`
+>   référence le rapport ; interview CLI finition UX seule. **Vert** (36/36,
+>   build OK, `interview --demo` code 0). Aucune API d'écriture, aucune
+>   dépendance front. Détail : `docs/RECETTE.md` § « Lot 5 ».
 >
 > Détail lot par lot : `docs/RECETTE.md` § « Recette de la refonte fabrique ».
 >
@@ -327,10 +353,13 @@ fichier → `docs/RECETTE.md` (journal de recette) → le code.
 > 8. **Commit local** par lot/demi-lot, message français conventionnel. **Aucun
 >    push, aucun merge.**
 >
-> **Lot 3 et Lot 4 sont verts.** Prochaine étape : **Lot 5** (API d'atelier +
-> navigation par modules). Ne pas modifier le corpus ni l'organisation démo sans
-> passer par la référence `scripts/demo/onboarding-agents/` puis
-> `npm run generate-demo -- --ecrire`.
+> **Lots 3, 4 et 5 sont verts.** Prochaine étape : **Lot 6** (relire
+> `specs/backlog-implementation.md` § Lot 6 avant de démarrer). Ne pas modifier
+> le corpus ni l'organisation démo sans passer par la référence
+> `scripts/demo/onboarding-agents/` puis `npm run generate-demo -- --ecrire`.
+> Rappel Lot 5 : la nav pilotée par modules est **rendue au build** (le layout ne
+> déclenche pas de rendu dynamique) — tester un basculement de module par
+> **rebuild**, pas par redémarrage serveur.
 
 > **Modèle exigé : `claude-opus-4-8` (Opus 4.8). Ne pas substituer.** Il était
 > disponible au moment des sessions précédentes. Si une future session ne le

@@ -163,6 +163,18 @@ a:hover {
   padding: 0.5rem 1rem;
 }
 
+/* --- Bandeau « produit par la fabrique » (sobre, non envahissant) -------- */
+.bandeau-fabrique {
+  background: var(--cds-bleu-clair);
+  border: 1px solid var(--cds-bordure);
+  border-left: 4px solid var(--cds-bleu);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.9rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--cds-bleu-nuit);
+}
+
 /* --- Cartes et panneaux --------------------------------------------------- */
 .grille {
   display: grid;
@@ -365,6 +377,26 @@ pre code {
   background: var(--cds-succes);
   color: #fff;
   border-color: var(--cds-succes);
+}
+
+/* Encart « en coulisse » : la commande CLI équivalente d'une étape. */
+.coulisse {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+.coulisse > summary {
+  cursor: pointer;
+  color: var(--cds-bleu);
+  font-weight: 600;
+}
+.coulisse > code {
+  display: block;
+  margin-top: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--cds-bleu-nuit);
+  color: #fff;
+  border-radius: 6px;
+  overflow-x: auto;
 }
 
 @media (max-width: 640px) {

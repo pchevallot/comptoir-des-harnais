@@ -1,14 +1,24 @@
+import fs from "node:fs";
+import path from "node:path";
+import Link from "next/link";
 import { getConfig } from "@/lib/config";
-import { getDocGouvernance } from "@/lib/content";
+import { getDocGouvernance, getSources, getFiches } from "@/lib/content";
+import { chargerManifeste } from "@/lib/manifest";
+import { CASE_DIR } from "@/lib/paths";
 import { Markdown } from "@/components/Markdown";
 import { StatutBadge } from "@/components/Badges";
 
 /** Page « gouvernance » (§6.1-9, §9) : responsables, statut, classification, journal. */
 export default function Gouvernance() {
   const config = getConfig();
+  const manifeste = chargerManifeste(config.cas);
   const validation = getDocGouvernance("fiche-validation");
   const journal = getDocGouvernance("journal");
   const classificationDoc = getDocGouvernance("classification");
+
+  const nbSources = getSources().length;
+  const nbFiches = getFiches().length;
+  const rapportExiste = fs.existsSync(path.join(CASE_DIR, "rapport-gouvernance.md"));
 
   return (
     <>
@@ -22,6 +32,36 @@ export default function Gouvernance() {
           des juristes, du RSSI et des instances de décision de chaque organisation.
         </p>
       </div>
+
+      <section>
+        <h2>Synthèse du harnais</h2>
+        <div className="badges">
+          <span className="badge">Type : {manifeste.type}</span>
+          <StatutBadge statut={manifeste.etat.statut} />
+          <span className="badge">{nbSources} sources</span>
+          <span className="badge">{nbFiches} fiches</span>
+          <span className="badge">Mode IA : {manifeste.fournisseur.mode}</span>
+        </div>
+        <p className="petit muet" style={{ marginTop: "0.75rem" }}>
+          Cas <code>{manifeste.slug}</code> — état lu au manifeste{" "}
+          <code>cases/{manifeste.slug}/harnais.yaml</code>. Le parcours de fabrication (15 étapes)
+          est visible dans l'<Link href="/fabrique">atelier de la fabrique</Link>.
+        </p>
+        {rapportExiste ? (
+          <p>
+            Un <strong>rapport de gouvernance</strong> a été produit à l'étape 15 : registre des
+            sources, refus couverts, mode IA et synthèse des validations, avec la mention « ne vaut
+            pas validation juridique ». C'est le document versionné à remettre au DPO, à la DSI et à
+            la direction. Fichier : <code>cases/{manifeste.slug}/rapport-gouvernance.md</code> —
+            régénérable par <code>npm run rapport -- --cas {manifeste.slug}</code>.
+          </p>
+        ) : (
+          <p className="petit muet">
+            Aucun rapport de gouvernance n'a encore été produit pour ce cas (étape 15 :{" "}
+            <code>npm run rapport -- --cas {manifeste.slug}</code>).
+          </p>
+        )}
+      </section>
 
       <section>
         <h2>Responsables (fonctions)</h2>

@@ -149,7 +149,7 @@ function ecrireRefusEligibilite(slug, date) {
 }
 
 function afficherCommandesFinales(slug) {
-  console.log("\nÉtapes suivantes — commandes à lancer (l'interview ne les exécute pas) :\n");
+  console.log("\nÉtapes suivantes — à lancer dans un terminal (la fabrique ne les exécute pas ici) :\n");
   for (const n of [10, 11, 13, 14, 15]) {
     const cmd = commandeEtape(n, slug);
     const e = etape(n);
@@ -196,7 +196,15 @@ async function principal() {
       slug = r.valeur;
     }
 
-    console.log(`\n=== Interview du harnais — cas ${slug}${demo ? " (démo)" : ""} ===`);
+    console.log(`\n=== Fabrique de harnais — cas ${slug}${demo ? " (démo)" : ""} ===`);
+    if (!demo) {
+      console.log(
+        "\nJe vais vous poser quelques questions, une à la fois, comme le ferait un accompagnateur.",
+      );
+      console.log(
+        "Appuyez sur Entrée pour accepter la valeur entre [crochets]. Rien à installer, rien qui sort de ce poste.\n",
+      );
+    }
 
     const collecte = {};
     for (const e of ETAPES) {
@@ -214,12 +222,19 @@ async function principal() {
 
       // Étape 1 : refus d'éligibilité → code 0 (comportement voulu).
       if (e.numero === 1 && reponses.eligibilite === true) {
+        console.log("\n———");
         console.log(
-          "\nCe besoin porte sur des situations individuelles ; il sort du cadre documentaire.",
+          "Ce besoin concerne des situations individuelles (dossiers, droits ou décisions nominatives).",
         );
         console.log(
-          `Le parcours s'arrête ici — c'est un comportement voulu, pas une erreur. ` +
-            `Voir cases/${slug}/gouvernance/limites-refus.md.`,
+          "La fabrique s'arrête ici, volontairement : ce cadre est documentaire et ne traite jamais de cas individuels.",
+        );
+        console.log(
+          "Ce n'est pas une erreur — c'est le harnais qui joue son rôle, avant même qu'une IA soit dans la boucle.",
+        );
+        console.log(
+          `Pour un besoin sur des personnes, tournez-vous vers votre service RH / SIRH. ` +
+            `Détails du périmètre : cases/${slug}/gouvernance/limites-refus.md.`,
         );
         ecrireRefusEligibilite(slug, date);
         if (rl) rl.close();
@@ -240,7 +255,9 @@ async function principal() {
     for (const f of fichiers) console.log(`  ${f}`);
 
     afficherCommandesFinales(slug);
-    console.log("Interview terminée.\n");
+    console.log(
+      `Cadrage terminé — votre harnais est décrit dans cases/${slug}/harnais.yaml (le manifeste).\n`,
+    );
   } finally {
     if (rl) rl.close();
   }

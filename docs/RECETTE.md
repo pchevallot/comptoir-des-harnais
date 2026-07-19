@@ -594,3 +594,93 @@ reste disponible pour la démonstration.
 
 Lot 5 non entamé ; pas de nouveaux cas comportementaux détaillés du Lot 7 (les
 tests existants restent verts) ; interface `/fabrique` non modifiée.
+
+
+## Lot 5 — Interface guidée et pédagogie visible
+
+- **Date** : 2026-07-19 (session S5, après `/clear`). Modèle : `claude-opus-4-8`.
+- **Spec d'autorité** : `specs/backlog-implementation.md` § Lot 5,
+  `specs/spec-parcours-video.md`, `specs/spec-skills.md`.
+- **Portée réalisée** : rendre la fabrique lisible et démontrable dans le
+  navigateur pour un public non technique (DGS/DRH/agents/élus), **sans** la
+  transformer en expérience CLI-first. Aucune API d'écriture, aucune sous-route
+  d'atelier (réservées à un lot ultérieur).
+
+### Fichiers modifiés (6, tous du territoire code `src/` + scripts)
+
+- `src/app/fabrique/page.tsx` — page **enrichie** : synthèse réelle du manifeste
+  (slug, type, statut, étape, date, organisation, mode IA, nombre de sources et
+  de fiches réels, modules actifs) ; les 15 étapes avec, pour chacune, **skill +
+  script/action + preuve réelle** (lien applicatif ou chemin de fichier
+  versionné) + statut visuel franchi/à faire + un encart `<details>` « en
+  coulisse » portant la **commande équivalente** (étapes 9, 10, 11, 13, 14, 15) ;
+  bouton « Ouvrir l'application produite » (`/`) ; lien vers `/gouvernance` +
+  rapport si présent (vérifié par `fs.existsSync`) ; note sobre « l'état est lu
+  depuis les fichiers du dépôt ». Reformulation du cadrage CLI : « les mêmes
+  actions sont rejouables en ligne de commande pour les équipes techniques »
+  (plus de phrase suggérant une fabrique CLI-first).
+- `src/app/page.tsx` — **bandeau d'accueil** sobre en tête : « Ce portail a été
+  produit par la fabrique Comptoir des Harnais — Voir comment » → `/fabrique`.
+- `src/components/Nav.tsx` — **navigation pilotée par modules** (composant
+  serveur, aucun `use client`) : lit `config.cas` puis `chargerManifeste`, et
+  masque `Parcours d'accueil`, `Questions / réponses`, `Quiz`, `Checklist RH`
+  quand le module correspondant est `false` dans `manifeste.modules`. La route
+  directe reste servie.
+- `src/app/gouvernance/page.tsx` — section **« Synthèse du harnais »** :
+  type, statut, nombre de sources/fiches, mode IA, et **référence au rapport**
+  `cases/onboarding-agents/rapport-gouvernance.md` (existence vérifiée), sans
+  ré-afficher le rapport complet (déjà versionné).
+- `src/app/globals.css` — deux styles sobres ajoutés : `.bandeau-fabrique`
+  (accueil) et `.coulisse` (encart commande de `/fabrique`). Pas de dépendance
+  front nouvelle.
+- `scripts/interview-harness.mjs` — **finition UX uniquement** (textes
+  filmables, moins de jargon) : accroche d'ouverture « je vais vous poser
+  quelques questions… », refus d'éligibilité reformulé (courtois, renvoi
+  RH/SIRH + limites, « le harnais joue son rôle »), en-tête « Fabrique de
+  harnais », clôture « Cadrage terminé ». **Aucune** modification d'architecture
+  (enveloppe mince autour de `scripts/lib/atelier/` inchangée).
+
+### Décision UX structurante (navigation par modules)
+
+La navigation est **rendue au build** avec les autres pages statiques : le
+`RootLayout` (donc `Nav`) ne fait que des lectures `fs` synchrones, qui n'optent
+pas la page dans le rendu dynamique de Next. La nav reflète donc le manifeste
+**tel qu'au build/déploiement** — cohérent avec le modèle « contenu figé au
+build, pas de base de données » du projet. Conséquence de recette : le test du
+basculement de module se fait par **rebuild**, pas par simple redémarrage
+serveur (un redémarrage ne régénère pas les pages statiques). Documenté ici pour
+éviter le faux négatif.
+
+### Vérifications (toutes exécutées ce jour)
+
+| Contrôle | Commande / méthode | Résultat |
+|---|---|---|
+| Tests | `npm test` | **36/36** |
+| Build | `npm run build` | **OK** — routes inchangées (`/fabrique` dynamique) |
+| Harnais | `npm run validate-harness` | **OK** (corpus 0/0 ; garde-fous 1 avert. non bloquant) |
+| Interview démo | `npm run interview -- --demo` | **6 fichiers, code 0** (cas jetable `demo-atelier` nettoyé) |
+| Refus d'éligibilité | démo patchée `eligibilite: o` | **code 0**, manifeste `etape: 1`, message reformulé affiché ; démo restaurée |
+| HTTP (serveur propre, port 3015) | `curl` `/`, `/fabrique`, `/gouvernance`, `/sources`, `/faq` | **200** partout |
+| `/fabrique` filmable | grep du HTML servi | contient « 15 étapes », « onboarding-agents », « rapport », « Skill », « Script », « En coulisse », « Modules actifs », « Ouvrir l'application » |
+| Bandeau accueil | grep `/` | « produit par la fabrique » + lien « Voir comment » présents |
+| Nav par modules | `quiz: false` → **rebuild** → grep pages prérendues | nav `index/sources/gouvernance` sans `href="/quiz"`, `/parcours` conservé ; `quiz.html` **toujours généré** (route directe servie) ; manifeste **restauré**, rebuild propre → `/quiz` de retour |
+| Motifs interdits / ancien nom | grep `Hypervibe\|Flavien\|Bernabotto\|Public IA` | **aucun** |
+| Secrets | grep `sk-…/AKIA…/PRIVATE KEY/ghp_` sur `src scripts docs cases content configs skills tests` | **aucun** |
+
+> ⚠️ Port 3010 occupé par des serveurs d'autres sessions (relevés `next-server`
+> anciens) — **non tués** (arbitrage). Les vérifications HTTP ont utilisé une
+> instance propre sur un port libre (3015/3016), ensuite arrêtée.
+
+### Écarts / points d'attention
+
+- Nav par modules **statique au build** (voir « Décision UX » ci-dessus) : ce
+  n'est pas un bug, c'est le modèle du projet. Si un rendu par requête devient
+  nécessaire, il faudra opter le layout en dynamique — hors périmètre Lot 5.
+- Le fichier `claude-code-runs/*-dev-session1-*.txt` apparaît modifié : artefact
+  de session, **non commité** (arbitrage HANDOFF).
+
+### Points non traités (non-objectifs du Lot 5)
+
+Pas d'API `/api/fabrique/*` ni d'écriture navigateur ; pas de sous-routes
+`/fabrique/nouveau` ni `/fabrique/[slug]/etape/[n]` ; pas de refonte graphique ;
+aucune dépendance front nouvelle ; **Lot 6 non entamé**.
